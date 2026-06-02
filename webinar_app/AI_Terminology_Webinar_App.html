@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Terminology Webinar</title>
+<style>
+  /* Color palette */
+  :root {
+    --vs-navy: #1a2851;
+    --vs-navy-dark: #0f1f3d;
+    --vs-navy-light: #2d3d6e;
+    --vs-red: #e6354f;
+    --vs-red-dark: #c12940;
+    --vs-cream: #f7f5f0;
+    --vs-cream-dark: #ede9df;
+    --vs-charcoal: #1f1f1f;
+    --vs-text: #2c2c2a;
+    --vs-text-muted: #6b6b65;
+
+    --bg: var(--vs-cream);
+    --panel-bg: #ffffff;
+    --border: #e5e1d6;
+    --border-strong: #d2cdbd;
+    --text: var(--vs-text);
+    --text-muted: var(--vs-text-muted);
+
+    --accent: var(--vs-navy);
+    --accent-bg: #e8ecf5;
+    --accent-text: var(--vs-navy-dark);
+    --accent-strong: var(--vs-navy);
+
+    --highlight: var(--vs-red);
+    --highlight-bg: #fce8eb;
+    --highlight-text: var(--vs-red-dark);
+
+    --secondary-bg: var(--vs-cream-dark);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Branded header strip */
+  .vs-header {
+    background: var(--vs-navy);
+    color: white;
+    padding: 14px 1rem;
+    border-bottom: 4px solid var(--vs-red);
+  }
+  .vs-header-inner {
+    max-width: 760px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .vs-brand {
+    font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .vs-brand .vs-brand-accent { color: var(--vs-red); }
+  .vs-tagline {
+    font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 0.5px;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 1rem; }
+  .role-bar {
+    display: flex; gap: 8px; align-items: center;
+    background: var(--panel-bg); border: 1px solid var(--border);
+    padding: 10px 14px; border-radius: 4px; margin-bottom: 1rem; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .role-bar button {
+    padding: 6px 14px; font-size: 13px;
+    border: 1px solid var(--border-strong); background: var(--panel-bg);
+    border-radius: 3px; cursor: pointer; font-family: inherit; color: var(--text);
+    transition: all 0.15s;
+  }
+  .role-bar button:hover { background: var(--secondary-bg); border-color: var(--accent); }
+  .role-bar .active { background: var(--vs-navy); color: white; border-color: var(--vs-navy); }
+  .role-bar .active:hover { background: var(--vs-navy-dark); border-color: var(--vs-navy-dark); color: white; }
+  .role-bar .spacer { flex: 1; }
+  .role-bar .room-code { color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; }
+  .role-bar input { padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-strong);
+    border-radius: 3px; background: var(--panel-bg); width: 140px; font-family: inherit; }
+  .role-bar input:focus { outline: none; border-color: var(--vs-navy); box-shadow: 0 0 0 2px var(--accent-bg); }
+
+  .panel { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 4px;
+    padding: 1.5rem; margin-bottom: 1rem; }
+  .panel h2 { font-size: 20px; font-weight: 700; margin: 0 0 0.75rem; color: var(--vs-navy);
+    line-height: 1.25; letter-spacing: -0.01em; }
+  .panel h3 { font-size: 13px; font-weight: 700; margin: 1.25rem 0 0.5rem;
+    color: var(--vs-navy); text-transform: uppercase; letter-spacing: 1px; }
+  .panel p { font-size: 14px; margin: 0 0 0.75rem; }
+  .panel .muted { color: var(--text-muted); font-size: 13px; }
+
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .term-card { padding: 14px; border: 1px solid var(--border); border-radius: 4px;
+    cursor: pointer; background: var(--panel-bg); transition: all 0.15s;
+    border-left: 3px solid var(--border-strong); }
+  .term-card:hover { background: var(--secondary-bg); border-left-color: var(--vs-navy); }
+  .term-card.selected { background: var(--accent-bg); border-color: var(--vs-navy); border-left-color: var(--vs-red); border-left-width: 4px; }
+  .term-card .t-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--vs-navy); }
+  .term-card .t-desc { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+
+  .vote-row { margin: 8px 0; }
+  .vote-bar-wrap { height: 32px; background: var(--secondary-bg); border-radius: 3px;
+    position: relative; overflow: hidden; }
+  .vote-bar { height: 100%; background: var(--vs-navy); opacity: 0.15; transition: width 0.3s; }
+  .vote-bar-label { position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; font-weight: 500; z-index: 2; max-width: 72%;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+  .vote-bar-count { position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: var(--text-muted); z-index: 2; font-weight: 500;
+    font-feature-settings: "tnum"; }
+
+  .def-option { padding: 14px; border: 1px solid var(--border); border-radius: 4px;
+    margin-bottom: 8px; cursor: pointer; background: var(--panel-bg);
+    display: flex; gap: 14px; align-items: flex-start; transition: all 0.15s;
+    border-left: 3px solid var(--border-strong); }
+  .def-option:hover { background: var(--secondary-bg); border-left-color: var(--vs-navy); }
+  .def-option.selected { background: var(--accent-bg); border-color: var(--vs-navy);
+    border-left-color: var(--vs-red); border-left-width: 4px; padding-left: 13px; }
+  .def-option .def-letter { font-weight: 700; min-width: 26px; height: 26px; border-radius: 50%;
+    background: var(--vs-navy); color: white; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+  .def-option.selected .def-letter { background: var(--vs-red); }
+  .def-option .def-text { font-size: 14px; flex: 1; line-height: 1.5; }
+
+  .scenario-box { background: var(--vs-navy); color: white; border-radius: 4px; padding: 16px 18px;
+    margin-bottom: 1rem; font-size: 14px; line-height: 1.55;
+    border-left: 4px solid var(--vs-red); }
+  .scenario-box .label { font-size: 11px; color: rgba(255,255,255,0.7);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 600; }
+
+  .chat-input { width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border-strong);
+    border-radius: 3px; background: var(--panel-bg); font-family: inherit;
+    resize: vertical; min-height: 70px; color: var(--text); }
+  .chat-input:focus { outline: none; border-color: var(--vs-navy); box-shadow: 0 0 0 2px var(--accent-bg); }
+  .chat-list { max-height: 280px; overflow-y: auto; margin-top: 0.75rem; }
+  .chat-item { padding: 12px 14px; background: var(--secondary-bg); border-radius: 3px;
+    margin-bottom: 6px; font-size: 13px; border-left: 2px solid var(--vs-navy); }
+  .chat-item .who { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+
+  .stage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 6px; margin: 0.5rem 0 1rem; }
+  .stage-btn { padding: 9px 8px; font-size: 12px; text-align: center; cursor: pointer;
+    border: 1px solid var(--border); border-radius: 3px; background: var(--panel-bg);
+    color: var(--text); transition: all 0.15s; }
+  .stage-btn:hover { background: var(--secondary-bg); border-color: var(--vs-navy); }
+  .stage-btn.active { background: var(--vs-navy); border-color: var(--vs-navy);
+    color: white; font-weight: 600; }
+
+  .stage-pill { display: inline-block; padding: 4px 12px; background: var(--vs-red);
+    color: white; border-radius: 2px; font-size: 11px;
+    margin-right: 10px; vertical-align: middle; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; }
+
+  .empty { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 13px;
+    font-style: italic; }
+  .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+  button.primary { padding: 9px 18px; font-size: 13px; background: var(--vs-red);
+    color: white; border: none; border-radius: 3px; cursor: pointer; font-family: inherit;
+    font-weight: 600; letter-spacing: 0.3px; transition: background 0.15s; }
+  button.primary:hover { background: var(--vs-red-dark); }
+
+  .ctrl-row { display: flex; gap: 8px; margin-top: 0.5rem; }
+  .backend-tag { font-size: 10px; color: var(--text-muted); padding: 2px 8px;
+    background: var(--secondary-bg); border-radius: 2px; font-family: ui-monospace, monospace;
+    text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="vs-header">
+  <div class="vs-header-inner">
+    <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> Webinar</div>
+    <div class="vs-tagline">A live discussion · 60 minutes</div>
+  </div>
+</div>
+<div class="container">
+  <div class="role-bar">
+    <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
+    <button id="role-participant" onclick="setRole('participant')">Participant view</button>
+    <span class="spacer"></span>
+    <span id="participant-id-wrap" style="display:none;">
+      <input type="text" id="pid-input" placeholder="Your name (optional)" />
+    </span>
+    <span class="room-code" id="room-code">Loading…</span>
+    <span class="backend-tag" id="backend-tag"></span>
+    <button onclick="resetSession()" title="Wipe all votes (facilitator only)">↻</button>
+  </div>
+  <div id="main-content"></div>
+</div>
+
+<!-- Optional Firebase config — only loaded if backend=firebase -->
+<script>
+// config.js — backend configuration.
+// You only need to fill this in if you're using a shared backend (jsonbin or firebase).
+// For localStorage (default), leave this file as-is.
+
+// ---- jsonbin.io (simplest shared backend) ----
+// 1. Sign up at https://jsonbin.io
+// 2. Create a new bin with initial content: {}
+// 3. Copy the Bin ID and your X-Master-Key, paste below.
+window.JSONBIN_BIN_ID = '';   // e.g. '6543abc...'
+window.JSONBIN_API_KEY = '';  // e.g. '$2a$10$...'
+
+// ---- Firebase Realtime Database (lower latency, better for >50 voters) ----
+// 1. Create a Firebase project at https://console.firebase.google.com
+// 2. Add a web app, copy the config below.
+// 3. Enable Realtime Database in test mode (or with proper rules).
+// 4. Uncomment the script imports and the init block.
+
+/*
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: 'YOUR_API_KEY',
+  authDomain: 'YOUR_PROJECT.firebaseapp.com',
+  databaseURL: 'https://YOUR_PROJECT-default-rtdb.firebaseio.com',
+  projectId: 'YOUR_PROJECT',
+};
+
+const app = initializeApp(firebaseConfig);
+window.firebaseDb = getDatabase(app);
+window.firebaseDbFns = { ref, get, set, onValue };
+*/
+
+</script>
+<script>
+// terms.js — content for the AI Terminology Webinar voting app.
+// Each term has: name, short (one-line for cards), formatA, formatB, formatC.
+// Definitions paraphrased; stakeholder lens labels are deliberately generic.
+
+window.WEBINAR_TERMS = {
+  hitl: {
+    name: 'Human in the Loop',
+    short: 'When the human you\'re looping in doesn\'t exist in the setting where the AI is deployed.',
+    formatA: {
+      prompt: 'Four definitions of Human in the Loop. Vote for the one that most closely reflects how YOU use this term in your work.',
+      options: [
+        { text: 'A system in which a person provides oversight, validation, or correction of an AI system\'s outputs at one or more defined points in its operation, with the human retaining decision authority.', source: 'Regulatory framing' },
+        { text: 'An AI deployment pattern in which a clinician reviews and either accepts, modifies, or rejects each AI recommendation before it affects patient care.', source: 'Clinical user lens' },
+        { text: 'A workflow design choice in which AI handles routine cases and escalates uncertain or high-risk cases to a human reviewer, optimising for the limited time a human can spend.', source: 'Developer / implementer lens' },
+        { text: 'A risk-mitigation requirement under which a human must be involved in or accountable for an AI-influenced decision — including in settings where the specialist who would otherwise make the decision is absent.', source: 'Public health implementer lens' }
+      ]
+    },
+    formatB: {
+      scenario: 'Your organization supports an AI tool that reads chest X-rays for TB, deployed in a district hospital in a rural area. There is no radiologist at the hospital — the nearest one is 6 hours away by road. A trained nurse runs the X-ray, the AI flags the result as "high probability TB," and the patient is started on treatment based on the AI output and the nurse\'s clinical assessment.',
+      prompt: 'Is this "Human in the Loop"?',
+      options: [
+        { text: 'Yes — the nurse is the human, and she is in the loop.' },
+        { text: 'No — HITL as the term is normally used means a clinician with the expertise to override the AI, which the nurse does not have.' },
+        { text: 'It depends on what the term is being used to certify.' }
+      ],
+      discussion: [
+        'If we accept that the nurse is the "human in the loop," is the term doing any work? What is it actually certifying?',
+        'If we say it\'s not HITL, are we saying this deployment shouldn\'t happen? Because in many districts, the alternative is no diagnostic at all.',
+        'Should the term distinguish between "human supervising AI" (clinician oversight) and "human enabled by AI" (frontline worker using AI to operate beyond their scope)? They\'re being conflated under one label.'
+      ]
+    },
+    formatC: {
+      prompt: 'Is "Human in the Loop" primarily —',
+      options: [
+        { text: 'A safety mechanism' },
+        { text: 'A workforce-substitution mechanism' }
+      ],
+      punchline: 'Expected split: roughly even. The discussion punchline is that the term is being asked to do both at once, which is why it remains so contested in implementation contexts.'
+    }
+  },
+
+  perf: {
+    name: 'Performance Metrics',
+    short: 'Sensitivity tells the clinician one thing. Population-level coverage and equity tell the programme manager another.',
+    formatA: {
+      prompt: 'Four ways to think about Performance Metrics for an AI tool in public health. Which definition reflects how YOU evaluate performance in your programme?',
+      options: [
+        { text: 'Quantitative measures of model accuracy on a test dataset, typically including sensitivity, specificity, AUC, F1 score, and confusion matrix outputs.', source: 'ML / developer lens' },
+        { text: 'Measures of clinical performance — how well the tool supports correct clinical decisions in real practice, including agreement with expert reviewers and impact on diagnostic confidence.', source: 'Clinical evaluation lens' },
+        { text: 'Measures of population-level impact — change in detection rates, equity of detection across subpopulations, time-to-treatment, and downstream health outcomes attributable to the tool.', source: 'Programme evaluation lens' },
+        { text: 'Measures relevant to procurement and sustainability — uptime, integration cost, frontline user adoption, total cost per case detected, and operational reliability.', source: 'Health system / Ministry decision-maker lens' }
+      ]
+    },
+    formatB: {
+      scenario: 'Your organization is reporting on a maternal health WhatsApp chatbot deployed in partnership with the Ministry of Health in a country. After 18 months, the vendor reports: 92% accuracy on intent recognition, 88% user satisfaction in a 500-person sample, 1.2 million messages handled. The Ministry is deciding whether to absorb the chatbot into its routine programme budget.',
+      prompt: 'Are these the right performance metrics for the Ministry\'s decision?',
+      options: [
+        { text: 'Yes — these are standard, widely accepted measures.' },
+        { text: 'No — they don\'t tell the Ministry what it needs to know.' },
+        { text: 'Partly — they\'re necessary but not sufficient.' }
+      ],
+      discussion: [
+        'What\'s missing? (Common chat answers: equity of access across language groups, behaviour change outcomes, harm cases, performance on sensitive topics like SRH, cost per enrolled user, sustainability after donor exit.)',
+        'If you were advising the Ministry, what is the ONE additional metric you would require before sign-off?',
+        'Whose job is it to produce the metrics that get presented? The vendor? The implementing partner? The Ministry? Who SHOULD it be?'
+      ]
+    },
+    formatC: {
+      prompt: 'When you hear "this AI tool achieved 95% performance," what should be the FIRST follow-up question?',
+      options: [
+        { text: 'On what dataset?' },
+        { text: 'What changed in programme outcomes?' }
+      ],
+      punchline: 'The split tells you whether the audience is reading "performance" as a model property or a system/programme property. Both are valid; the gap matters.'
+    }
+  },
+
+  hallu: {
+    name: 'GenAI Hallucinations',
+    short: 'A confidently-stated answer that is not grounded in fact. Easy to spot in trivia; much harder when the user is a frontline health worker.',
+    formatA: {
+      prompt: 'Four ways to define a GenAI hallucination. Which framing is closest to how YOU use the term in your work?',
+      options: [
+        { text: 'An output from a generative model that is factually incorrect, fabricated, or unsupported by its training data, produced with a tone of confidence indistinguishable from a correct answer.', source: 'ML / technical lens' },
+        { text: 'A safety event in which a generative AI tool, deployed in a clinical or health-information context, gives advice that is plausibly worded but medically wrong, with potential to cause harm.', source: 'Clinical safety lens' },
+        { text: 'A failure mode of the model–context fit: an output that may be technically accurate against the model\'s training data but is wrong in the specific context where the user is reading it (wrong country, wrong guideline version, wrong population).', source: 'Deployment / context lens' },
+        { text: 'A trust failure: any output that a user reasonably acts upon, but which is not traceable to a verifiable source — regardless of whether the underlying fact happens to be correct.', source: 'Public health implementer lens' }
+      ]
+    },
+    formatB: {
+      scenario: 'A generative AI chatbot is being piloted with community health workers in a country, to support them with quick clinical guidance during home visits. During the pilot, an evaluator finds that for ~3% of queries the chatbot gives an answer that contradicts the national clinical guideline. In ~1% of queries it gives an answer that contradicts WHO guidance. In all of these cases the answer is presented with the same confidence as the correct answers. The programme team is debating whether to continue scaling the pilot.',
+      prompt: 'How should the programme team respond?',
+      options: [
+        { text: 'Continue scaling — 96% guideline-aligned is better than what most CHWs can achieve unaided, and humans hallucinate too.' },
+        { text: 'Pause scaling — until the rate of guideline-contradicting answers is brought below a defined threshold, the risk to patients is unacceptable.' },
+        { text: 'Continue scaling, but with mandatory grounding (RAG against the national guideline) and a visible source citation on every answer.' },
+        { text: 'Reframe the tool — present it as a search aid that surfaces sources, not as a question-answering tool.' }
+      ],
+      discussion: [
+        'Where does responsibility sit when a CHW acts on a hallucinated answer? The CHW? The implementing partner? The vendor? The Ministry that approved the pilot?',
+        'Is "hallucination rate" even the right metric, or does it hide more than it reveals (e.g. severity, equity of error distribution, types of question that trigger errors)?',
+        'Are we asking generative AI to clear a bar that we never asked older job-aids or printed protocols to clear? What\'s the right comparison group?'
+      ]
+    },
+    formatC: {
+      prompt: 'For a GenAI tool used by frontline health workers, the most useful mitigation is —',
+      options: [
+        { text: 'Better models (fewer hallucinations at the model level)' },
+        { text: 'Better grounding (answers tied to a verifiable source the worker can check)' }
+      ],
+      punchline: 'The technical conversation tends to focus on (a). For deployment in real programmes, (b) is what allows a CHW or supervisor to catch errors and what gives a Ministry the audit trail it needs.'
+    }
+  },
+
+  bias: {
+    name: 'Bias / Fairness',
+    short: 'Bias is often discussed as a model property. In PH it\'s also a system property — who is in the data system at all.',
+    formatA: {
+      prompt: 'Four framings of Bias / Fairness in AI for health. Which is closest to how YOUR organization defines it?',
+      options: [
+        { text: 'Bias is a statistical property of a model: systematic deviation between predictions and ground truth, typically measured by performance differences across demographic subgroups.', source: 'ML / technical lens' },
+        { text: 'Bias is a training data problem: when the data used to build a model under-represents certain populations, the model\'s performance on those populations will be poorer.', source: 'Data science lens' },
+        { text: 'Bias is a clinical safety issue: when an AI tool produces systematically different recommendations for patients with similar clinical needs but different demographic profiles, leading to inequitable care.', source: 'Clinical / patient-safety lens' },
+        { text: 'Bias is a system-level problem of who is in the data at all: the populations least visible to digital health systems — rural, informal, undocumented, linguistically marginalised — are the ones most at risk of being further excluded by AI tools built on those systems.', source: 'Equity / public health lens' }
+      ]
+    },
+    formatB: {
+      scenario: 'A national early-warning system in a country uses AI to flag districts at elevated risk of cholera outbreaks, drawing on routine health facility data, mobile-phone movement patterns, and rainfall data. Six months in, an evaluation by your organization finds: the model correctly flagged 9 of 11 outbreaks in urban districts — but missed 4 of 5 outbreaks in nomadic and remote rural areas.',
+      prompt: 'Is this a biased model?',
+      options: [
+        { text: 'Yes — the model performs unequally across populations.' },
+        { text: 'No — the model is doing the best it can with the data it has; the problem is upstream.' },
+        { text: 'Both — and only naming both is useful.' }
+      ],
+      discussion: [
+        'If the answer is "both," how do we communicate that to a Ministry deciding whether to keep using the tool?',
+        'Who is responsible for fixing it? The vendor? The Ministry\'s data team? The donor that funded the underlying surveillance system? Your organization?',
+        'Is calling this "model bias" actually unhelpful — because it routes the conversation toward retraining when the real fix is investment in the data infrastructure?'
+      ]
+    },
+    formatC: {
+      prompt: 'When an AI tool performs worse for a marginalised population, the primary problem is —',
+      options: [
+        { text: 'In the model' },
+        { text: 'In the data system the model was built on' }
+      ],
+      punchline: 'Where you locate the bias determines who you ask to fix it. That\'s a governance question, not a technical one — and it shapes what implementing partners advocate for.'
+    }
+  },
+
+  rwe: {
+    name: 'Real World Evidence',
+    short: 'In LMIC public health, "real world" often means the only world — there was never a controlled trial.',
+    formatA: {
+      prompt: 'Four definitions of Real World Evidence. Which one matches how it gets used in your work?',
+      options: [
+        { text: 'Clinical evidence regarding the use and potential benefits or risks of a medical product derived from analysis of real-world data — typically EHRs, claims, registries, and patient-reported outcomes — generated outside randomised trials.', source: 'Regulatory lens (FDA-style)' },
+        { text: 'Evidence collected from routine use of a tool after deployment, used to monitor whether the tool continues to perform as intended in the populations and settings where it is being used.', source: 'Post-market surveillance lens' },
+        { text: 'Operational data generated by a digital health programme — usage logs, user feedback, error rates, programme outcomes — that demonstrates whether the tool is working in practice, regardless of whether it was ever validated through formal trials.', source: 'Implementer lens' },
+        { text: 'The only evidence available, because the controlled-trial infrastructure doesn\'t exist in the setting; what is gathered from routine programme delivery is by necessity what counts as evidence sufficient for decisions about scale.', source: 'LMIC public health lens' }
+      ]
+    },
+    formatB: {
+      scenario: 'Your organization has supported a WhatsApp-based maternal health chatbot in a country for three years. Programme data shows: 4 million enrolled users, retention curves, message engagement, self-reported satisfaction, and (through linkage with facility data) some indication of antenatal care attendance among enrolled users. There has never been a randomised trial. The Ministry of Health is deciding whether to absorb the chatbot into its routine budget.',
+      prompt: 'Is the available evidence sufficient to make that decision?',
+      options: [
+        { text: 'Yes — three years of real programme data is more meaningful than a one-year trial would be.' },
+        { text: 'No — without a counterfactual, you can\'t attribute the outcomes to the chatbot.' },
+        { text: 'Yes for some decisions (continued operation), no for others (claims of impact, scale to new geographies).' }
+      ],
+      discussion: [
+        'Who is qualified to judge whether real-world evidence is "sufficient"? The Ministry? Your organization? The donor? An external evaluator?',
+        'If the answer is "wait for a trial," who funds and runs it? In what timeframe? And what happens to the programme in the meantime?',
+        'Are we holding RWE for AI tools to a stricter standard than we hold RWE for other public health interventions like SBCC programmes?'
+      ]
+    },
+    formatC: {
+      prompt: 'For an AI tool deployed in a public health programme, "real world evidence" should primarily be evidence of —',
+      options: [
+        { text: 'Whether the tool works as the model says it does.' },
+        { text: 'Whether programme outcomes are improved with the tool present.' }
+      ],
+      punchline: 'Option (a) is what most evaluations measure. Option (b) is what Ministries actually want to know. Implementing partners are often the only actor positioned to produce (b).'
+    }
+  },
+
+  gov: {
+    name: 'AI Governance',
+    short: '"AI governance" often means model risk management. In PH it has to also mean data sovereignty and who controls the architecture.',
+    formatA: {
+      prompt: 'Four definitions of AI Governance in the context of health. Which one matches what YOU mean by it in your work?',
+      options: [
+        { text: 'The internal processes by which an organization managing or developing an AI system documents its decisions, manages its risks, and ensures accountability for the system\'s behaviour.', source: 'Corporate / ML governance lens' },
+        { text: 'The set of laws, regulations, and oversight bodies that authorise, constrain, and audit the deployment of AI in health, including data protection, model approval, and post-market surveillance.', source: 'Regulatory lens' },
+        { text: 'The framework of policies, ethical principles, transparency requirements, and consent mechanisms that ensure AI in health respects rights, prevents harm, and operates within publicly accountable boundaries.', source: 'Ethics / human rights lens' },
+        { text: 'Government ownership and public stewardship of the foundational digital architecture — identifiers, registries, data pipelines, hosting, procurement terms — that determines what AI can be built on, who controls it, and who benefits from it over time.', source: 'Data sovereignty lens' }
+      ]
+    },
+    formatB: {
+      scenario: 'An AI tool for HIV cohort retention, built by a third-party vendor, has been operating in a country for 4 years, integrated with the national HIV programme. Your organization is the implementing partner — supporting deployment, training, and M&E, but neither the developer nor the host of the tool. The donor has announced funding will end in 18 months. The Ministry discovers: the model is hosted on the vendor\'s cloud infrastructure; the training data and fine-tuned model weights are the vendor\'s IP; continued operation after funding ends would require a commercial licence the Ministry cannot afford.',
+      prompt: 'Is this an AI governance failure?',
+      options: [
+        { text: 'Yes — the procurement and contracting were inadequate.' },
+        { text: 'Yes — but the failure was upstream, in the absence of a national framework that would have set the procurement terms.' },
+        { text: 'No — this is a sustainability failure, not a governance one.' }
+      ],
+      discussion: [
+        'If we accept this is a governance failure, who in the country should have been positioned to prevent it? Was that role even funded? Did your organization, as the implementing partner, have a role to play?',
+        'What contractual or policy terms, set at the start, would have prevented this outcome?',
+        'Is it realistic for individual ministries to negotiate this, or does it require regional or peer-network leverage that implementing partners could help broker?'
+      ]
+    },
+    formatC: {
+      prompt: 'When we say "AI governance," the primary subject of the verb should be —',
+      options: [
+        { text: 'The AI model and its developer' },
+        { text: 'The data and digital infrastructure the AI runs on' }
+      ],
+      punchline: 'The regulatory community has spent the last 5 years building (a). The argument from public health is that without (b), (a) doesn\'t bite — you can\'t govern what you don\'t control.'
+    }
+  }
+};
+
+window.WEBINAR_TERM_KEYS = Object.keys(window.WEBINAR_TERMS);
+
+</script>
+<script>
+// storage.js — pluggable storage backends for the voting app.
+//
+// Three backends, picked at runtime via ?backend=...:
+//   - localStorage  (default, single-device, good for facilitator-only mode)
+//   - bin           (jsonbin.io REST, simple shared backend for live sessions)
+//   - firebase      (Firebase Realtime DB, lowest latency for many concurrent voters)
+//
+// All backends expose the same async API:
+//   getKey(key) -> any|null
+//   setKey(key, value) -> void
+//
+// Keys used by the app:
+//   stage:<room>                -> string  ("welcome" | "shortlist" | "<term>_A|B|C" | "close")
+//   votes:<room>:<pollId>       -> { [participantId]: optionIndex }
+//   mvotes:<room>:<pollId>      -> { [participantId]: [optionIndex, ...] }
+//   chat:<room>                 -> [{ pid, name, text, ts }]
+
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const backendName = params.get('backend') || 'localStorage';
+
+  // --------- localStorage backend ---------
+  // Cross-tab on the same device. Uses 'storage' event for live updates.
+  const localStorageBackend = {
+    name: 'localStorage',
+    async getKey(key) {
+      const raw = localStorage.getItem('webinar:' + key);
+      return raw == null ? null : JSON.parse(raw);
+    },
+    async setKey(key, value) {
+      localStorage.setItem('webinar:' + key, JSON.stringify(value));
+    },
+    onChange(cb) {
+      window.addEventListener('storage', (e) => {
+        if (e.key && e.key.startsWith('webinar:')) cb();
+      });
+    }
+  };
+
+  // --------- jsonbin.io backend ---------
+  // Simple REST shared store. Set window.JSONBIN_BIN_ID and window.JSONBIN_API_KEY in config.js.
+  // Trade-off: rate limits on free tier, ~1s sync latency. Fine for ~100 voters.
+  const binBackend = {
+    name: 'jsonbin',
+    cache: {},
+    async _read() {
+      const id = window.JSONBIN_BIN_ID;
+      const key = window.JSONBIN_API_KEY;
+      if (!id) throw new Error('JSONBIN_BIN_ID not configured');
+      const r = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
+        headers: key ? { 'X-Master-Key': key } : {}
+      });
+      const j = await r.json();
+      return j.record || {};
+    },
+    async _write(obj) {
+      const id = window.JSONBIN_BIN_ID;
+      const key = window.JSONBIN_API_KEY;
+      await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', ...(key ? { 'X-Master-Key': key } : {}) },
+        body: JSON.stringify(obj)
+      });
+    },
+    async getKey(key) {
+      const all = await this._read();
+      return all[key] !== undefined ? all[key] : null;
+    },
+    async setKey(key, value) {
+      const all = await this._read();
+      all[key] = value;
+      await this._write(all);
+    }
+  };
+
+  // --------- Firebase backend ---------
+  // Lowest latency, real WebSocket subscriptions. Requires Firebase init in config.js.
+  const firebaseBackend = {
+    name: 'firebase',
+    async getKey(key) {
+      if (!window.firebaseDb) throw new Error('Firebase not initialised');
+      const { ref, get } = window.firebaseDbFns;
+      const snap = await get(ref(window.firebaseDb, key.replace(/:/g, '/')));
+      return snap.exists() ? snap.val() : null;
+    },
+    async setKey(key, value) {
+      const { ref, set } = window.firebaseDbFns;
+      await set(ref(window.firebaseDb, key.replace(/:/g, '/')), value);
+    },
+    onChange(cb) {
+      const { ref, onValue } = window.firebaseDbFns;
+      onValue(ref(window.firebaseDb, '/'), () => cb());
+    }
+  };
+
+  const backends = {
+    localStorage: localStorageBackend,
+    bin: binBackend,
+    firebase: firebaseBackend
+  };
+
+  window.WEBINAR_STORAGE = backends[backendName] || localStorageBackend;
+  window.WEBINAR_BACKEND_NAME = window.WEBINAR_STORAGE.name;
+})();
+
+</script>
+<script>
+// app.js — main UI and rendering logic for the AI Terminology webinar voting app
+
+const TERMS = window.WEBINAR_TERMS;
+const TERM_KEYS = window.WEBINAR_TERM_KEYS;
+const STORAGE = window.WEBINAR_STORAGE;
+const ROOM = (new URLSearchParams(window.location.search).get('room')) || 'ai-terms-webinar';
+
+// ---- state ----
+let role = sessionStorage.getItem('webinar_role') || 'facilitator';
+let stage = 'welcome';
+
+const PARTICIPANT_ID = (() => {
+  let pid = sessionStorage.getItem('webinar_pid');
+  if (!pid) { pid = 'p_' + Math.random().toString(36).slice(2, 10); sessionStorage.setItem('webinar_pid', pid); }
+  return pid;
+})();
+
+// ---- storage helpers ----
+async function getStage() { return (await STORAGE.getKey('stage:' + ROOM)) || 'welcome'; }
+async function setStage(s) { await STORAGE.setKey('stage:' + ROOM, s); stage = s; }
+async function recordVote(pollId, idx) {
+  const key = 'votes:' + ROOM + ':' + pollId;
+  const data = (await STORAGE.getKey(key)) || {};
+  data[PARTICIPANT_ID] = idx;
+  await STORAGE.setKey(key, data);
+}
+async function recordMultiVote(pollId, indices) {
+  const key = 'mvotes:' + ROOM + ':' + pollId;
+  const data = (await STORAGE.getKey(key)) || {};
+  data[PARTICIPANT_ID] = indices;
+  await STORAGE.setKey(key, data);
+}
+async function getVotes(pollId) { return (await STORAGE.getKey('votes:' + ROOM + ':' + pollId)) || {}; }
+async function getMultiVotes(pollId) { return (await STORAGE.getKey('mvotes:' + ROOM + ':' + pollId)) || {}; }
+async function postChat(text) {
+  const key = 'chat:' + ROOM;
+  const data = (await STORAGE.getKey(key)) || [];
+  const name = (document.getElementById('pid-input')?.value || '').trim() || 'Anonymous';
+  data.push({ pid: PARTICIPANT_ID, name, text, ts: Date.now() });
+  await STORAGE.setKey(key, data.slice(-200));
+}
+async function getChat() { return (await STORAGE.getKey('chat:' + ROOM)) || []; }
+
+async function resetSession() {
+  if (role !== 'facilitator') { alert('Only facilitator can reset.'); return; }
+  if (!confirm('Wipe ALL votes and chat for this room? This cannot be undone.')) return;
+  await STORAGE.setKey('stage:' + ROOM, 'welcome');
+  await STORAGE.setKey('mvotes:' + ROOM + ':shortlist', {});
+  for (const t of TERM_KEYS) {
+    for (const f of ['A', 'B', 'C']) {
+      await STORAGE.setKey('votes:' + ROOM + ':' + t + '_' + f, {});
+    }
+  }
+  await STORAGE.setKey('chat:' + ROOM, []);
+  stage = 'welcome';
+  render();
+}
+
+// ---- role ----
+function setRole(r) {
+  role = r;
+  sessionStorage.setItem('webinar_role', r);
+  render();
+}
+
+function updateRoleBar() {
+  document.getElementById('role-facilitator').className = role === 'facilitator' ? 'active' : '';
+  document.getElementById('role-participant').className = role === 'participant' ? 'active' : '';
+  document.getElementById('participant-id-wrap').style.display = role === 'participant' ? 'inline-block' : 'none';
+  document.getElementById('room-code').textContent = 'Room: ' + ROOM;
+  document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
+}
+
+// ---- helpers ----
+function tally(votes, n) {
+  const c = new Array(n).fill(0);
+  for (const k in votes) { if (votes[k] != null && votes[k] >= 0 && votes[k] < n) c[votes[k]]++; }
+  return c;
+}
+function tallyMulti(votes, n) {
+  const c = new Array(n).fill(0);
+  for (const k in votes) { for (const idx of (votes[k] || [])) { if (idx >= 0 && idx < n) c[idx]++; } }
+  return c;
+}
+function totalVoters(votes) { return Object.keys(votes).length; }
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ---- render ----
+async function render() {
+  updateRoleBar();
+  stage = await getStage();
+  const root = document.getElementById('main-content');
+  root.innerHTML = role === 'facilitator' ? await renderFacilitator() : await renderParticipant();
+}
+
+// ---- facilitator ----
+async function renderFacilitator() {
+  const stages = [
+    { id: 'welcome', label: 'Welcome' },
+    { id: 'shortlist', label: 'Shortlist vote' }
+  ];
+  for (const t of TERM_KEYS) {
+    stages.push({ id: t + '_A', label: TERMS[t].name + ' — A' });
+    stages.push({ id: t + '_B', label: TERMS[t].name + ' — B' });
+    stages.push({ id: t + '_C', label: TERMS[t].name + ' — C' });
+  }
+  stages.push({ id: 'close', label: 'Close' });
+
+  let html = `<div class="panel">
+    <h2>Facilitator console</h2>
+    <p class="muted">Pick the stage participants should see. Their screens update within ~2 seconds.</p>
+    <div class="stage-grid">
+      ${stages.map(s => `<div class="stage-btn ${s.id===stage?'active':''}" onclick="goToStage('${s.id}')">${s.label}</div>`).join('')}
+    </div>
+  </div>`;
+
+  if (stage === 'welcome') {
+    html += `<div class="panel"><h2>Welcome stage</h2><p>Participants see a holding screen. When ready, click "Shortlist vote" above.</p></div>`;
+  } else if (stage === 'shortlist') {
+    const votes = await getMultiVotes('shortlist');
+    const counts = tallyMulti(votes, TERM_KEYS.length);
+    const voters = totalVoters(votes);
+    html += `<div class="panel"><h2>Shortlist — live results</h2>
+      <p class="muted">Voters so far: <strong>${voters}</strong>. Top 3 by votes are starred.</p>`;
+    const ranked = TERM_KEYS.map((k, i) => ({ k, i, c: counts[i] })).sort((a, b) => b.c - a.c);
+    ranked.forEach((r, idx) => {
+      const pct = voters ? Math.round(r.c / voters * 100) : 0;
+      const isTop3 = idx < 3 && r.c > 0;
+      html += `<div class="vote-row">
+        <div class="vote-bar-wrap" style="${isTop3 ? 'border:1px solid var(--accent);' : ''}">
+          <div class="vote-bar" style="width:${pct}%;"></div>
+          <span class="vote-bar-label">${isTop3 ? '★ ' : ''}${escapeHtml(TERMS[r.k].name)}</span>
+          <span class="vote-bar-count">${r.c} (${pct}%)</span>
+        </div>
+      </div>`;
+    });
+    html += `</div>`;
+  } else if (stage === 'close') {
+    const chat = await getChat();
+    html += `<div class="panel"><h2>Closing — chat thread</h2>
+      <p class="muted">Final reflections from participants:</p>
+      <div class="chat-list">${chat.length ? chat.slice().reverse().map(c => `<div class="chat-item"><div class="who">${escapeHtml(c.name)}</div>${escapeHtml(c.text)}</div>`).join('') : '<div class="empty">No chat messages yet.</div>'}</div>
+    </div>`;
+  } else {
+    const [tk, fmt] = stage.split('_');
+    const term = TERMS[tk];
+    if (!term) { html += `<div class="panel"><p>Unknown stage.</p></div>`; return html; }
+
+    if (fmt === 'A') {
+      const votes = await getVotes(tk + '_A');
+      const counts = tally(votes, term.formatA.options.length);
+      const voters = totalVoters(votes);
+      html += `<div class="panel"><h2><span class="stage-pill">Format A</span>${escapeHtml(term.name)} — How Do You Define It?</h2>
+        <p>${escapeHtml(term.formatA.prompt)}</p>
+        <p class="muted">Voters: <strong>${voters}</strong></p>`;
+      term.formatA.options.forEach((opt, i) => {
+        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
+        html += `<div class="vote-row"><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%;"></div>
+          <span class="vote-bar-label">${String.fromCharCode(65+i)}. ${escapeHtml(opt.text.slice(0, 90))}${opt.text.length>90?'…':''}</span>
+          <span class="vote-bar-count">${counts[i]} (${pct}%)</span></div></div>`;
+      });
+      html += `<h3>Sources (use to drive discussion AFTER vote)</h3>`;
+      term.formatA.options.forEach((opt, i) => {
+        html += `<p style="font-size:13px;margin:4px 0;"><strong>${String.fromCharCode(65+i)}:</strong> <em>${escapeHtml(opt.source)}</em></p>`;
+      });
+      html += `</div>`;
+    } else if (fmt === 'B') {
+      const votes = await getVotes(tk + '_B');
+      const counts = tally(votes, term.formatB.options.length);
+      const voters = totalVoters(votes);
+      const chat = await getChat();
+      const recent = chat.filter(c => c.text.length > 0).slice(-15).reverse();
+      html += `<div class="panel"><h2><span class="stage-pill">Format B</span>${escapeHtml(term.name)} — Scenario Test</h2>
+        <div class="scenario-box"><div class="label">Scenario</div>${escapeHtml(term.formatB.scenario)}</div>
+        <p><strong>${escapeHtml(term.formatB.prompt)}</strong></p>
+        <p class="muted">Voters: <strong>${voters}</strong></p>`;
+      term.formatB.options.forEach((opt, i) => {
+        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
+        html += `<div class="vote-row"><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%;"></div>
+          <span class="vote-bar-label">${String.fromCharCode(65+i)}. ${escapeHtml(opt.text.slice(0, 100))}${opt.text.length>100?'…':''}</span>
+          <span class="vote-bar-count">${counts[i]} (${pct}%)</span></div></div>`;
+      });
+      html += `<h3>Discussion prompts</h3>`;
+      term.formatB.discussion.forEach(d => { html += `<p style="font-size:13px;margin:6px 0;">• ${escapeHtml(d)}</p>`; });
+      html += `<h3>Live chat</h3><div class="chat-list">${recent.length ? recent.map(c => `<div class="chat-item"><div class="who">${escapeHtml(c.name)}</div>${escapeHtml(c.text)}</div>`).join('') : '<div class="empty">No chat yet — prompt participants.</div>'}</div>`;
+      html += `</div>`;
+    } else if (fmt === 'C') {
+      const votes = await getVotes(tk + '_C');
+      const counts = tally(votes, term.formatC.options.length);
+      const voters = totalVoters(votes);
+      html += `<div class="panel"><h2><span class="stage-pill">Format C</span>${escapeHtml(term.name)} — Lightning Vote</h2>
+        <p><strong>${escapeHtml(term.formatC.prompt)}</strong></p>
+        <p class="muted">Voters: <strong>${voters}</strong></p>`;
+      term.formatC.options.forEach((opt, i) => {
+        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
+        html += `<div class="vote-row"><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%;"></div>
+          <span class="vote-bar-label">${String.fromCharCode(65+i)}. ${escapeHtml(opt.text)}</span>
+          <span class="vote-bar-count">${counts[i]} (${pct}%)</span></div></div>`;
+      });
+      html += `<h3>Punchline (use as discussion close)</h3><p style="font-size:13px;">${escapeHtml(term.formatC.punchline)}</p></div>`;
+    }
+  }
+  return html;
+}
+
+window.goToStage = async function(s) { await setStage(s); render(); };
+
+// ---- participant ----
+async function renderParticipant() {
+  if (stage === 'welcome') {
+    return `<div class="panel"><h2>Welcome</h2>
+      <p>This is a 60-minute interactive webinar on AI terminology for public health.</p>
+      <p>Your votes and chat messages appear live for the facilitator. Set a name above if you'd like your messages attributed; otherwise you'll show as Anonymous.</p>
+      <p class="muted">Waiting for the facilitator to start the shortlist vote…</p>
+    </div>`;
+  }
+  if (stage === 'shortlist') {
+    const myVote = (await getMultiVotes('shortlist'))[PARTICIPANT_ID] || [];
+    let html = `<div class="panel"><h2>Pick your three terms</h2>
+      <p>Below are six AI terms. Tap up to <strong>three</strong> you most want to unpack today. Your selection updates in real time.</p>
+      ${myVote.length === 3 ? '<p class="muted">You\'ve picked three. Tap one to deselect if you want to swap.</p>' : `<p class="muted">${myVote.length}/3 selected.</p>`}
+      <div class="term-grid">`;
+    TERM_KEYS.forEach((k, i) => {
+      const sel = myVote.includes(i);
+      html += `<div class="term-card ${sel?'selected':''}" onclick="toggleShortlist(${i})">
+        <div class="t-name">${escapeHtml(TERMS[k].name)}</div>
+        <div class="t-desc">${escapeHtml(TERMS[k].short)}</div>
+      </div>`;
+    });
+    html += `</div></div>`;
+    return html;
+  }
+  if (stage === 'close') {
+    return `<div class="panel"><h2>Closing reflections</h2>
+      <p>If you had 30 seconds to redefine one of today's terms for an audience of implementing partners, which one and how?</p>
+      <textarea class="chat-input" id="close-chat" placeholder="Your reflection…"></textarea>
+      <div class="ctrl-row"><button class="primary" onclick="submitChat('close-chat')">Submit</button></div>
+      <p class="help">Your reflection will be visible to the facilitator and may be read out at the close.</p>
+    </div>`;
+  }
+
+  const [tk, fmt] = stage.split('_');
+  const term = TERMS[tk];
+  if (!term) return `<div class="panel"><p>Waiting for next prompt…</p></div>`;
+
+  if (fmt === 'A') {
+    const myVote = (await getVotes(tk + '_A'))[PARTICIPANT_ID];
+    let html = `<div class="panel"><h2><span class="stage-pill">How Do You Define It?</span>${escapeHtml(term.name)}</h2>
+      <p>${escapeHtml(term.formatA.prompt)}</p>`;
+    term.formatA.options.forEach((opt, i) => {
+      const sel = myVote === i;
+      html += `<div class="def-option ${sel?'selected':''}" onclick="castVote('${tk}_A', ${i})">
+        <div class="def-letter">${String.fromCharCode(65+i)}</div>
+        <div class="def-text">${escapeHtml(opt.text)}</div>
+      </div>`;
+    });
+    html += `<p class="help">Tap one. You can change your vote at any time.</p></div>`;
+    return html;
+  }
+  if (fmt === 'B') {
+    const myVote = (await getVotes(tk + '_B'))[PARTICIPANT_ID];
+    let html = `<div class="panel"><h2><span class="stage-pill">Scenario Test</span>${escapeHtml(term.name)}</h2>
+      <div class="scenario-box"><div class="label">Scenario</div>${escapeHtml(term.formatB.scenario)}</div>
+      <p><strong>${escapeHtml(term.formatB.prompt)}</strong></p>`;
+    term.formatB.options.forEach((opt, i) => {
+      const sel = myVote === i;
+      html += `<div class="def-option ${sel?'selected':''}" onclick="castVote('${tk}_B', ${i})">
+        <div class="def-letter">${String.fromCharCode(65+i)}</div>
+        <div class="def-text">${escapeHtml(opt.text)}</div>
+      </div>`;
+    });
+    html += `<h3>Add a comment</h3>
+      <textarea class="chat-input" id="b-chat-${tk}" placeholder="What's missing? What would you add?"></textarea>
+      <div class="ctrl-row"><button class="primary" onclick="submitChat('b-chat-${tk}')">Submit</button></div>
+    </div>`;
+    return html;
+  }
+  if (fmt === 'C') {
+    const myVote = (await getVotes(tk + '_C'))[PARTICIPANT_ID];
+    let html = `<div class="panel"><h2><span class="stage-pill">Lightning Vote</span>${escapeHtml(term.name)}</h2>
+      <p><strong>${escapeHtml(term.formatC.prompt)}</strong></p>`;
+    term.formatC.options.forEach((opt, i) => {
+      const sel = myVote === i;
+      html += `<div class="def-option ${sel?'selected':''}" onclick="castVote('${tk}_C', ${i})">
+        <div class="def-letter">${String.fromCharCode(65+i)}</div>
+        <div class="def-text">${escapeHtml(opt.text)}</div>
+      </div>`;
+    });
+    html += `<p class="help">One tap.</p></div>`;
+    return html;
+  }
+  return `<div class="panel"><p>Waiting for next prompt…</p></div>`;
+}
+
+window.castVote = async function(pollId, idx) { await recordVote(pollId, idx); render(); };
+window.toggleShortlist = async function(idx) {
+  const cur = (await getMultiVotes('shortlist'))[PARTICIPANT_ID] || [];
+  let next;
+  if (cur.includes(idx)) next = cur.filter(x => x !== idx);
+  else if (cur.length < 3) next = [...cur, idx];
+  else next = cur;
+  await recordMultiVote('shortlist', next);
+  render();
+};
+window.submitChat = async function(elId) {
+  const el = document.getElementById(elId);
+  if (!el || !el.value.trim()) return;
+  await postChat(el.value.trim());
+  el.value = '';
+  render();
+};
+window.setRole = setRole;
+window.resetSession = resetSession;
+
+// ---- polling ----
+let pollTimer = null;
+function startPolling() {
+  if (pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(() => render(), 2500);
+}
+
+// ---- init ----
+(async function init() {
+  // For localStorage backend, listen to storage events for instant cross-tab updates
+  if (STORAGE.onChange) STORAGE.onChange(() => render());
+  render();
+  startPolling();
+})();
+
+</script>
+</body>
+</html>

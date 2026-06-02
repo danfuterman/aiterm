@@ -1,0 +1,30 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Inject backend credentials
+        env:
+          JSONBIN_BIN_ID: ${{ secrets.JSONBIN_BIN_ID }}
+          JSONBIN_API_KEY: ${{ secrets.JSONBIN_API_KEY }}
+        run: |
+          sed -i "s|window.JSONBIN_BIN_ID = '';|window.JSONBIN_BIN_ID = '${JSONBIN_BIN_ID}';|" webinar_app/public/config.js
+          sed -i "s|window.JSONBIN_API_KEY = '';|window.JSONBIN_API_KEY = '${JSONBIN_API_KEY}';|" webinar_app/public/config.js
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./webinar_app/public
+          force_orphan: true

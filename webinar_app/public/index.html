@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Terminology Webinar</title>
+<style>
+  /* Color palette */
+  :root {
+    --vs-navy: #1a2851;
+    --vs-navy-dark: #0f1f3d;
+    --vs-navy-light: #2d3d6e;
+    --vs-red: #e6354f;
+    --vs-red-dark: #c12940;
+    --vs-cream: #f7f5f0;
+    --vs-cream-dark: #ede9df;
+    --vs-charcoal: #1f1f1f;
+    --vs-text: #2c2c2a;
+    --vs-text-muted: #6b6b65;
+
+    --bg: var(--vs-cream);
+    --panel-bg: #ffffff;
+    --border: #e5e1d6;
+    --border-strong: #d2cdbd;
+    --text: var(--vs-text);
+    --text-muted: var(--vs-text-muted);
+
+    --accent: var(--vs-navy);
+    --accent-bg: #e8ecf5;
+    --accent-text: var(--vs-navy-dark);
+    --accent-strong: var(--vs-navy);
+
+    --highlight: var(--vs-red);
+    --highlight-bg: #fce8eb;
+    --highlight-text: var(--vs-red-dark);
+
+    --secondary-bg: var(--vs-cream-dark);
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: "Helvetica Neue", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* Branded header strip */
+  .vs-header {
+    background: var(--vs-navy);
+    color: white;
+    padding: 14px 1rem;
+    border-bottom: 4px solid var(--vs-red);
+  }
+  .vs-header-inner {
+    max-width: 760px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .vs-brand {
+    font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .vs-brand .vs-brand-accent { color: var(--vs-red); }
+  .vs-tagline {
+    font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 0.5px;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 1rem; }
+  .role-bar {
+    display: flex; gap: 8px; align-items: center;
+    background: var(--panel-bg); border: 1px solid var(--border);
+    padding: 10px 14px; border-radius: 4px; margin-bottom: 1rem; flex-wrap: wrap;
+    font-size: 13px;
+  }
+  .role-bar button {
+    padding: 6px 14px; font-size: 13px;
+    border: 1px solid var(--border-strong); background: var(--panel-bg);
+    border-radius: 3px; cursor: pointer; font-family: inherit; color: var(--text);
+    transition: all 0.15s;
+  }
+  .role-bar button:hover { background: var(--secondary-bg); border-color: var(--accent); }
+  .role-bar .active { background: var(--vs-navy); color: white; border-color: var(--vs-navy); }
+  .role-bar .active:hover { background: var(--vs-navy-dark); border-color: var(--vs-navy-dark); color: white; }
+  .role-bar .spacer { flex: 1; }
+  .role-bar .room-code { color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; }
+  .role-bar input { padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-strong);
+    border-radius: 3px; background: var(--panel-bg); width: 140px; font-family: inherit; }
+  .role-bar input:focus { outline: none; border-color: var(--vs-navy); box-shadow: 0 0 0 2px var(--accent-bg); }
+
+  .panel { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 4px;
+    padding: 1.5rem; margin-bottom: 1rem; }
+  .panel h2 { font-size: 20px; font-weight: 700; margin: 0 0 0.75rem; color: var(--vs-navy);
+    line-height: 1.25; letter-spacing: -0.01em; }
+  .panel h3 { font-size: 13px; font-weight: 700; margin: 1.25rem 0 0.5rem;
+    color: var(--vs-navy); text-transform: uppercase; letter-spacing: 1px; }
+  .panel p { font-size: 14px; margin: 0 0 0.75rem; }
+  .panel .muted { color: var(--text-muted); font-size: 13px; }
+
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .term-card { padding: 14px; border: 1px solid var(--border); border-radius: 4px;
+    cursor: pointer; background: var(--panel-bg); transition: all 0.15s;
+    border-left: 3px solid var(--border-strong); }
+  .term-card:hover { background: var(--secondary-bg); border-left-color: var(--vs-navy); }
+  .term-card.selected { background: var(--accent-bg); border-color: var(--vs-navy); border-left-color: var(--vs-red); border-left-width: 4px; }
+  .term-card .t-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--vs-navy); }
+  .term-card .t-desc { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+
+  .vote-row { margin: 8px 0; }
+  .vote-bar-wrap { height: 32px; background: var(--secondary-bg); border-radius: 3px;
+    position: relative; overflow: hidden; }
+  .vote-bar { height: 100%; background: var(--vs-navy); opacity: 0.15; transition: width 0.3s; }
+  .vote-bar-label { position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; font-weight: 500; z-index: 2; max-width: 72%;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
+  .vote-bar-count { position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: var(--text-muted); z-index: 2; font-weight: 500;
+    font-feature-settings: "tnum"; }
+
+  .def-option { padding: 14px; border: 1px solid var(--border); border-radius: 4px;
+    margin-bottom: 8px; cursor: pointer; background: var(--panel-bg);
+    display: flex; gap: 14px; align-items: flex-start; transition: all 0.15s;
+    border-left: 3px solid var(--border-strong); }
+  .def-option:hover { background: var(--secondary-bg); border-left-color: var(--vs-navy); }
+  .def-option.selected { background: var(--accent-bg); border-color: var(--vs-navy);
+    border-left-color: var(--vs-red); border-left-width: 4px; padding-left: 13px; }
+  .def-option .def-letter { font-weight: 700; min-width: 26px; height: 26px; border-radius: 50%;
+    background: var(--vs-navy); color: white; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; flex-shrink: 0; margin-top: 2px; }
+  .def-option.selected .def-letter { background: var(--vs-red); }
+  .def-option .def-text { font-size: 14px; flex: 1; line-height: 1.5; }
+
+  .scenario-box { background: var(--vs-navy); color: white; border-radius: 4px; padding: 16px 18px;
+    margin-bottom: 1rem; font-size: 14px; line-height: 1.55;
+    border-left: 4px solid var(--vs-red); }
+  .scenario-box .label { font-size: 11px; color: rgba(255,255,255,0.7);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 600; }
+
+  .chat-input { width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border-strong);
+    border-radius: 3px; background: var(--panel-bg); font-family: inherit;
+    resize: vertical; min-height: 70px; color: var(--text); }
+  .chat-input:focus { outline: none; border-color: var(--vs-navy); box-shadow: 0 0 0 2px var(--accent-bg); }
+  .chat-list { max-height: 280px; overflow-y: auto; margin-top: 0.75rem; }
+  .chat-item { padding: 12px 14px; background: var(--secondary-bg); border-radius: 3px;
+    margin-bottom: 6px; font-size: 13px; border-left: 2px solid var(--vs-navy); }
+  .chat-item .who { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+
+  .stage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 6px; margin: 0.5rem 0 1rem; }
+  .stage-btn { padding: 9px 8px; font-size: 12px; text-align: center; cursor: pointer;
+    border: 1px solid var(--border); border-radius: 3px; background: var(--panel-bg);
+    color: var(--text); transition: all 0.15s; }
+  .stage-btn:hover { background: var(--secondary-bg); border-color: var(--vs-navy); }
+  .stage-btn.active { background: var(--vs-navy); border-color: var(--vs-navy);
+    color: white; font-weight: 600; }
+
+  .stage-pill { display: inline-block; padding: 4px 12px; background: var(--vs-red);
+    color: white; border-radius: 2px; font-size: 11px;
+    margin-right: 10px; vertical-align: middle; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px; }
+
+  .empty { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 13px;
+    font-style: italic; }
+  .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+  button.primary { padding: 9px 18px; font-size: 13px; background: var(--vs-red);
+    color: white; border: none; border-radius: 3px; cursor: pointer; font-family: inherit;
+    font-weight: 600; letter-spacing: 0.3px; transition: background 0.15s; }
+  button.primary:hover { background: var(--vs-red-dark); }
+
+  .ctrl-row { display: flex; gap: 8px; margin-top: 0.5rem; }
+  .backend-tag { font-size: 10px; color: var(--text-muted); padding: 2px 8px;
+    background: var(--secondary-bg); border-radius: 2px; font-family: ui-monospace, monospace;
+    text-transform: uppercase; letter-spacing: 0.5px; }
+</style>
+</head>
+<body>
+<div class="vs-header">
+  <div class="vs-header-inner">
+    <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> Webinar</div>
+    <div class="vs-tagline">A live discussion · 60 minutes</div>
+  </div>
+</div>
+<div class="container">
+  <div class="role-bar">
+    <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
+    <button id="role-participant" onclick="setRole('participant')">Participant view</button>
+    <span class="spacer"></span>
+    <span id="participant-id-wrap" style="display:none;">
+      <input type="text" id="pid-input" placeholder="Your name (optional)" />
+    </span>
+    <span class="room-code" id="room-code">Loading…</span>
+    <span class="backend-tag" id="backend-tag"></span>
+    <button onclick="resetSession()" title="Wipe all votes (facilitator only)">↻</button>
+  </div>
+  <div id="main-content"></div>
+</div>
+
+<!-- Optional Firebase config — only loaded if backend=firebase -->
+<script src="config.js"></script>
+<script src="terms.js"></script>
+<script src="storage.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
