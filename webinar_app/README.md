@@ -67,10 +67,10 @@ You need a backend so votes sync across participants' devices. Three options are
 - Works only across tabs of the same browser on the same device.
 - Use case: you (facilitator) running the app on your machine while using Zoom/Teams native polls for the audience.
 
-#### Option 2: jsonbin.io (simplest shared backend)
+#### Option 2: npoint.io (simplest shared backend)
 - URL: `?backend=bin`
-- Setup: sign up at https://jsonbin.io (free tier is fine), create a bin with content `{}`, copy the Bin ID and your X-Master-Key into `public/config.js`.
-- Use case: small-to-medium webinars (up to ~100 voters). Latency ~1s. Free tier rate limits exist but are generous enough for a single 60-min session.
+- Setup: go to https://www.npoint.io, click "Create JSON Bin", paste `{}` as the content, save. Copy the bin ID from the URL into `window.NPOINT_BIN_ID` in `public/config.js`. Optionally lock the bin with a token and set `window.NPOINT_TOKEN`.
+- Use case: small-to-medium webinars (up to ~100 voters). Latency ~1s. No account required for public bins.
 
 #### Option 3: Firebase Realtime Database (best latency, scales)
 - URL: `?backend=firebase`

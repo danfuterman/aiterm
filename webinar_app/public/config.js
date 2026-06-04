@@ -1,13 +1,14 @@
 // config.js — backend configuration.
-// You only need to fill this in if you're using a shared backend (jsonbin or firebase).
+// You only need to fill this in if you're using a shared backend (npoint or firebase).
 // For localStorage (default), leave this file as-is.
 
-// ---- jsonbin.io (simplest shared backend) ----
-// 1. Sign up at https://jsonbin.io
-// 2. Create a new bin with initial content: {}
-// 3. Copy the Bin ID and your X-Master-Key, paste below.
-window.JSONBIN_BIN_ID = '';   // e.g. '6543abc...'
-window.JSONBIN_API_KEY = '';  // e.g. '$2a$10$...'
+// ---- npoint.io (simplest shared backend) ----
+// 1. Go to https://www.npoint.io
+// 2. Click "Create JSON Bin", paste {} as the content, save.
+// 3. Copy the bin ID from the URL (e.g. the part after npoint.io/bins/).
+// 4. Optionally lock the bin with a token (recommended for live sessions).
+window.NPOINT_BIN_ID  = '';   // e.g. 'abc123def456'
+window.NPOINT_TOKEN   = '';   // optional — set if you locked the bin with a token
 
 // ---- Firebase Realtime Database (lower latency, better for >50 voters) ----
 // 1. Create a Firebase project at https://console.firebase.google.com

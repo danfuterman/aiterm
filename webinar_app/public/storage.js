@@ -37,30 +37,31 @@
     }
   };
 
-  // --------- jsonbin.io backend ---------
-  // Simple REST shared store. Set window.JSONBIN_BIN_ID and window.JSONBIN_API_KEY in config.js.
-  // Trade-off: rate limits on free tier, ~1s sync latency. Fine for ~100 voters.
+  // --------- npoint.io backend ---------
+  // Simple REST shared store. Set window.NPOINT_BIN_ID in config.js.
+  // Optionally set window.NPOINT_TOKEN if the bin is locked.
+  // Trade-off: ~1s sync latency. No account required for public bins.
   const binBackend = {
-    name: 'jsonbin',
-    cache: {},
+    name: 'npoint',
     async _read() {
-      const id = window.JSONBIN_BIN_ID;
-      const key = window.JSONBIN_API_KEY;
-      if (!id) throw new Error('JSONBIN_BIN_ID not configured');
-      const r = await fetch(`https://api.jsonbin.io/v3/b/${id}/latest`, {
-        headers: key ? { 'X-Master-Key': key } : {}
-      });
-      const j = await r.json();
-      return j.record || {};
+      const id = window.NPOINT_BIN_ID;
+      if (!id) throw new Error('NPOINT_BIN_ID not configured');
+      const headers = {};
+      if (window.NPOINT_TOKEN) headers['Authorization'] = `Bearer ${window.NPOINT_TOKEN}`;
+      const r = await fetch(`https://api.npoint.io/${id}`, { headers });
+      if (!r.ok) throw new Error(`npoint read failed: ${r.status}`);
+      return await r.json();
     },
     async _write(obj) {
-      const id = window.JSONBIN_BIN_ID;
-      const key = window.JSONBIN_API_KEY;
-      await fetch(`https://api.jsonbin.io/v3/b/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', ...(key ? { 'X-Master-Key': key } : {}) },
+      const id = window.NPOINT_BIN_ID;
+      const headers = { 'Content-Type': 'application/json' };
+      if (window.NPOINT_TOKEN) headers['Authorization'] = `Bearer ${window.NPOINT_TOKEN}`;
+      const r = await fetch(`https://api.npoint.io/${id}`, {
+        method: 'POST',
+        headers,
         body: JSON.stringify(obj)
       });
+      if (!r.ok) throw new Error(`npoint write failed: ${r.status}`);
     },
     async getKey(key) {
       const all = await this._read();
