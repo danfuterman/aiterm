@@ -46,9 +46,7 @@
     async _read() {
       const id = window.NPOINT_BIN_ID;
       if (!id) throw new Error('NPOINT_BIN_ID is not set. Check config.js or GitHub Actions secrets.');
-      const headers = {};
-      if (window.NPOINT_TOKEN) headers['Authorization'] = `Bearer ${window.NPOINT_TOKEN}`;
-      const r = await fetch(`https://api.npoint.io/${id}`, { headers });
+      const r = await fetch(`https://api.npoint.io/${id}`);
       if (!r.ok) {
         const body = await r.text().catch(() => '');
         throw new Error(`npoint read failed (HTTP ${r.status}): ${body}`);
@@ -58,11 +56,9 @@
     async _write(obj) {
       const id = window.NPOINT_BIN_ID;
       if (!id) throw new Error('NPOINT_BIN_ID is not set. Check config.js or GitHub Actions secrets.');
-      const headers = { 'Content-Type': 'application/json' };
-      if (window.NPOINT_TOKEN) headers['Authorization'] = `Bearer ${window.NPOINT_TOKEN}`;
       const r = await fetch(`https://api.npoint.io/${id}`, {
         method: 'POST',
-        headers,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(obj)
       });
       if (!r.ok) {

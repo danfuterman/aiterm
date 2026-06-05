@@ -17,10 +17,8 @@ jobs:
       - name: Inject backend credentials
         env:
           NPOINT_BIN_ID: ${{ secrets.NPOINT_BIN_ID }}
-          NPOINT_TOKEN: ${{ secrets.NPOINT_TOKEN }}
         run: |
-          sed -i "s|window.NPOINT_BIN_ID  = '';|window.NPOINT_BIN_ID  = '${NPOINT_BIN_ID}';|" webinar_app/public/config.js
-          sed -i "s|window.NPOINT_TOKEN   = '';|window.NPOINT_TOKEN   = '${NPOINT_TOKEN}';|" webinar_app/public/config.js
+          sed -i "s|window.NPOINT_BIN_ID = '';|window.NPOINT_BIN_ID = '${NPOINT_BIN_ID}';|" webinar_app/public/config.js
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
