@@ -90,9 +90,20 @@ function escapeHtml(s) {
 // ---- render ----
 async function render() {
   updateRoleBar();
-  stage = await getStage();
   const root = document.getElementById('main-content');
-  root.innerHTML = role === 'facilitator' ? await renderFacilitator() : await renderParticipant();
+  try {
+    stage = await getStage();
+    root.innerHTML = role === 'facilitator' ? await renderFacilitator() : await renderParticipant();
+  } catch (err) {
+    root.innerHTML = `<div class="panel" style="border-left:4px solid var(--vs-red);">
+      <h2 style="color:var(--vs-red);">Backend error</h2>
+      <p>Could not connect to the npoint storage backend. Check the browser console for details.</p>
+      <pre style="font-size:12px;background:var(--secondary-bg);padding:12px;border-radius:3px;overflow:auto;white-space:pre-wrap;">${escapeHtml(String(err))}</pre>
+      <p class="muted">Common causes: bin ID not set, bin locked without a token, or a network/CORS issue.
+      You can still run the session using <strong>?backend=localStorage</strong> (facilitator-only mode).</p>
+    </div>`;
+    console.error('[webinar] render error:', err);
+  }
 }
 
 // ---- facilitator ----
