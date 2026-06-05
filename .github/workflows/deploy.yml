@@ -18,7 +18,20 @@ jobs:
         env:
           NPOINT_BIN_ID: ${{ secrets.NPOINT_BIN_ID }}
         run: |
-          sed -i "s|window.NPOINT_BIN_ID = '';|window.NPOINT_BIN_ID = '${NPOINT_BIN_ID}';|" webinar_app/public/config.js
+          if [ -z "${NPOINT_BIN_ID}" ]; then
+            echo "ERROR: NPOINT_BIN_ID secret is not set in GitHub repository secrets."
+            exit 1
+          fi
+          python3 -c "
+          import re, sys
+          path = 'webinar_app/public/config.js'
+          txt = open(path).read()
+          txt2 = re.sub(r\"window\.NPOINT_BIN_ID = '';\", \"window.NPOINT_BIN_ID = '${NPOINT_BIN_ID}';\", txt)
+          if txt == txt2:
+              sys.exit('ERROR: Pattern not found in config.js — injection failed.')
+          open(path, 'w').write(txt2)
+          print('Injected NPOINT_BIN_ID successfully.')
+          "
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
