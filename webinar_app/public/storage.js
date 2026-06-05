@@ -39,20 +39,44 @@
 
   // --------- npoint.io backend ---------
   // Simple REST shared store. Set window.NPOINT_BIN_ID in config.js.
-  // Optionally set window.NPOINT_TOKEN if the bin is locked.
-  // Trade-off: ~1s sync latency. No account required for public bins.
+  // Trade-off: ~5s sync latency. No account required for public bins.
+  //
+  // Rate-limit mitigation: reads are cached for CACHE_TTL ms so that
+  // multiple getKey() calls within one render share a single fetch.
+  // Writes invalidate the cache immediately.
   const binBackend = {
     name: 'npoint',
+    _cache: null,       // { data, ts }
+    _inflight: null,    // in-progress fetch promise (deduplicates concurrent callers)
+    CACHE_TTL: 4000,    // ms — slightly less than the 5s poll interval
+
     async _read() {
       const id = window.NPOINT_BIN_ID;
       if (!id) throw new Error('NPOINT_BIN_ID is not set. Check config.js or GitHub Actions secrets.');
-      const r = await fetch(`https://api.npoint.io/${id}`);
-      if (!r.ok) {
-        const body = await r.text().catch(() => '');
-        throw new Error(`npoint read failed (HTTP ${r.status}): ${body}`);
+
+      // Return cached data if still fresh
+      if (this._cache && (Date.now() - this._cache.ts) < this.CACHE_TTL) {
+        return this._cache.data;
       }
-      return await r.json();
+
+      // Deduplicate concurrent fetches (e.g. multiple getKey calls in one render)
+      if (this._inflight) return this._inflight;
+
+      this._inflight = fetch(`https://api.npoint.io/${id}`)
+        .then(async r => {
+          if (!r.ok) {
+            const body = await r.text().catch(() => '');
+            throw new Error(`npoint read failed (HTTP ${r.status}): ${body}`);
+          }
+          const data = await r.json();
+          this._cache = { data, ts: Date.now() };
+          return data;
+        })
+        .finally(() => { this._inflight = null; });
+
+      return this._inflight;
     },
+
     async _write(obj) {
       const id = window.NPOINT_BIN_ID;
       if (!id) throw new Error('NPOINT_BIN_ID is not set. Check config.js or GitHub Actions secrets.');
@@ -65,7 +89,10 @@
         const body = await r.text().catch(() => '');
         throw new Error(`npoint write failed (HTTP ${r.status}): ${body}`);
       }
+      // Invalidate cache so the next read reflects the write
+      this._cache = { data: obj, ts: Date.now() };
     },
+
     async getKey(key) {
       const all = await this._read();
       return all[key] !== undefined ? all[key] : null;

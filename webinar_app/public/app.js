@@ -329,7 +329,7 @@ window.resetSession = resetSession;
 let pollTimer = null;
 function startPolling() {
   if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(() => render(), 2500);
+  pollTimer = setInterval(() => render(), 5000);
 }
 
 // ---- init ----
