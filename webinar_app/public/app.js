@@ -516,7 +516,6 @@ function updateRoleBar() {
   }
   bar.style.display = '';
   document.getElementById('role-facilitator').className = 'active';
-  document.getElementById('role-participant').className = '';
   document.getElementById('room-code').textContent = 'Room: ' + ROOM;
   document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
 }
