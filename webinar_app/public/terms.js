@@ -7,7 +7,7 @@ window.WEBINAR_TERMS = {
     name: 'Human in the Loop',
     short: 'When the human you\'re looping in doesn\'t exist in the setting where the AI is deployed.',
     formatA: {
-      prompt: 'Four definitions of Human in the Loop. Vote for the one that most closely reflects how YOU use this term in your work.',
+      prompt: 'Four definitions of Human in the Loop. Select the one closest to how YOU use the term.',
       options: [
         { text: 'A system in which a person provides oversight, validation, or correction of an AI system\'s outputs at one or more defined points in its operation, with the human retaining decision authority.', source: 'Regulatory framing' },
         { text: 'An AI deployment pattern in which a clinician reviews and either accepts, modifies, or rejects each AI recommendation before it affects patient care.', source: 'Clinical user lens' },
@@ -43,7 +43,7 @@ window.WEBINAR_TERMS = {
     name: 'Performance Metrics',
     short: 'Sensitivity tells the clinician one thing. Population-level coverage and equity tell the programme manager another.',
     formatA: {
-      prompt: 'Four ways to think about Performance Metrics for an AI tool in public health. Which definition reflects how YOU evaluate performance in your programme?',
+      prompt: 'Four ways to think about Performance Metrics for an AI tool in public health. Select the one closest to how YOU understand the term.',
       options: [
         { text: 'Quantitative measures of model accuracy on a test dataset, typically including sensitivity, specificity, AUC, F1 score, and confusion matrix outputs.', source: 'ML / developer lens' },
         { text: 'Measures of clinical performance — how well the tool supports correct clinical decisions in real practice, including agreement with expert reviewers and impact on diagnostic confidence.', source: 'Clinical evaluation lens' },
@@ -79,7 +79,7 @@ window.WEBINAR_TERMS = {
     name: 'GenAI Hallucinations',
     short: 'A confidently-stated answer that is not grounded in fact. Easy to spot in trivia; much harder when the user is a frontline health worker.',
     formatA: {
-      prompt: 'Four ways to define a GenAI hallucination. Which framing is closest to how YOU use the term in your work?',
+      prompt: 'Four ways to define a GenAI hallucination. Select the one closest to how YOU use the term.',
       options: [
         { text: 'An output from a generative model that is factually incorrect, fabricated, or unsupported by its training data, produced with a tone of confidence indistinguishable from a correct answer.', source: 'ML / technical lens' },
         { text: 'A safety event in which a generative AI tool, deployed in a clinical or health-information context, gives advice that is plausibly worded but medically wrong, with potential to cause harm.', source: 'Clinical safety lens' },
@@ -116,7 +116,7 @@ window.WEBINAR_TERMS = {
     name: 'Bias / Fairness',
     short: 'Bias is often discussed as a model property. In PH it\'s also a system property — who is in the data system at all.',
     formatA: {
-      prompt: 'Four framings of Bias / Fairness in AI for health. Which is closest to how YOUR organization defines it?',
+      prompt: 'Four framings of Bias / Fairness in AI for health. Select the one closest to how YOU understand the term.',
       options: [
         { text: 'Bias is a statistical property of a model: systematic deviation between predictions and ground truth, typically measured by performance differences across demographic subgroups.', source: 'ML / technical lens' },
         { text: 'Bias is a training data problem: when the data used to build a model under-represents certain populations, the model\'s performance on those populations will be poorer.', source: 'Data science lens' },
@@ -152,7 +152,7 @@ window.WEBINAR_TERMS = {
     name: 'Real World Evidence',
     short: 'In LMIC public health, "real world" often means the only world — there was never a controlled trial.',
     formatA: {
-      prompt: 'Four definitions of Real World Evidence. Which one matches how it gets used in your work?',
+      prompt: 'Four definitions of Real World Evidence. Select the one closest to how YOU use the term.',
       options: [
         { text: 'Clinical evidence regarding the use and potential benefits or risks of a medical product derived from analysis of real-world data — typically EHRs, claims, registries, and patient-reported outcomes — generated outside randomised trials.', source: 'Regulatory lens (FDA-style)' },
         { text: 'Evidence collected from routine use of a tool after deployment, used to monitor whether the tool continues to perform as intended in the populations and settings where it is being used.', source: 'Post-market surveillance lens' },
@@ -188,7 +188,7 @@ window.WEBINAR_TERMS = {
     name: 'AI Governance',
     short: '"AI governance" often means model risk management. In PH it has to also mean data sovereignty and who controls the architecture.',
     formatA: {
-      prompt: 'Four definitions of AI Governance in the context of health. Which one matches what YOU mean by it in your work?',
+      prompt: 'Four definitions of AI Governance in the context of health. Select the one closest to how YOU understand the term.',
       options: [
         { text: 'The internal processes by which an organization managing or developing an AI system documents its decisions, manages its risks, and ensures accountability for the system\'s behaviour.', source: 'Corporate / ML governance lens' },
         { text: 'The set of laws, regulations, and oversight bodies that authorise, constrain, and audit the deployment of AI in health, including data protection, model approval, and post-market surveillance.', source: 'Regulatory lens' },

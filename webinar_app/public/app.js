@@ -19,6 +19,10 @@ const PARTICIPANT_ID = (() => {
 })();
 
 // ── App state ─────────────────────────────────────────────────────────────────
+// Facilitator role is granted via ?role=facilitator in the URL only.
+// Participants never see a role-switcher; the URL is their only control.
+const URL_ROLE = new URLSearchParams(location.search).get('role');
+if (URL_ROLE === 'facilitator') sessionStorage.setItem('webinar_role', 'facilitator');
 let role  = sessionStorage.getItem('webinar_role') || 'participant';
 let stage = 'welcome';
 
@@ -93,23 +97,43 @@ function e(s) {
 function short(s, n = 72) { return s.length > n ? s.slice(0, n) + '…' : s; }
 
 // ── Results rendering — Mentimeter-style ──────────────────────────────────────
-function renderBars(options, counts, voters, { labelFn } = {}) {
+// mode: 'full' = full text stacked (participant results on personal device)
+//       'short' = truncated inline (facilitator shared screen)
+function renderBars(options, counts, voters, { labelFn, mode = 'short' } = {}) {
   const max = Math.max(...counts, 1);
-  let html = `<div class="results-wrap">`;
+  const stacked = mode === 'full';
+  let html = `<div class="results-wrap${stacked ? ' results-stacked' : ''}">`;
   options.forEach((opt, i) => {
     const pct   = voters ? Math.round(counts[i] / voters * 100) : 0;
     const w     = Math.round(counts[i] / max * 100);
     const col   = OPT_COLORS[i % OPT_COLORS.length];
-    const label = labelFn ? labelFn(opt, i) : `${String.fromCharCode(65 + i)} · ${e(short(opt.text))}`;
-    html += `
-      <div class="res-row">
-        <div class="res-label">${label}</div>
-        <div class="res-track">
-          <div class="res-fill" style="width:${w}%;background:${col}"></div>
-          <span class="res-count" style="color:${col}">${counts[i]}</span>
-        </div>
-        <div class="res-pct" style="color:${col}">${pct}%</div>
-      </div>`;
+    const label = labelFn
+      ? labelFn(opt, i)
+      : `<strong>${String.fromCharCode(65 + i)}</strong> · ${e(stacked ? opt.text : short(opt.text))}`;
+
+    if (stacked) {
+      html += `
+        <div class="res-row-stacked">
+          <div class="res-label-stacked">${label}</div>
+          <div class="res-bar-row">
+            <div class="res-track">
+              <div class="res-fill" style="width:${w}%;background:${col}"></div>
+              <span class="res-count" style="color:${col}">${counts[i]}</span>
+            </div>
+            <div class="res-pct" style="color:${col}">${pct}%</div>
+          </div>
+        </div>`;
+    } else {
+      html += `
+        <div class="res-row">
+          <div class="res-label">${label}</div>
+          <div class="res-track">
+            <div class="res-fill" style="width:${w}%;background:${col}"></div>
+            <span class="res-count" style="color:${col}">${counts[i]}</span>
+          </div>
+          <div class="res-pct" style="color:${col}">${pct}%</div>
+        </div>`;
+    }
   });
   if (voters) html += `<p class="res-total">${voters} response${voters !== 1 ? 's' : ''}</p>`;
   html += `</div>`;
@@ -293,7 +317,7 @@ async function renderParticipantStage() {
       <span class="stage-pill">Vote</span>
       <h2 style="margin-top:.75rem">Choose two topics</h2>
       <p>Pick <strong>two</strong> terms you most want to explore today.</p>
-      ${myVotes.length === 2 ? `<p class="muted">Two selected — tap to swap.</p>` : `<p class="muted">${myVotes.length} / 2 selected</p>`}
+      ${myVotes.length === 2 ? `<p class="muted">Two selected.</p>` : `<p class="muted">${myVotes.length} / 2 selected</p>`}
       <div class="term-grid">
         ${SHORTLIST_KEYS.map((k, i) => {
           const sel = myVotes.includes(i);
@@ -330,8 +354,8 @@ async function renderParticipantStage() {
       return `<div class="panel">
         <span class="stage-pill">How Do You Define It?</span>
         <h2 style="margin-top:.75rem">${e(term.name)}</h2>
-        <p class="muted">You voted <strong>${String.fromCharCode(65 + myVote)}</strong> · Live results:</p>
-        ${renderBars(term.formatA.options, counts, voters)}
+        <p class="muted">You selected <strong>${String.fromCharCode(65 + myVote)}</strong> · Live results:</p>
+        ${renderBars(term.formatA.options, counts, voters, { mode: 'full' })}
       </div>`;
     }
 
@@ -345,7 +369,7 @@ async function renderParticipantStage() {
         <div class="def-text">${e(opt.text)}</div>
       </div>`;
     });
-    html += `<p class="help">Tap one to cast your vote.</p></div>`;
+    html += `<p class="help">Select one option to cast your vote.</p></div>`;
     return html;
   }
 
@@ -361,8 +385,8 @@ async function renderParticipantStage() {
         <span class="stage-pill">Scenario</span>
         <h2 style="margin-top:.75rem">${e(term.name)}</h2>
         <div class="scenario-box"><div class="label">Scenario</div>${e(term.formatB.scenario)}</div>
-        <p class="muted">You voted <strong>${String.fromCharCode(65 + myVote)}</strong> · Live results:</p>
-        ${renderBars(term.formatB.options, counts, voters)}
+        <p class="muted">You selected <strong>${String.fromCharCode(65 + myVote)}</strong> · Live results:</p>
+        ${renderBars(term.formatB.options, counts, voters, { mode: 'full' })}
       </div>`;
     }
 
@@ -377,7 +401,7 @@ async function renderParticipantStage() {
         <div class="def-text">${e(opt.text)}</div>
       </div>`;
     });
-    html += `<p class="help">Tap one to vote.</p></div>`;
+    html += `<p class="help">Select one option to cast your vote.</p></div>`;
     return html;
   }
 
@@ -407,7 +431,7 @@ async function renderParticipantStage() {
         <div class="def-text">${e(opt.text)}</div>
       </div>`;
     });
-    html += `<p class="help">One tap only.</p></div>`;
+    html += `<p class="help">Select one option.</p></div>`;
     return html;
   }
 
@@ -415,9 +439,17 @@ async function renderParticipantStage() {
 }
 
 // ── Role bar ──────────────────────────────────────────────────────────────────
+// Participants never see the role switcher or technical details.
+// Facilitators get it because they arrived via ?role=facilitator.
 function updateRoleBar() {
-  document.getElementById('role-facilitator').className = role === 'facilitator' ? 'active' : '';
-  document.getElementById('role-participant').className = role === 'participant' ? 'active' : '';
+  const bar = document.getElementById('role-bar');
+  if (role !== 'facilitator') {
+    bar.style.display = 'none';
+    return;
+  }
+  bar.style.display = '';
+  document.getElementById('role-facilitator').className = 'active';
+  document.getElementById('role-participant').className = '';
   document.getElementById('room-code').textContent = 'Room: ' + ROOM;
   document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
 }

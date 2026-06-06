@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AI Terminology Webinar</title>
+<title>AI Terminology for Public Health</title>
 <style>
   /* ── Palette ── */
   :root {
@@ -169,6 +169,17 @@
   }
   .res-total { font-size: 12px; color: var(--text-muted); margin-top: 4px; text-align: right; }
 
+  /* Stacked layout for participant results — full definition text above the bar */
+  .results-stacked .res-row-stacked { margin-bottom: 14px; }
+  .results-stacked .res-label-stacked {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    line-height: 1.45; margin-bottom: 6px;
+  }
+  .results-stacked .res-bar-row {
+    display: grid; grid-template-columns: 1fr 52px;
+    align-items: center; gap: 10px;
+  }
+
   /* ── Lightning vote two-column layout ── */
   .lightning-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 1.5rem; }
   .lightning-col {
@@ -268,13 +279,13 @@
 
 <div class="vs-header">
   <div class="vs-header-inner">
-    <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> Webinar</div>
+    <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> for Public Health</div>
     <div class="vs-tagline">AI terminology · live discussion</div>
   </div>
 </div>
 
 <div class="container">
-  <div class="role-bar">
+  <div class="role-bar" id="role-bar">
     <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
     <button id="role-participant" onclick="setRole('participant')">Participant view</button>
     <span class="spacer"></span>
