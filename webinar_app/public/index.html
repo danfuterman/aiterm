@@ -5,22 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Terminology Webinar</title>
 <style>
+  /* ── Palette ── */
   :root {
-    --blue:        #2563EB;
-    --blue-dark:   #1D4ED8;
-    --blue-light:  #EFF6FF;
-    --blue-mid:    #BFDBFE;
-    --green:       #059669;
-    --green-light: #ECFDF5;
-    --bg:          #F1F5F9;
-    --surface:     #FFFFFF;
-    --border:      #E2E8F0;
-    --border-mid:  #CBD5E1;
-    --text:        #0F172A;
-    --text-muted:  #64748B;
-    --text-light:  #94A3B8;
-    --red:         #DC2626;
-    --red-light:   #FEF2F2;
+    --blue:       #2563EB;
+    --blue-dark:  #1D4ED8;
+    --blue-light: #EFF6FF;
+    --blue-mid:   #BFDBFE;
+    --bg:         #F1F5F9;
+    --surface:    #FFFFFF;
+    --border:     #E2E8F0;
+    --border-mid: #CBD5E1;
+    --text:       #0F172A;
+    --text-muted: #64748B;
+    --text-light: #94A3B8;
+    --red:        #DC2626;
+    --red-light:  #FEF2F2;
   }
 
   * { box-sizing: border-box; }
@@ -28,31 +27,25 @@
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
                  "Helvetica Neue", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    margin: 0; padding: 0;
-    line-height: 1.55;
+    background: var(--bg); color: var(--text);
+    margin: 0; padding: 0; line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
 
   /* ── Header ── */
   .vs-header {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 1rem;
+    background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 1rem;
   }
   .vs-header-inner {
-    max-width: 780px; margin: 0 auto; height: 56px;
+    max-width: 820px; margin: 0 auto; height: 52px;
     display: flex; align-items: center; justify-content: space-between;
   }
-  .vs-brand {
-    font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.01em;
-  }
+  .vs-brand { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
   .vs-brand .vs-brand-accent { color: var(--blue); }
   .vs-tagline { font-size: 12px; color: var(--text-muted); }
 
   /* ── Layout ── */
-  .container { max-width: 780px; margin: 0 auto; padding: 1.25rem 1rem; }
+  .container { max-width: 820px; margin: 0 auto; padding: 1.25rem 1rem 100px; }
 
   /* ── Role bar ── */
   .role-bar {
@@ -72,37 +65,42 @@
   .role-bar .active { background: var(--blue); color: white; border-color: var(--blue); }
   .role-bar .active:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: white; }
   .role-bar .spacer { flex: 1; }
-  .role-bar .room-code {
+  .room-code {
     color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace;
     font-size: 11px; background: var(--bg); padding: 3px 8px;
     border-radius: 4px; border: 1px solid var(--border);
   }
-  .role-bar input {
-    padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-mid);
-    border-radius: 6px; background: var(--bg); width: 150px; font-family: inherit;
-    color: var(--text);
+  .backend-tag {
+    font-size: 10px; color: var(--text-muted); padding: 2px 8px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+    font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px;
   }
-  .role-bar input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); }
 
-  /* ── Panels ── */
+  /* ── Participant panels ── */
   .panel {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 12px; padding: 1.75rem; margin-bottom: 1rem;
     box-shadow: 0 1px 4px rgba(0,0,0,.05);
   }
   .panel h2 {
-    font-size: 19px; font-weight: 700; margin: 0 0 0.6rem;
+    font-size: 19px; font-weight: 700; margin: 0 0 .6rem;
     color: var(--text); line-height: 1.3; letter-spacing: -0.02em;
   }
-  .panel h3 {
-    font-size: 11px; font-weight: 600; margin: 1.5rem 0 0.6rem;
-    color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
-  }
-  .panel p { font-size: 14px; margin: 0 0 0.75rem; color: var(--text); }
+  .panel p { font-size: 14px; margin: 0 0 .75rem; }
   .panel .muted { color: var(--text-muted); font-size: 13px; }
+  .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
 
-  /* ── Term cards (shortlist) ── */
-  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+  /* ── Stage pill ── */
+  .stage-pill {
+    display: inline-block; padding: 3px 12px;
+    background: var(--blue-light); color: var(--blue);
+    border: 1px solid var(--blue-mid); border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ── Shortlist term cards ── */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: .75rem; }
   .term-card {
     padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px;
     cursor: pointer; background: var(--surface); transition: all 0.15s;
@@ -112,26 +110,8 @@
     background: var(--blue-light); border-color: var(--blue); border-width: 2px;
     box-shadow: 0 0 0 3px var(--blue-mid);
   }
-  .term-card .t-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; color: var(--text); }
+  .term-card .t-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
   .term-card .t-desc { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
-
-  /* ── Vote bars ── */
-  .vote-row { margin: 8px 0; }
-  .vote-bar-wrap {
-    height: 36px; background: var(--bg); border-radius: 8px;
-    position: relative; overflow: hidden; border: 1px solid var(--border);
-  }
-  .vote-bar { height: 100%; background: var(--blue); opacity: 0.18; transition: width 0.4s ease; }
-  .vote-bar-label {
-    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-    font-size: 13px; font-weight: 500; z-index: 2; max-width: 72%;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text);
-  }
-  .vote-bar-count {
-    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    font-size: 12px; color: var(--text-muted); z-index: 2; font-weight: 600;
-    font-feature-settings: "tnum";
-  }
 
   /* ── Definition options ── */
   .def-option {
@@ -144,14 +124,14 @@
     background: var(--blue-light); border-color: var(--blue); border-width: 2px;
     box-shadow: 0 0 0 3px var(--blue-mid);
   }
-  .def-option .def-letter {
+  .def-letter {
     font-weight: 700; min-width: 28px; height: 28px; border-radius: 50%;
     background: var(--bg); border: 1.5px solid var(--border-mid);
     color: var(--text-muted); display: flex; align-items: center; justify-content: center;
     font-size: 12px; flex-shrink: 0; margin-top: 1px; transition: all 0.15s;
   }
   .def-option.selected .def-letter { background: var(--blue); border-color: var(--blue); color: white; }
-  .def-option .def-text { font-size: 14px; flex: 1; line-height: 1.55; }
+  .def-text { font-size: 14px; flex: 1; line-height: 1.55; }
 
   /* ── Scenario box ── */
   .scenario-box {
@@ -164,95 +144,159 @@
     letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 700;
   }
 
-  /* ── Chat / comments ── */
-  .chat-input {
-    width: 100%; padding: 10px 14px; font-size: 14px; border: 1.5px solid var(--border-mid);
-    border-radius: 8px; background: var(--bg); font-family: inherit;
-    resize: vertical; min-height: 80px; color: var(--text); line-height: 1.5;
-    transition: border-color 0.15s, box-shadow 0.15s;
+  /* ── Mentimeter-style results bars ── */
+  .results-wrap { margin-top: 1.25rem; }
+  .res-row {
+    display: grid; grid-template-columns: 1fr 2fr 52px;
+    align-items: center; gap: 10px; margin-bottom: 10px;
   }
-  .chat-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: var(--surface); }
-  .chat-list { max-height: 300px; overflow-y: auto; margin-top: 0.75rem; }
-  .chat-item {
-    padding: 12px 14px; background: var(--bg); border-radius: 8px;
-    margin-bottom: 6px; font-size: 13px; border: 1px solid var(--border);
+  .res-label { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.35; }
+  .res-track {
+    height: 44px; background: var(--bg); border-radius: 8px;
+    position: relative; overflow: hidden; border: 1px solid var(--border);
   }
-  .chat-item .who { font-size: 11px; color: var(--blue); margin-bottom: 4px; font-weight: 600; }
-
-  /* ── Stage controls (facilitator) ── */
-  .stage-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 6px; margin: 0.5rem 0 1.25rem;
+  .res-fill {
+    height: 100%; border-radius: 8px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
   }
-  .stage-btn {
-    padding: 9px 8px; font-size: 12px; font-weight: 500; text-align: center; cursor: pointer;
-    border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
-    color: var(--text-muted); transition: all 0.15s;
+  .res-count {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-size: 14px; font-weight: 700; font-feature-settings: "tnum";
   }
-  .stage-btn:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
-  .stage-btn.active { background: var(--blue); border-color: var(--blue); color: white; font-weight: 600; }
+  .res-pct {
+    font-size: 16px; font-weight: 700; text-align: right;
+    font-feature-settings: "tnum";
+  }
+  .res-total { font-size: 12px; color: var(--text-muted); margin-top: 4px; text-align: right; }
 
-  /* ── Stage pill ── */
-  .stage-pill {
-    display: inline-block; padding: 3px 10px; background: var(--blue-light);
-    color: var(--blue); border: 1px solid var(--blue-mid); border-radius: 20px;
-    font-size: 11px; font-weight: 600; margin-right: 10px; vertical-align: middle;
-    text-transform: uppercase; letter-spacing: 0.5px;
+  /* ── Lightning vote two-column layout ── */
+  .lightning-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 1.5rem; }
+  .lightning-col {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px 16px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .lightning-letter { font-size: 24px; font-weight: 800; }
+  .lightning-text   { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .lightning-pct    { font-size: 44px; font-weight: 800; line-height: 1; }
+  .lightning-n      { font-size: 12px; color: var(--text-muted); }
+
+  /* ── Facilitator slide view ── */
+  .slide {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 3.5rem);
+    min-height: 440px; box-shadow: 0 2px 8px rgba(0,0,0,.06);
+  }
+  .slide-hero {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; min-height: 500px;
+  }
+  .slide-panel {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; min-height: 440px;
+    background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 100%);
+  }
+  .slide-eyebrow {
+    font-size: 11px; font-weight: 700; color: var(--blue);
+    text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 12px;
+  }
+  .slide-title {
+    font-size: clamp(28px, 5vw, 50px); font-weight: 800;
+    color: var(--text); line-height: 1.12; letter-spacing: -0.03em; margin: 0 0 1.5rem;
+  }
+  .slide-question {
+    font-size: clamp(15px, 2.2vw, 19px); font-weight: 600;
+    color: var(--text); margin: .5rem 0 0; line-height: 1.4;
+  }
+  .slide-agenda {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-top: 2rem; text-align: left; max-width: 500px; width: 100%;
+  }
+  .agenda-item { display: flex; gap: 14px; align-items: flex-start; font-size: 15px; }
+  .agenda-num {
+    min-width: 28px; height: 28px; border-radius: 50%;
+    background: var(--blue); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
   }
 
-  /* ── Misc ── */
-  .empty { text-align: center; padding: 1.5rem; color: var(--text-light); font-size: 13px; font-style: italic; }
-  .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
-
-  button.primary {
-    padding: 9px 20px; font-size: 13px; font-weight: 600;
-    background: var(--blue); color: white; border: none;
-    border-radius: 8px; cursor: pointer; font-family: inherit;
-    transition: background 0.15s; letter-spacing: 0.1px;
+  /* ── Floating facilitator control bar ── */
+  #ctrl-bar {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(15,23,42,.9); backdrop-filter: blur(10px);
+    border-radius: 16px; padding: 12px 18px;
+    flex-direction: column; align-items: center; gap: 8px;
+    box-shadow: 0 4px 32px rgba(0,0,0,.3);
+    z-index: 200; min-width: 360px;
   }
-  button.primary:hover { background: var(--blue-dark); }
-
-  .ctrl-row { display: flex; gap: 8px; margin-top: 0.75rem; }
-
-  .backend-tag {
-    font-size: 10px; color: var(--text-muted); padding: 2px 8px;
-    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
-    font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px;
+  #ctrl-bar button {
+    background: rgba(255,255,255,.12); color: white;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 8px; padding: 8px 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: background 0.15s;
   }
+  #ctrl-bar button:hover:not(:disabled) { background: rgba(255,255,255,.22); }
+  #ctrl-bar button:disabled { opacity: 0.3; cursor: default; }
+  #ctrl-body { display: flex; align-items: center; gap: 10px; }
+  #ctrl-label {
+    color: rgba(255,255,255,.75); font-size: 12px;
+    min-width: 180px; text-align: center; line-height: 1.3;
+  }
+  #ctrl-toggle {
+    background: transparent !important; border: none !important;
+    color: rgba(255,255,255,.4) !important; font-size: 11px !important;
+    padding: 2px 6px !important;
+  }
+  #ctrl-reset {
+    background: transparent !important;
+    border: 1px solid rgba(255,100,100,.35) !important;
+    color: rgba(255,150,150,.85) !important;
+    font-size: 12px !important; padding: 6px 12px !important;
+  }
+  #ctrl-reset:hover:not(:disabled) { background: rgba(220,38,38,.25) !important; }
 
+  /* ── Error ── */
   .error-panel { border-color: var(--red); }
   .error-panel h2 { color: var(--red); }
   .error-panel pre {
     font-size: 12px; background: var(--red-light); padding: 12px; border-radius: 6px;
-    overflow: auto; white-space: pre-wrap; margin: 0.5rem 0;
+    overflow: auto; white-space: pre-wrap; margin: .5rem 0;
   }
 </style>
 </head>
 <body>
+
 <div class="vs-header">
   <div class="vs-header-inner">
     <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> Webinar</div>
     <div class="vs-tagline">AI terminology · live discussion</div>
   </div>
 </div>
+
 <div class="container">
   <div class="role-bar">
     <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
     <button id="role-participant" onclick="setRole('participant')">Participant view</button>
     <span class="spacer"></span>
-    <span id="participant-id-wrap" style="display:none;">
-      <input type="text" id="pid-input" placeholder="Your name (optional)" />
-    </span>
     <span class="room-code" id="room-code">Loading…</span>
     <span class="backend-tag" id="backend-tag"></span>
-    <button onclick="resetSession()" title="Wipe all votes (facilitator only)">↻</button>
   </div>
   <div id="main-content"></div>
 </div>
 
+<!-- Floating facilitator control bar — only visible in facilitator role -->
+<div id="ctrl-bar" style="display:none">
+  <div id="ctrl-body">
+    <button id="ctrl-prev" onclick="navigate(-1)">← Prev</button>
+    <span id="ctrl-label"></span>
+    <button id="ctrl-next" onclick="navigate(1)">Next →</button>
+    <button id="ctrl-reset" onclick="resetSession()" title="Reset all votes">↻</button>
+  </div>
+  <button id="ctrl-toggle" onclick="toggleCtrl()">▼ hide</button>
+</div>
+
 <!-- Firebase compat SDK (v9) — always loaded; initialised only when ?backend=firebase.
-     SRI hashes lock these to exact known-good builds — the browser refuses to run
-     them if the CDN ever serves different content. -->
+     SRI hashes lock these to exact known-good builds. -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"
         integrity="sha384-ajMUFBUFMCyjh8uxJg6bkGcKe9RTolyjwbxB3yES0QQMenP3Oztj/W9vA2SJPcIh"
         crossorigin="anonymous"></script>

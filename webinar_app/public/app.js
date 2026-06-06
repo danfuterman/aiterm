@@ -1,353 +1,517 @@
-// app.js — main UI and rendering logic for the AI Terminology webinar voting app
+// app.js — AI Terminology Webinar
 
-const TERMS = window.WEBINAR_TERMS;
+const TERMS     = window.WEBINAR_TERMS;
 const TERM_KEYS = window.WEBINAR_TERM_KEYS;
-const STORAGE = window.WEBINAR_STORAGE;
-const ROOM = (new URLSearchParams(window.location.search).get('room')) || 'ai-terms-webinar';
+const STORAGE   = window.WEBINAR_STORAGE;
+const ROOM      = new URLSearchParams(location.search).get('room') || 'ai-terms-webinar';
 
-// ---- state ----
-let role = sessionStorage.getItem('webinar_role') || 'facilitator';
-let stage = 'welcome';
+// Human in the Loop is always term 1; shortlist is from the remaining 5
+const SHORTLIST_KEYS = TERM_KEYS.filter(k => k !== 'hitl');
 
+// Colour palette for results bars (A, B, C, D)
+const OPT_COLORS = ['#2563EB', '#7C3AED', '#059669', '#D97706'];
+
+// ── Participant identity ───────────────────────────────────────────────────────
 const PARTICIPANT_ID = (() => {
   let pid = sessionStorage.getItem('webinar_pid');
   if (!pid) { pid = 'p_' + Math.random().toString(36).slice(2, 10); sessionStorage.setItem('webinar_pid', pid); }
   return pid;
 })();
 
-// ---- storage helpers ----
-async function getStage() { return (await STORAGE.getKey('stage:' + ROOM)) || 'welcome'; }
-async function setStage(s) { await STORAGE.setKey('stage:' + ROOM, s); stage = s; }
+// ── App state ─────────────────────────────────────────────────────────────────
+let role  = sessionStorage.getItem('webinar_role') || 'participant';
+let stage = 'welcome';
+
+// ── Stage sequence ────────────────────────────────────────────────────────────
+// Determined dynamically after shortlist: top 2 voted terms follow hitl.
+async function getFullSequence() {
+  const votes  = await getMultiVotes('shortlist');
+  const counts = tallyMulti(votes, SHORTLIST_KEYS.length);
+  const ranked = SHORTLIST_KEYS
+    .map((k, i) => ({ k, c: counts[i] }))
+    .sort((a, b) => b.c - a.c || SHORTLIST_KEYS.indexOf(a.k) - SHORTLIST_KEYS.indexOf(b.k));
+  const top1 = ranked[0]?.k || SHORTLIST_KEYS[0];
+  const top2 = ranked[1]?.k || SHORTLIST_KEYS[1];
+  return [
+    'welcome',
+    'hitl_A', 'hitl_B', 'hitl_C', 'hitl_panel',
+    'shortlist',
+    `${top1}_A`, `${top1}_B`, `${top1}_C`, `${top1}_panel`,
+    `${top2}_A`, `${top2}_B`, `${top2}_C`, `${top2}_panel`,
+    'close'
+  ];
+}
+
+// ── Storage helpers ───────────────────────────────────────────────────────────
+async function getStage()  { return (await STORAGE.getKey('stage:' + ROOM)) || 'welcome'; }
+async function setStage(s) { stage = s; await STORAGE.setKey('stage:' + ROOM, s); }
+
 async function recordVote(pollId, idx) {
-  const key = 'votes:' + ROOM + ':' + pollId;
+  const key  = 'votes:' + ROOM + ':' + pollId;
   const data = (await STORAGE.getKey(key)) || {};
   data[PARTICIPANT_ID] = idx;
   await STORAGE.setKey(key, data);
 }
 async function recordMultiVote(pollId, indices) {
-  const key = 'mvotes:' + ROOM + ':' + pollId;
+  const key  = 'mvotes:' + ROOM + ':' + pollId;
   const data = (await STORAGE.getKey(key)) || {};
   data[PARTICIPANT_ID] = indices;
   await STORAGE.setKey(key, data);
 }
-async function getVotes(pollId) { return (await STORAGE.getKey('votes:' + ROOM + ':' + pollId)) || {}; }
+async function getVotes(pollId)      { return (await STORAGE.getKey('votes:'  + ROOM + ':' + pollId)) || {}; }
 async function getMultiVotes(pollId) { return (await STORAGE.getKey('mvotes:' + ROOM + ':' + pollId)) || {}; }
-async function postChat(text) {
-  const key = 'chat:' + ROOM;
-  const data = (await STORAGE.getKey(key)) || [];
-  const name = (document.getElementById('pid-input')?.value || '').trim() || 'Anonymous';
-  data.push({ pid: PARTICIPANT_ID, name, text, ts: Date.now() });
-  await STORAGE.setKey(key, data.slice(-200));
-}
-async function getChat() { return (await STORAGE.getKey('chat:' + ROOM)) || []; }
 
 async function resetSession() {
-  if (role !== 'facilitator') { alert('Only facilitator can reset.'); return; }
-  if (!confirm('Wipe ALL votes and chat for this room? This cannot be undone.')) return;
+  if (role !== 'facilitator') return;
+  if (!confirm('Wipe ALL votes for this room? This cannot be undone.')) return;
   await STORAGE.setKey('stage:' + ROOM, 'welcome');
   await STORAGE.setKey('mvotes:' + ROOM + ':shortlist', {});
-  for (const t of TERM_KEYS) {
+  for (const k of TERM_KEYS) {
     for (const f of ['A', 'B', 'C']) {
-      await STORAGE.setKey('votes:' + ROOM + ':' + t + '_' + f, {});
+      await STORAGE.setKey('votes:' + ROOM + ':' + k + '_' + f, {});
     }
   }
-  await STORAGE.setKey('chat:' + ROOM, []);
   stage = 'welcome';
   render();
 }
 
-// ---- role ----
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function tally(votes, n) {
+  const c = new Array(n).fill(0);
+  for (const k in votes) if (votes[k] != null && votes[k] >= 0 && votes[k] < n) c[votes[k]]++;
+  return c;
+}
+function tallyMulti(votes, n) {
+  const c = new Array(n).fill(0);
+  for (const k in votes) for (const i of (votes[k] || [])) if (i >= 0 && i < n) c[i]++;
+  return c;
+}
+function totalVoters(votes) { return Object.keys(votes).length; }
+function e(s) {
+  return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function short(s, n = 72) { return s.length > n ? s.slice(0, n) + '…' : s; }
+
+// ── Results rendering — Mentimeter-style ──────────────────────────────────────
+function renderBars(options, counts, voters, { labelFn } = {}) {
+  const max = Math.max(...counts, 1);
+  let html = `<div class="results-wrap">`;
+  options.forEach((opt, i) => {
+    const pct   = voters ? Math.round(counts[i] / voters * 100) : 0;
+    const w     = Math.round(counts[i] / max * 100);
+    const col   = OPT_COLORS[i % OPT_COLORS.length];
+    const label = labelFn ? labelFn(opt, i) : `${String.fromCharCode(65 + i)} · ${e(short(opt.text))}`;
+    html += `
+      <div class="res-row">
+        <div class="res-label">${label}</div>
+        <div class="res-track">
+          <div class="res-fill" style="width:${w}%;background:${col}"></div>
+          <span class="res-count" style="color:${col}">${counts[i]}</span>
+        </div>
+        <div class="res-pct" style="color:${col}">${pct}%</div>
+      </div>`;
+  });
+  if (voters) html += `<p class="res-total">${voters} response${voters !== 1 ? 's' : ''}</p>`;
+  html += `</div>`;
+  return html;
+}
+
+function renderLightningBars(options, counts, voters) {
+  let html = `<div class="lightning-wrap">`;
+  options.forEach((opt, i) => {
+    const total = counts[0] + counts[1] || 1;
+    const pct   = voters ? Math.round(counts[i] / total * 100) : 0;
+    const col   = OPT_COLORS[i];
+    html += `<div class="lightning-col" style="border-top:4px solid ${col}">
+      <div class="lightning-letter" style="color:${col}">${String.fromCharCode(65 + i)}</div>
+      <div class="lightning-text">${e(opt.text)}</div>
+      <div class="lightning-pct" style="color:${col}">${pct}%</div>
+      <div class="lightning-n">${counts[i]} vote${counts[i] !== 1 ? 's' : ''}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  if (voters) html += `<p class="res-total">${voters} total response${voters !== 1 ? 's' : ''}</p>`;
+  return html;
+}
+
+// ── Facilitator view — shared presentation screen ─────────────────────────────
+async function renderFacilitatorStage() {
+  // ---- Welcome ----
+  if (stage === 'welcome') {
+    return `<div class="slide slide-hero">
+      <div class="slide-eyebrow">Virtual Webinar · 60 minutes</div>
+      <h1 class="slide-title">AI Terminology<br>for Public Health</h1>
+      <div class="slide-agenda">
+        <div class="agenda-item"><span class="agenda-num">1</span><span>Human in the Loop — definition, scenario &amp; lightning vote, then panelist discussion</span></div>
+        <div class="agenda-item"><span class="agenda-num">2</span><span>Participant vote — choose two more topics</span></div>
+        <div class="agenda-item"><span class="agenda-num">3</span><span>Two further terms — same format, panelist input</span></div>
+        <div class="agenda-item"><span class="agenda-num">4</span><span>Summary &amp; close</span></div>
+      </div>
+    </div>`;
+  }
+
+  // ---- Close ----
+  if (stage === 'close') {
+    return `<div class="slide slide-hero">
+      <div class="slide-eyebrow">Thank you</div>
+      <h1 class="slide-title">Summary &amp; Close</h1>
+      <p class="slide-body" style="max-width:560px;margin:1.5rem auto 0;text-align:center;color:var(--text-muted);font-size:16px">
+        The terms we explored reflect real tensions in implementation — between clinical and public health framings, between model performance and programme outcomes, between governance as risk management and governance as sovereignty.
+      </p>
+    </div>`;
+  }
+
+  // ---- Shortlist ----
+  if (stage === 'shortlist') {
+    const votes  = await getMultiVotes('shortlist');
+    const counts = tallyMulti(votes, SHORTLIST_KEYS.length);
+    const voters = totalVoters(votes);
+    const max    = Math.max(...counts, 1);
+    const ranked = SHORTLIST_KEYS.map((k, i) => ({ k, c: counts[i] })).sort((a, b) => b.c - a.c);
+
+    let bars = `<div class="results-wrap" style="margin-top:1.5rem">`;
+    ranked.forEach((r, ri) => {
+      const pct = voters ? Math.round(r.c / voters * 100) : 0;
+      const w   = Math.round(r.c / max * 100);
+      const col = ri < 2 && r.c > 0 ? OPT_COLORS[ri] : '#CBD5E1';
+      bars += `<div class="res-row">
+        <div class="res-label">${e(TERMS[r.k].name)}</div>
+        <div class="res-track">
+          <div class="res-fill" style="width:${w}%;background:${col}"></div>
+          <span class="res-count" style="color:${col}">${r.c}</span>
+        </div>
+        <div class="res-pct" style="color:${col}">${pct}%</div>
+      </div>`;
+    });
+    bars += `</div>`;
+    if (voters) bars += `<p class="res-total">${voters} response${voters !== 1 ? 's' : ''}</p>`;
+
+    return `<div class="slide">
+      <div class="slide-eyebrow">Participant vote</div>
+      <h1 class="slide-title" style="font-size:clamp(24px,4vw,40px)">Which two topics next?</h1>
+      ${bars}
+    </div>`;
+  }
+
+  // ---- Term stages ----
+  const [tk, fmt] = stage.split('_');
+  const term = TERMS[tk];
+  if (!term) return `<div class="slide"><p class="slide-eyebrow">Loading…</p></div>`;
+
+  // Panel discussion slide
+  if (fmt === 'panel') {
+    return `<div class="slide slide-panel">
+      <div class="slide-eyebrow">${e(term.name)}</div>
+      <h1 class="slide-title">Panelist Discussion</h1>
+      <p class="slide-body" style="font-size:18px;color:var(--text-muted);margin-top:1rem">Questions &amp; reflections from invited panelists</p>
+    </div>`;
+  }
+
+  // Format A — definition vote
+  if (fmt === 'A') {
+    const votes  = await getVotes(tk + '_A');
+    const counts = tally(votes, term.formatA.options.length);
+    const voters = totalVoters(votes);
+    return `<div class="slide">
+      <div class="slide-eyebrow">${e(term.name)} · How Do You Define It?</div>
+      <h2 class="slide-question">${e(term.formatA.prompt)}</h2>
+      ${renderBars(term.formatA.options, counts, voters, {
+        labelFn: (opt, i) => `<strong>${String.fromCharCode(65 + i)}</strong> · ${e(opt.source || short(opt.text))}`
+      })}
+    </div>`;
+  }
+
+  // Format B — scenario
+  if (fmt === 'B') {
+    const votes  = await getVotes(tk + '_B');
+    const counts = tally(votes, term.formatB.options.length);
+    const voters = totalVoters(votes);
+    return `<div class="slide">
+      <div class="slide-eyebrow">${e(term.name)} · Scenario</div>
+      <div class="scenario-box"><div class="label">Scenario</div>${e(term.formatB.scenario)}</div>
+      <h2 class="slide-question">${e(term.formatB.prompt)}</h2>
+      ${renderBars(term.formatB.options, counts, voters)}
+    </div>`;
+  }
+
+  // Format C — lightning vote
+  if (fmt === 'C') {
+    const votes  = await getVotes(tk + '_C');
+    const counts = tally(votes, term.formatC.options.length);
+    const voters = totalVoters(votes);
+    return `<div class="slide">
+      <div class="slide-eyebrow">${e(term.name)} · Lightning Vote</div>
+      <h1 class="slide-title" style="font-size:clamp(20px,3.5vw,34px);max-width:700px;margin:0 auto 2rem">${e(term.formatC.prompt)}</h1>
+      ${renderLightningBars(term.formatC.options, counts, voters)}
+    </div>`;
+  }
+
+  return `<div class="slide"><p class="slide-eyebrow">Loading…</p></div>`;
+}
+
+// ── Participant view — personal device ────────────────────────────────────────
+async function renderParticipantStage() {
+  // ---- Welcome ----
+  if (stage === 'welcome') {
+    return `<div class="panel">
+      <span class="stage-pill">Welcome</span>
+      <h2 style="margin-top:.75rem">AI Terminology for Public Health</h2>
+      <p>You'll vote on definitions, scenarios, and priority topics. Results appear live on the shared screen.</p>
+      <p class="muted">Waiting for the session to begin…</p>
+    </div>`;
+  }
+
+  // ---- Close ----
+  if (stage === 'close') {
+    return `<div class="panel">
+      <span class="stage-pill">Close</span>
+      <h2 style="margin-top:.75rem">Thank you for joining</h2>
+      <p class="muted">Session recording and resources to follow.</p>
+    </div>`;
+  }
+
+  // ---- Shortlist ----
+  if (stage === 'shortlist') {
+    const allVotes = await getMultiVotes('shortlist');
+    const myVotes  = allVotes[PARTICIPANT_ID] || [];
+    const counts   = tallyMulti(allVotes, SHORTLIST_KEYS.length);
+    const voters   = totalVoters(allVotes);
+
+    if (myVotes.length > 0) {
+      const picked = myVotes.map(i => e(TERMS[SHORTLIST_KEYS[i]].name)).join(' &amp; ');
+      return `<div class="panel">
+        <span class="stage-pill">Your vote is in</span>
+        <h2 style="margin-top:.75rem">You chose: ${picked}</h2>
+        <p class="muted">Live standings:</p>
+        ${renderBars(SHORTLIST_KEYS.map(k => ({ text: TERMS[k].name })), counts, voters, {
+          labelFn: (opt) => e(opt.text)
+        })}
+      </div>`;
+    }
+
+    return `<div class="panel">
+      <span class="stage-pill">Vote</span>
+      <h2 style="margin-top:.75rem">Choose two topics</h2>
+      <p>Pick <strong>two</strong> terms you most want to explore today.</p>
+      ${myVotes.length === 2 ? `<p class="muted">Two selected — tap to swap.</p>` : `<p class="muted">${myVotes.length} / 2 selected</p>`}
+      <div class="term-grid">
+        ${SHORTLIST_KEYS.map((k, i) => {
+          const sel = myVotes.includes(i);
+          return `<div class="term-card ${sel ? 'selected' : ''}" onclick="toggleShortlist(${i})">
+            <div class="t-name">${e(TERMS[k].name)}</div>
+            <div class="t-desc">${e(TERMS[k].short)}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }
+
+  // ---- Term stages ----
+  const [tk, fmt] = stage.split('_');
+  const term = TERMS[tk];
+  if (!term) return `<div class="panel"><p class="muted">Waiting for next prompt…</p></div>`;
+
+  if (fmt === 'panel') {
+    return `<div class="panel">
+      <span class="stage-pill">Discussion</span>
+      <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+      <p class="muted">Panelist discussion in progress — listen along.</p>
+    </div>`;
+  }
+
+  if (fmt === 'A') {
+    const allVotes = await getVotes(tk + '_A');
+    const myVote   = allVotes[PARTICIPANT_ID];
+    const hasVoted = myVote !== undefined;
+    const counts   = tally(allVotes, term.formatA.options.length);
+    const voters   = totalVoters(allVotes);
+
+    if (hasVoted) {
+      return `<div class="panel">
+        <span class="stage-pill">How Do You Define It?</span>
+        <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+        <p class="muted">You voted <strong>${String.fromCharCode(65 + myVote)}</strong> · Live results:</p>
+        ${renderBars(term.formatA.options, counts, voters)}
+      </div>`;
+    }
+
+    let html = `<div class="panel">
+      <span class="stage-pill">How Do You Define It?</span>
+      <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+      <p>${e(term.formatA.prompt)}</p>`;
+    term.formatA.options.forEach((opt, i) => {
+      html += `<div class="def-option" onclick="castVote('${tk}_A', ${i})">
+        <div class="def-letter">${String.fromCharCode(65 + i)}</div>
+        <div class="def-text">${e(opt.text)}</div>
+      </div>`;
+    });
+    html += `<p class="help">Tap one to vote. You can change before the next stage.</p></div>`;
+    return html;
+  }
+
+  if (fmt === 'B') {
+    const allVotes = await getVotes(tk + '_B');
+    const myVote   = allVotes[PARTICIPANT_ID];
+    const hasVoted = myVote !== undefined;
+    const counts   = tally(allVotes, term.formatB.options.length);
+    const voters   = totalVoters(allVotes);
+
+    if (hasVoted) {
+      return `<div class="panel">
+        <span class="stage-pill">Scenario</span>
+        <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+        <div class="scenario-box"><div class="label">Scenario</div>${e(term.formatB.scenario)}</div>
+        <p class="muted">You voted <strong>${String.fromCharCode(65 + myVote)}</strong> · Live results:</p>
+        ${renderBars(term.formatB.options, counts, voters)}
+      </div>`;
+    }
+
+    let html = `<div class="panel">
+      <span class="stage-pill">Scenario</span>
+      <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+      <div class="scenario-box"><div class="label">Scenario</div>${e(term.formatB.scenario)}</div>
+      <p><strong>${e(term.formatB.prompt)}</strong></p>`;
+    term.formatB.options.forEach((opt, i) => {
+      html += `<div class="def-option" onclick="castVote('${tk}_B', ${i})">
+        <div class="def-letter">${String.fromCharCode(65 + i)}</div>
+        <div class="def-text">${e(opt.text)}</div>
+      </div>`;
+    });
+    html += `<p class="help">Tap one to vote.</p></div>`;
+    return html;
+  }
+
+  if (fmt === 'C') {
+    const allVotes = await getVotes(tk + '_C');
+    const myVote   = allVotes[PARTICIPANT_ID];
+    const hasVoted = myVote !== undefined;
+    const counts   = tally(allVotes, term.formatC.options.length);
+    const voters   = totalVoters(allVotes);
+
+    if (hasVoted) {
+      return `<div class="panel">
+        <span class="stage-pill">Lightning Vote</span>
+        <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+        <p>${e(term.formatC.prompt)}</p>
+        ${renderLightningBars(term.formatC.options, counts, voters)}
+      </div>`;
+    }
+
+    let html = `<div class="panel">
+      <span class="stage-pill">Lightning Vote</span>
+      <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+      <p><strong>${e(term.formatC.prompt)}</strong></p>`;
+    term.formatC.options.forEach((opt, i) => {
+      html += `<div class="def-option" onclick="castVote('${tk}_C', ${i})">
+        <div class="def-letter">${String.fromCharCode(65 + i)}</div>
+        <div class="def-text">${e(opt.text)}</div>
+      </div>`;
+    });
+    html += `<p class="help">One tap only.</p></div>`;
+    return html;
+  }
+
+  return `<div class="panel"><p class="muted">Waiting for next prompt…</p></div>`;
+}
+
+// ── Role bar ──────────────────────────────────────────────────────────────────
+function updateRoleBar() {
+  document.getElementById('role-facilitator').className = role === 'facilitator' ? 'active' : '';
+  document.getElementById('role-participant').className = role === 'participant' ? 'active' : '';
+  document.getElementById('room-code').textContent = 'Room: ' + ROOM;
+  document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
+}
+
 function setRole(r) {
   role = r;
   sessionStorage.setItem('webinar_role', r);
   render();
 }
 
-function updateRoleBar() {
-  document.getElementById('role-facilitator').className = role === 'facilitator' ? 'active' : '';
-  document.getElementById('role-participant').className = role === 'participant' ? 'active' : '';
-  document.getElementById('participant-id-wrap').style.display = role === 'participant' ? 'inline-block' : 'none';
-  document.getElementById('room-code').textContent = 'Room: ' + ROOM;
-  document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
+// ── Floating facilitator control bar ─────────────────────────────────────────
+function stageLabel(s) {
+  if (s === 'welcome')   return 'Welcome';
+  if (s === 'shortlist') return 'Shortlist vote';
+  if (s === 'close')     return 'Close';
+  const [tk, fmt] = s.split('_');
+  const name   = TERMS[tk]?.name || tk;
+  const labels = { A: 'Definition', B: 'Scenario', C: 'Lightning vote', panel: 'Panelist discussion' };
+  return `${name} · ${labels[fmt] || fmt}`;
 }
 
-// ---- helpers ----
-function tally(votes, n) {
-  const c = new Array(n).fill(0);
-  for (const k in votes) { if (votes[k] != null && votes[k] >= 0 && votes[k] < n) c[votes[k]]++; }
-  return c;
-}
-function tallyMulti(votes, n) {
-  const c = new Array(n).fill(0);
-  for (const k in votes) { for (const idx of (votes[k] || [])) { if (idx >= 0 && idx < n) c[idx]++; } }
-  return c;
-}
-function totalVoters(votes) { return Object.keys(votes).length; }
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function updateControlBar(seq) {
+  const bar = document.getElementById('ctrl-bar');
+  if (!bar) return;
+  bar.style.display = role === 'facilitator' ? 'flex' : 'none';
+  if (role !== 'facilitator') return;
+  const idx  = seq.indexOf(stage);
+  document.getElementById('ctrl-label').textContent = `${idx + 1} / ${seq.length}  ·  ${stageLabel(stage)}`;
+  document.getElementById('ctrl-prev').disabled = idx <= 0;
+  document.getElementById('ctrl-next').disabled = idx >= seq.length - 1;
 }
 
-// ---- render ----
+let ctrlOpen = true;
+window.toggleCtrl = function() {
+  ctrlOpen = !ctrlOpen;
+  document.getElementById('ctrl-body').style.display = ctrlOpen ? 'flex' : 'none';
+  document.getElementById('ctrl-toggle').textContent = ctrlOpen ? '▼' : '▲';
+};
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+window.navigate = async function(delta) {
+  if (role !== 'facilitator') return;
+  const seq = await getFullSequence();
+  const next = seq[seq.indexOf(stage) + delta];
+  if (next !== undefined) { await setStage(next); render(); }
+};
+
+// ── Main render ───────────────────────────────────────────────────────────────
 async function render() {
   updateRoleBar();
   const root = document.getElementById('main-content');
-
-  // Save any in-progress textarea content before wiping the DOM
-  const savedText = {};
-  root.querySelectorAll('textarea[id]').forEach(el => {
-    if (el.value.trim()) savedText[el.id] = el.value;
-  });
-
   try {
     stage = await getStage();
-    root.innerHTML = role === 'facilitator' ? await renderFacilitator() : await renderParticipant();
-
-    // Restore textarea content so polling doesn't erase what the user is typing
-    Object.entries(savedText).forEach(([id, val]) => {
-      const el = document.getElementById(id);
-      if (el) el.value = val;
-    });
+    const seq = await getFullSequence();
+    root.innerHTML = role === 'facilitator'
+      ? await renderFacilitatorStage()
+      : await renderParticipantStage();
+    updateControlBar(seq);
   } catch (err) {
     root.innerHTML = `<div class="panel error-panel">
       <h2>Backend error</h2>
-      <p>Could not connect to the storage backend. Check the browser console for details.</p>
-      <pre>${escapeHtml(String(err))}</pre>
-      <p class="muted">You can still run the session using <strong>?backend=localStorage</strong> (facilitator-only mode).</p>
+      <p>Could not connect to the storage backend.</p>
+      <pre>${e(String(err))}</pre>
+      <p class="muted">Try <strong>?backend=localStorage</strong> for offline facilitator mode.</p>
     </div>`;
     console.error('[webinar] render error:', err);
   }
 }
 
-// ---- facilitator ----
-async function renderFacilitator() {
-  const stages = [
-    { id: 'welcome', label: 'Welcome' },
-    { id: 'shortlist', label: 'Shortlist vote' }
-  ];
-  for (const t of TERM_KEYS) {
-    stages.push({ id: t + '_A', label: TERMS[t].name + ' — A' });
-    stages.push({ id: t + '_B', label: TERMS[t].name + ' — B' });
-    stages.push({ id: t + '_C', label: TERMS[t].name + ' — C' });
-  }
-  stages.push({ id: 'close', label: 'Close' });
-
-  let html = `<div class="panel">
-    <h2>Facilitator console</h2>
-    <p class="muted">Pick the stage participants should see. Their screens update within ~2 seconds.</p>
-    <div class="stage-grid">
-      ${stages.map(s => `<div class="stage-btn ${s.id===stage?'active':''}" onclick="goToStage('${s.id}')">${s.label}</div>`).join('')}
-    </div>
-  </div>`;
-
-  if (stage === 'welcome') {
-    html += `<div class="panel"><h2>Welcome stage</h2><p>Participants see a holding screen. When ready, click "Shortlist vote" above.</p></div>`;
-  } else if (stage === 'shortlist') {
-    const votes = await getMultiVotes('shortlist');
-    const counts = tallyMulti(votes, TERM_KEYS.length);
-    const voters = totalVoters(votes);
-    html += `<div class="panel"><h2>Shortlist — live results</h2>
-      <p class="muted">Voters so far: <strong>${voters}</strong>. Top 3 by votes are starred.</p>`;
-    const ranked = TERM_KEYS.map((k, i) => ({ k, i, c: counts[i] })).sort((a, b) => b.c - a.c);
-    ranked.forEach((r, idx) => {
-      const pct = voters ? Math.round(r.c / voters * 100) : 0;
-      const isTop3 = idx < 3 && r.c > 0;
-      html += `<div class="vote-row">
-        <div class="vote-bar-wrap" style="${isTop3 ? 'border:1px solid var(--accent);' : ''}">
-          <div class="vote-bar" style="width:${pct}%;"></div>
-          <span class="vote-bar-label">${isTop3 ? '★ ' : ''}${escapeHtml(TERMS[r.k].name)}</span>
-          <span class="vote-bar-count">${r.c} (${pct}%)</span>
-        </div>
-      </div>`;
-    });
-    html += `</div>`;
-  } else if (stage === 'close') {
-    const chat = await getChat();
-    html += `<div class="panel"><h2>Closing — chat thread</h2>
-      <p class="muted">Final reflections from participants:</p>
-      <div class="chat-list">${chat.length ? chat.slice().reverse().map(c => `<div class="chat-item"><div class="who">${escapeHtml(c.name)}</div>${escapeHtml(c.text)}</div>`).join('') : '<div class="empty">No chat messages yet.</div>'}</div>
-    </div>`;
-  } else {
-    const [tk, fmt] = stage.split('_');
-    const term = TERMS[tk];
-    if (!term) { html += `<div class="panel"><p>Unknown stage.</p></div>`; return html; }
-
-    if (fmt === 'A') {
-      const votes = await getVotes(tk + '_A');
-      const counts = tally(votes, term.formatA.options.length);
-      const voters = totalVoters(votes);
-      html += `<div class="panel"><h2><span class="stage-pill">Format A</span>${escapeHtml(term.name)} — How Do You Define It?</h2>
-        <p>${escapeHtml(term.formatA.prompt)}</p>
-        <p class="muted">Voters: <strong>${voters}</strong></p>`;
-      term.formatA.options.forEach((opt, i) => {
-        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
-        html += `<div class="vote-row"><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%;"></div>
-          <span class="vote-bar-label">${String.fromCharCode(65+i)}. ${escapeHtml(opt.text.slice(0, 90))}${opt.text.length>90?'…':''}</span>
-          <span class="vote-bar-count">${counts[i]} (${pct}%)</span></div></div>`;
-      });
-      html += `<h3>Sources (use to drive discussion AFTER vote)</h3>`;
-      term.formatA.options.forEach((opt, i) => {
-        html += `<p style="font-size:13px;margin:4px 0;"><strong>${String.fromCharCode(65+i)}:</strong> <em>${escapeHtml(opt.source)}</em></p>`;
-      });
-      html += `</div>`;
-    } else if (fmt === 'B') {
-      const votes = await getVotes(tk + '_B');
-      const counts = tally(votes, term.formatB.options.length);
-      const voters = totalVoters(votes);
-      const chat = await getChat();
-      const recent = chat.filter(c => c.text.length > 0).slice(-15).reverse();
-      html += `<div class="panel"><h2><span class="stage-pill">Format B</span>${escapeHtml(term.name)} — Scenario Test</h2>
-        <div class="scenario-box"><div class="label">Scenario</div>${escapeHtml(term.formatB.scenario)}</div>
-        <p><strong>${escapeHtml(term.formatB.prompt)}</strong></p>
-        <p class="muted">Voters: <strong>${voters}</strong></p>`;
-      term.formatB.options.forEach((opt, i) => {
-        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
-        html += `<div class="vote-row"><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%;"></div>
-          <span class="vote-bar-label">${String.fromCharCode(65+i)}. ${escapeHtml(opt.text.slice(0, 100))}${opt.text.length>100?'…':''}</span>
-          <span class="vote-bar-count">${counts[i]} (${pct}%)</span></div></div>`;
-      });
-      html += `<h3>Discussion prompts</h3>`;
-      term.formatB.discussion.forEach(d => { html += `<p style="font-size:13px;margin:6px 0;">• ${escapeHtml(d)}</p>`; });
-      html += `<h3>Live chat</h3><div class="chat-list">${recent.length ? recent.map(c => `<div class="chat-item"><div class="who">${escapeHtml(c.name)}</div>${escapeHtml(c.text)}</div>`).join('') : '<div class="empty">No chat yet — prompt participants.</div>'}</div>`;
-      html += `</div>`;
-    } else if (fmt === 'C') {
-      const votes = await getVotes(tk + '_C');
-      const counts = tally(votes, term.formatC.options.length);
-      const voters = totalVoters(votes);
-      html += `<div class="panel"><h2><span class="stage-pill">Format C</span>${escapeHtml(term.name)} — Lightning Vote</h2>
-        <p><strong>${escapeHtml(term.formatC.prompt)}</strong></p>
-        <p class="muted">Voters: <strong>${voters}</strong></p>`;
-      term.formatC.options.forEach((opt, i) => {
-        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
-        html += `<div class="vote-row"><div class="vote-bar-wrap"><div class="vote-bar" style="width:${pct}%;"></div>
-          <span class="vote-bar-label">${String.fromCharCode(65+i)}. ${escapeHtml(opt.text)}</span>
-          <span class="vote-bar-count">${counts[i]} (${pct}%)</span></div></div>`;
-      });
-      html += `<h3>Punchline (use as discussion close)</h3><p style="font-size:13px;">${escapeHtml(term.formatC.punchline)}</p></div>`;
-    }
-  }
-  return html;
-}
-
-window.goToStage = async function(s) { await setStage(s); render(); };
-
-// ---- participant ----
-async function renderParticipant() {
-  if (stage === 'welcome') {
-    return `<div class="panel"><h2>Welcome</h2>
-      <p>This is a 60-minute interactive webinar on AI terminology for public health.</p>
-      <p>Your votes and chat messages appear live for the facilitator. Set a name above if you'd like your messages attributed; otherwise you'll show as Anonymous.</p>
-      <p class="muted">Waiting for the facilitator to start the shortlist vote…</p>
-    </div>`;
-  }
-  if (stage === 'shortlist') {
-    const myVote = (await getMultiVotes('shortlist'))[PARTICIPANT_ID] || [];
-    let html = `<div class="panel"><h2>Pick your three terms</h2>
-      <p>Below are six AI terms. Tap up to <strong>three</strong> you most want to unpack today. Your selection updates in real time.</p>
-      ${myVote.length === 3 ? '<p class="muted">You\'ve picked three. Tap one to deselect if you want to swap.</p>' : `<p class="muted">${myVote.length}/3 selected.</p>`}
-      <div class="term-grid">`;
-    TERM_KEYS.forEach((k, i) => {
-      const sel = myVote.includes(i);
-      html += `<div class="term-card ${sel?'selected':''}" onclick="toggleShortlist(${i})">
-        <div class="t-name">${escapeHtml(TERMS[k].name)}</div>
-        <div class="t-desc">${escapeHtml(TERMS[k].short)}</div>
-      </div>`;
-    });
-    html += `</div></div>`;
-    return html;
-  }
-  if (stage === 'close') {
-    return `<div class="panel"><h2>Closing reflections</h2>
-      <p>If you had 30 seconds to redefine one of today's terms for an audience of implementing partners, which one and how?</p>
-      <textarea class="chat-input" id="close-chat" placeholder="Your reflection…"></textarea>
-      <div class="ctrl-row"><button class="primary" onclick="submitChat('close-chat')">Submit</button></div>
-      <p class="help">Your reflection will be visible to the facilitator and may be read out at the close.</p>
-    </div>`;
-  }
-
-  const [tk, fmt] = stage.split('_');
-  const term = TERMS[tk];
-  if (!term) return `<div class="panel"><p>Waiting for next prompt…</p></div>`;
-
-  if (fmt === 'A') {
-    const myVote = (await getVotes(tk + '_A'))[PARTICIPANT_ID];
-    let html = `<div class="panel"><h2><span class="stage-pill">How Do You Define It?</span>${escapeHtml(term.name)}</h2>
-      <p>${escapeHtml(term.formatA.prompt)}</p>`;
-    term.formatA.options.forEach((opt, i) => {
-      const sel = myVote === i;
-      html += `<div class="def-option ${sel?'selected':''}" onclick="castVote('${tk}_A', ${i})">
-        <div class="def-letter">${String.fromCharCode(65+i)}</div>
-        <div class="def-text">${escapeHtml(opt.text)}</div>
-      </div>`;
-    });
-    html += `<p class="help">Tap one. You can change your vote at any time.</p></div>`;
-    return html;
-  }
-  if (fmt === 'B') {
-    const myVote = (await getVotes(tk + '_B'))[PARTICIPANT_ID];
-    let html = `<div class="panel"><h2><span class="stage-pill">Scenario Test</span>${escapeHtml(term.name)}</h2>
-      <div class="scenario-box"><div class="label">Scenario</div>${escapeHtml(term.formatB.scenario)}</div>
-      <p><strong>${escapeHtml(term.formatB.prompt)}</strong></p>`;
-    term.formatB.options.forEach((opt, i) => {
-      const sel = myVote === i;
-      html += `<div class="def-option ${sel?'selected':''}" onclick="castVote('${tk}_B', ${i})">
-        <div class="def-letter">${String.fromCharCode(65+i)}</div>
-        <div class="def-text">${escapeHtml(opt.text)}</div>
-      </div>`;
-    });
-    html += `<h3>Add a comment</h3>
-      <textarea class="chat-input" id="b-chat-${tk}" placeholder="What's missing? What would you add?"></textarea>
-      <div class="ctrl-row"><button class="primary" onclick="submitChat('b-chat-${tk}')">Submit</button></div>
-    </div>`;
-    return html;
-  }
-  if (fmt === 'C') {
-    const myVote = (await getVotes(tk + '_C'))[PARTICIPANT_ID];
-    let html = `<div class="panel"><h2><span class="stage-pill">Lightning Vote</span>${escapeHtml(term.name)}</h2>
-      <p><strong>${escapeHtml(term.formatC.prompt)}</strong></p>`;
-    term.formatC.options.forEach((opt, i) => {
-      const sel = myVote === i;
-      html += `<div class="def-option ${sel?'selected':''}" onclick="castVote('${tk}_C', ${i})">
-        <div class="def-letter">${String.fromCharCode(65+i)}</div>
-        <div class="def-text">${escapeHtml(opt.text)}</div>
-      </div>`;
-    });
-    html += `<p class="help">One tap.</p></div>`;
-    return html;
-  }
-  return `<div class="panel"><p>Waiting for next prompt…</p></div>`;
-}
-
+// ── Event handlers ─────────────────────────────────────────────────────────────
 window.castVote = async function(pollId, idx) { await recordVote(pollId, idx); render(); };
+
 window.toggleShortlist = async function(idx) {
   const cur = (await getMultiVotes('shortlist'))[PARTICIPANT_ID] || [];
   let next;
-  if (cur.includes(idx)) next = cur.filter(x => x !== idx);
-  else if (cur.length < 3) next = [...cur, idx];
-  else next = cur;
+  if (cur.includes(idx))   next = cur.filter(x => x !== idx);
+  else if (cur.length < 2) next = [...cur, idx];
+  else                     next = cur;
   await recordMultiVote('shortlist', next);
   render();
 };
-window.submitChat = async function(elId) {
-  const el = document.getElementById(elId);
-  if (!el || !el.value.trim()) return;
-  await postChat(el.value.trim());
-  el.value = '';
-  render();
-};
-window.setRole = setRole;
+
+window.setRole      = setRole;
 window.resetSession = resetSession;
 
-// ---- polling ----
+// ── Polling & init ─────────────────────────────────────────────────────────────
 let pollTimer = null;
 function startPolling() {
   if (pollTimer) clearInterval(pollTimer);
-  pollTimer = setInterval(() => render(), 5000);
+  pollTimer = setInterval(render, 5000);
 }
 
-// ---- init ----
 (async function init() {
-  // For localStorage backend, listen to storage events for instant cross-tab updates
-  if (STORAGE.onChange) STORAGE.onChange(() => render());
+  if (STORAGE.onChange) STORAGE.onChange(render);
   render();
   startPolling();
 })();
