@@ -91,16 +91,28 @@ function escapeHtml(s) {
 async function render() {
   updateRoleBar();
   const root = document.getElementById('main-content');
+
+  // Save any in-progress textarea content before wiping the DOM
+  const savedText = {};
+  root.querySelectorAll('textarea[id]').forEach(el => {
+    if (el.value.trim()) savedText[el.id] = el.value;
+  });
+
   try {
     stage = await getStage();
     root.innerHTML = role === 'facilitator' ? await renderFacilitator() : await renderParticipant();
+
+    // Restore textarea content so polling doesn't erase what the user is typing
+    Object.entries(savedText).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val;
+    });
   } catch (err) {
-    root.innerHTML = `<div class="panel" style="border-left:4px solid var(--vs-red);">
-      <h2 style="color:var(--vs-red);">Backend error</h2>
-      <p>Could not connect to the npoint storage backend. Check the browser console for details.</p>
-      <pre style="font-size:12px;background:var(--secondary-bg);padding:12px;border-radius:3px;overflow:auto;white-space:pre-wrap;">${escapeHtml(String(err))}</pre>
-      <p class="muted">Common causes: bin ID not set, bin locked without a token, or a network/CORS issue.
-      You can still run the session using <strong>?backend=localStorage</strong> (facilitator-only mode).</p>
+    root.innerHTML = `<div class="panel error-panel">
+      <h2>Backend error</h2>
+      <p>Could not connect to the storage backend. Check the browser console for details.</p>
+      <pre>${escapeHtml(String(err))}</pre>
+      <p class="muted">You can still run the session using <strong>?backend=localStorage</strong> (facilitator-only mode).</p>
     </div>`;
     console.error('[webinar] render error:', err);
   }

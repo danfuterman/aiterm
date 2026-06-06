@@ -5,174 +5,234 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AI Terminology Webinar</title>
 <style>
-  /* Color palette */
   :root {
-    --vs-navy: #1a2851;
-    --vs-navy-dark: #0f1f3d;
-    --vs-navy-light: #2d3d6e;
-    --vs-red: #e6354f;
-    --vs-red-dark: #c12940;
-    --vs-cream: #f7f5f0;
-    --vs-cream-dark: #ede9df;
-    --vs-charcoal: #1f1f1f;
-    --vs-text: #2c2c2a;
-    --vs-text-muted: #6b6b65;
-
-    --bg: var(--vs-cream);
-    --panel-bg: #ffffff;
-    --border: #e5e1d6;
-    --border-strong: #d2cdbd;
-    --text: var(--vs-text);
-    --text-muted: var(--vs-text-muted);
-
-    --accent: var(--vs-navy);
-    --accent-bg: #e8ecf5;
-    --accent-text: var(--vs-navy-dark);
-    --accent-strong: var(--vs-navy);
-
-    --highlight: var(--vs-red);
-    --highlight-bg: #fce8eb;
-    --highlight-text: var(--vs-red-dark);
-
-    --secondary-bg: var(--vs-cream-dark);
+    --blue:        #2563EB;
+    --blue-dark:   #1D4ED8;
+    --blue-light:  #EFF6FF;
+    --blue-mid:    #BFDBFE;
+    --green:       #059669;
+    --green-light: #ECFDF5;
+    --bg:          #F1F5F9;
+    --surface:     #FFFFFF;
+    --border:      #E2E8F0;
+    --border-mid:  #CBD5E1;
+    --text:        #0F172A;
+    --text-muted:  #64748B;
+    --text-light:  #94A3B8;
+    --red:         #DC2626;
+    --red-light:   #FEF2F2;
   }
+
   * { box-sizing: border-box; }
+
   body {
-    font-family: "Helvetica Neue", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
+                 "Helvetica Neue", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0; padding: 0;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
   }
-  /* Branded header strip */
+
+  /* ── Header ── */
   .vs-header {
-    background: var(--vs-navy);
-    color: white;
-    padding: 14px 1rem;
-    border-bottom: 4px solid var(--vs-red);
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 1rem;
   }
   .vs-header-inner {
-    max-width: 760px; margin: 0 auto;
+    max-width: 780px; margin: 0 auto; height: 56px;
     display: flex; align-items: center; justify-content: space-between;
   }
   .vs-brand {
-    font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;
+    font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.01em;
   }
-  .vs-brand .vs-brand-accent { color: var(--vs-red); }
-  .vs-tagline {
-    font-size: 11px; color: rgba(255,255,255,0.7); letter-spacing: 0.5px;
-  }
-  .container { max-width: 760px; margin: 0 auto; padding: 1rem; }
+  .vs-brand .vs-brand-accent { color: var(--blue); }
+  .vs-tagline { font-size: 12px; color: var(--text-muted); }
+
+  /* ── Layout ── */
+  .container { max-width: 780px; margin: 0 auto; padding: 1.25rem 1rem; }
+
+  /* ── Role bar ── */
   .role-bar {
     display: flex; gap: 8px; align-items: center;
-    background: var(--panel-bg); border: 1px solid var(--border);
-    padding: 10px 14px; border-radius: 4px; margin-bottom: 1rem; flex-wrap: wrap;
-    font-size: 13px;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 10px 14px; border-radius: 10px; margin-bottom: 1.25rem;
+    flex-wrap: wrap; font-size: 13px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
   }
   .role-bar button {
-    padding: 6px 14px; font-size: 13px;
-    border: 1px solid var(--border-strong); background: var(--panel-bg);
-    border-radius: 3px; cursor: pointer; font-family: inherit; color: var(--text);
+    padding: 6px 16px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border-mid); background: var(--bg);
+    border-radius: 6px; cursor: pointer; font-family: inherit; color: var(--text);
     transition: all 0.15s;
   }
-  .role-bar button:hover { background: var(--secondary-bg); border-color: var(--accent); }
-  .role-bar .active { background: var(--vs-navy); color: white; border-color: var(--vs-navy); }
-  .role-bar .active:hover { background: var(--vs-navy-dark); border-color: var(--vs-navy-dark); color: white; }
+  .role-bar button:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+  .role-bar .active { background: var(--blue); color: white; border-color: var(--blue); }
+  .role-bar .active:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: white; }
   .role-bar .spacer { flex: 1; }
-  .role-bar .room-code { color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 11px; }
-  .role-bar input { padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-strong);
-    border-radius: 3px; background: var(--panel-bg); width: 140px; font-family: inherit; }
-  .role-bar input:focus { outline: none; border-color: var(--vs-navy); box-shadow: 0 0 0 2px var(--accent-bg); }
+  .role-bar .room-code {
+    color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px; background: var(--bg); padding: 3px 8px;
+    border-radius: 4px; border: 1px solid var(--border);
+  }
+  .role-bar input {
+    padding: 6px 10px; font-size: 13px; border: 1px solid var(--border-mid);
+    border-radius: 6px; background: var(--bg); width: 150px; font-family: inherit;
+    color: var(--text);
+  }
+  .role-bar input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); }
 
-  .panel { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 4px;
-    padding: 1.5rem; margin-bottom: 1rem; }
-  .panel h2 { font-size: 20px; font-weight: 700; margin: 0 0 0.75rem; color: var(--vs-navy);
-    line-height: 1.25; letter-spacing: -0.01em; }
-  .panel h3 { font-size: 13px; font-weight: 700; margin: 1.25rem 0 0.5rem;
-    color: var(--vs-navy); text-transform: uppercase; letter-spacing: 1px; }
-  .panel p { font-size: 14px; margin: 0 0 0.75rem; }
+  /* ── Panels ── */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem; margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .panel h2 {
+    font-size: 19px; font-weight: 700; margin: 0 0 0.6rem;
+    color: var(--text); line-height: 1.3; letter-spacing: -0.02em;
+  }
+  .panel h3 {
+    font-size: 11px; font-weight: 600; margin: 1.5rem 0 0.6rem;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;
+  }
+  .panel p { font-size: 14px; margin: 0 0 0.75rem; color: var(--text); }
   .panel .muted { color: var(--text-muted); font-size: 13px; }
 
-  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-  .term-card { padding: 14px; border: 1px solid var(--border); border-radius: 4px;
-    cursor: pointer; background: var(--panel-bg); transition: all 0.15s;
-    border-left: 3px solid var(--border-strong); }
-  .term-card:hover { background: var(--secondary-bg); border-left-color: var(--vs-navy); }
-  .term-card.selected { background: var(--accent-bg); border-color: var(--vs-navy); border-left-color: var(--vs-red); border-left-width: 4px; }
-  .term-card .t-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; color: var(--vs-navy); }
+  /* ── Term cards (shortlist) ── */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
+  .term-card {
+    padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px;
+    cursor: pointer; background: var(--surface); transition: all 0.15s;
+  }
+  .term-card:hover { border-color: var(--blue); background: var(--blue-light); }
+  .term-card.selected {
+    background: var(--blue-light); border-color: var(--blue); border-width: 2px;
+    box-shadow: 0 0 0 3px var(--blue-mid);
+  }
+  .term-card .t-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; color: var(--text); }
   .term-card .t-desc { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
 
+  /* ── Vote bars ── */
   .vote-row { margin: 8px 0; }
-  .vote-bar-wrap { height: 32px; background: var(--secondary-bg); border-radius: 3px;
-    position: relative; overflow: hidden; }
-  .vote-bar { height: 100%; background: var(--vs-navy); opacity: 0.15; transition: width 0.3s; }
-  .vote-bar-label { position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  .vote-bar-wrap {
+    height: 36px; background: var(--bg); border-radius: 8px;
+    position: relative; overflow: hidden; border: 1px solid var(--border);
+  }
+  .vote-bar { height: 100%; background: var(--blue); opacity: 0.18; transition: width 0.4s ease; }
+  .vote-bar-label {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
     font-size: 13px; font-weight: 500; z-index: 2; max-width: 72%;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text); }
-  .vote-bar-count { position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
-    font-size: 12px; color: var(--text-muted); z-index: 2; font-weight: 500;
-    font-feature-settings: "tnum"; }
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text);
+  }
+  .vote-bar-count {
+    position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 12px; color: var(--text-muted); z-index: 2; font-weight: 600;
+    font-feature-settings: "tnum";
+  }
 
-  .def-option { padding: 14px; border: 1px solid var(--border); border-radius: 4px;
-    margin-bottom: 8px; cursor: pointer; background: var(--panel-bg);
+  /* ── Definition options ── */
+  .def-option {
+    padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px;
+    margin-bottom: 8px; cursor: pointer; background: var(--surface);
     display: flex; gap: 14px; align-items: flex-start; transition: all 0.15s;
-    border-left: 3px solid var(--border-strong); }
-  .def-option:hover { background: var(--secondary-bg); border-left-color: var(--vs-navy); }
-  .def-option.selected { background: var(--accent-bg); border-color: var(--vs-navy);
-    border-left-color: var(--vs-red); border-left-width: 4px; padding-left: 13px; }
-  .def-option .def-letter { font-weight: 700; min-width: 26px; height: 26px; border-radius: 50%;
-    background: var(--vs-navy); color: white; display: flex; align-items: center; justify-content: center;
-    font-size: 12px; flex-shrink: 0; margin-top: 2px; }
-  .def-option.selected .def-letter { background: var(--vs-red); }
-  .def-option .def-text { font-size: 14px; flex: 1; line-height: 1.5; }
+  }
+  .def-option:hover { border-color: var(--blue); background: var(--blue-light); }
+  .def-option.selected {
+    background: var(--blue-light); border-color: var(--blue); border-width: 2px;
+    box-shadow: 0 0 0 3px var(--blue-mid);
+  }
+  .def-option .def-letter {
+    font-weight: 700; min-width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg); border: 1.5px solid var(--border-mid);
+    color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+    font-size: 12px; flex-shrink: 0; margin-top: 1px; transition: all 0.15s;
+  }
+  .def-option.selected .def-letter { background: var(--blue); border-color: var(--blue); color: white; }
+  .def-option .def-text { font-size: 14px; flex: 1; line-height: 1.55; }
 
-  .scenario-box { background: var(--vs-navy); color: white; border-radius: 4px; padding: 16px 18px;
-    margin-bottom: 1rem; font-size: 14px; line-height: 1.55;
-    border-left: 4px solid var(--vs-red); }
-  .scenario-box .label { font-size: 11px; color: rgba(255,255,255,0.7);
-    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 600; }
+  /* ── Scenario box ── */
+  .scenario-box {
+    background: var(--blue-light); border: 1.5px solid var(--blue-mid);
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 1rem;
+    font-size: 14px; line-height: 1.6; color: var(--text);
+  }
+  .scenario-box .label {
+    font-size: 10px; color: var(--blue); text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 700;
+  }
 
-  .chat-input { width: 100%; padding: 10px 12px; font-size: 14px; border: 1px solid var(--border-strong);
-    border-radius: 3px; background: var(--panel-bg); font-family: inherit;
-    resize: vertical; min-height: 70px; color: var(--text); }
-  .chat-input:focus { outline: none; border-color: var(--vs-navy); box-shadow: 0 0 0 2px var(--accent-bg); }
-  .chat-list { max-height: 280px; overflow-y: auto; margin-top: 0.75rem; }
-  .chat-item { padding: 12px 14px; background: var(--secondary-bg); border-radius: 3px;
-    margin-bottom: 6px; font-size: 13px; border-left: 2px solid var(--vs-navy); }
-  .chat-item .who { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+  /* ── Chat / comments ── */
+  .chat-input {
+    width: 100%; padding: 10px 14px; font-size: 14px; border: 1.5px solid var(--border-mid);
+    border-radius: 8px; background: var(--bg); font-family: inherit;
+    resize: vertical; min-height: 80px; color: var(--text); line-height: 1.5;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .chat-input:focus { outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light); background: var(--surface); }
+  .chat-list { max-height: 300px; overflow-y: auto; margin-top: 0.75rem; }
+  .chat-item {
+    padding: 12px 14px; background: var(--bg); border-radius: 8px;
+    margin-bottom: 6px; font-size: 13px; border: 1px solid var(--border);
+  }
+  .chat-item .who { font-size: 11px; color: var(--blue); margin-bottom: 4px; font-weight: 600; }
 
-  .stage-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 6px; margin: 0.5rem 0 1rem; }
-  .stage-btn { padding: 9px 8px; font-size: 12px; text-align: center; cursor: pointer;
-    border: 1px solid var(--border); border-radius: 3px; background: var(--panel-bg);
-    color: var(--text); transition: all 0.15s; }
-  .stage-btn:hover { background: var(--secondary-bg); border-color: var(--vs-navy); }
-  .stage-btn.active { background: var(--vs-navy); border-color: var(--vs-navy);
-    color: white; font-weight: 600; }
+  /* ── Stage controls (facilitator) ── */
+  .stage-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 6px; margin: 0.5rem 0 1.25rem;
+  }
+  .stage-btn {
+    padding: 9px 8px; font-size: 12px; font-weight: 500; text-align: center; cursor: pointer;
+    border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
+    color: var(--text-muted); transition: all 0.15s;
+  }
+  .stage-btn:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+  .stage-btn.active { background: var(--blue); border-color: var(--blue); color: white; font-weight: 600; }
 
-  .stage-pill { display: inline-block; padding: 4px 12px; background: var(--vs-red);
-    color: white; border-radius: 2px; font-size: 11px;
-    margin-right: 10px; vertical-align: middle; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1px; }
+  /* ── Stage pill ── */
+  .stage-pill {
+    display: inline-block; padding: 3px 10px; background: var(--blue-light);
+    color: var(--blue); border: 1px solid var(--blue-mid); border-radius: 20px;
+    font-size: 11px; font-weight: 600; margin-right: 10px; vertical-align: middle;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
 
-  .empty { text-align: center; padding: 1.5rem; color: var(--text-muted); font-size: 13px;
-    font-style: italic; }
+  /* ── Misc ── */
+  .empty { text-align: center; padding: 1.5rem; color: var(--text-light); font-size: 13px; font-style: italic; }
   .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
 
-  button.primary { padding: 9px 18px; font-size: 13px; background: var(--vs-red);
-    color: white; border: none; border-radius: 3px; cursor: pointer; font-family: inherit;
-    font-weight: 600; letter-spacing: 0.3px; transition: background 0.15s; }
-  button.primary:hover { background: var(--vs-red-dark); }
+  button.primary {
+    padding: 9px 20px; font-size: 13px; font-weight: 600;
+    background: var(--blue); color: white; border: none;
+    border-radius: 8px; cursor: pointer; font-family: inherit;
+    transition: background 0.15s; letter-spacing: 0.1px;
+  }
+  button.primary:hover { background: var(--blue-dark); }
 
-  .ctrl-row { display: flex; gap: 8px; margin-top: 0.5rem; }
-  .backend-tag { font-size: 10px; color: var(--text-muted); padding: 2px 8px;
-    background: var(--secondary-bg); border-radius: 2px; font-family: ui-monospace, monospace;
-    text-transform: uppercase; letter-spacing: 0.5px; }
+  .ctrl-row { display: flex; gap: 8px; margin-top: 0.75rem; }
+
+  .backend-tag {
+    font-size: 10px; color: var(--text-muted); padding: 2px 8px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+    font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  .error-panel { border-color: var(--red); }
+  .error-panel h2 { color: var(--red); }
+  .error-panel pre {
+    font-size: 12px; background: var(--red-light); padding: 12px; border-radius: 6px;
+    overflow: auto; white-space: pre-wrap; margin: 0.5rem 0;
+  }
 </style>
 </head>
 <body>
 <div class="vs-header">
   <div class="vs-header-inner">
     <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> Webinar</div>
-    <div class="vs-tagline">A live discussion · 60 minutes</div>
+    <div class="vs-tagline">AI terminology · live discussion</div>
   </div>
 </div>
 <div class="container">
