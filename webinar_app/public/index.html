@@ -190,20 +190,9 @@
   <div id="main-content"></div>
 </div>
 
-<!-- Firebase compat SDK (v9) — loaded only when ?backend=firebase -->
-<script>
-  (function() {
-    if (new URLSearchParams(location.search).get('backend') === 'firebase') {
-      var ver = '9.23.0';
-      ['firebase-app-compat', 'firebase-database-compat'].forEach(function(name) {
-        var s = document.createElement('script');
-        s.src = 'https://www.gstatic.com/firebasejs/' + ver + '/' + name + '.js';
-        s.async = false; // preserve load order
-        document.head.appendChild(s);
-      });
-    }
-  })();
-</script>
+<!-- Firebase compat SDK (v9) — always loaded; initialised only when ?backend=firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="config.js"></script>
 <script src="terms.js"></script>
 <script src="storage.js"></script>
