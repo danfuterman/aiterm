@@ -216,7 +216,7 @@ async function renderFacilitatorStage() {
       <div class="slide-eyebrow">${e(term.name)} · How Do You Define It?</div>
       <h2 class="slide-question">${e(term.formatA.prompt)}</h2>
       ${renderBars(term.formatA.options, counts, voters, {
-        labelFn: (opt, i) => `<strong>${String.fromCharCode(65 + i)}</strong> · ${e(opt.source || short(opt.text))}`
+        labelFn: (opt, i) => `<strong>${String.fromCharCode(65 + i)}</strong> · ${e(short(opt.text, 80))}`
       })}
     </div>`;
   }
@@ -345,7 +345,7 @@ async function renderParticipantStage() {
         <div class="def-text">${e(opt.text)}</div>
       </div>`;
     });
-    html += `<p class="help">Tap one to vote. You can change before the next stage.</p></div>`;
+    html += `<p class="help">Tap one to cast your vote.</p></div>`;
     return html;
   }
 
@@ -488,7 +488,13 @@ async function render() {
 }
 
 // ── Event handlers ─────────────────────────────────────────────────────────────
-window.castVote = async function(pollId, idx) { await recordVote(pollId, idx); render(); };
+window.castVote = async function(pollId, idx) {
+  // Prevent changing a vote once cast
+  const current = (await getVotes(pollId))[PARTICIPANT_ID];
+  if (current !== undefined) return;
+  await recordVote(pollId, idx);
+  render();
+};
 
 window.toggleShortlist = async function(idx) {
   const cur = (await getMultiVotes('shortlist'))[PARTICIPANT_ID] || [];
