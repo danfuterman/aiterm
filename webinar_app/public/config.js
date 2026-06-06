@@ -9,24 +9,25 @@
 //    Leave the bin unlocked — the random ID acts as your secret URL.
 window.NPOINT_BIN_ID = '';   // e.g. 'abc123def456'
 
-// ---- Firebase Realtime Database (lower latency, better for >50 voters) ----
+// ---- Firebase Realtime Database (recommended for live webinars) ----
 // 1. Create a Firebase project at https://console.firebase.google.com
-// 2. Add a web app, copy the config below.
-// 3. Enable Realtime Database in test mode (or with proper rules).
-// 4. Uncomment the script imports and the init block.
-
-/*
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
-import { getDatabase, ref, get, set, onValue } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-database.js';
-
-const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_PROJECT.firebaseapp.com',
-  databaseURL: 'https://YOUR_PROJECT-default-rtdb.firebaseio.com',
-  projectId: 'YOUR_PROJECT',
-};
-
-const app = initializeApp(firebaseConfig);
-window.firebaseDb = getDatabase(app);
-window.firebaseDbFns = { ref, get, set, onValue };
-*/
+// 2. Click "Add app" → Web, register it, copy the config values below.
+// 3. In the Firebase console go to Build → Realtime Database → Create database.
+//    Start in TEST MODE (open rules) — fine for a single webinar session.
+// 4. Paste your values below (or store them as GitHub Actions secrets —
+//    see deploy.yml which injects them automatically on deploy).
+(function () {
+  if (new URLSearchParams(location.search).get('backend') !== 'firebase') return;
+  if (typeof firebase === 'undefined') {
+    console.error('[webinar] Firebase SDK not loaded. Check index.html script tags.');
+    return;
+  }
+  var firebaseConfig = {
+    apiKey:      'FIREBASE_API_KEY',
+    authDomain:  'FIREBASE_AUTH_DOMAIN',
+    databaseURL: 'FIREBASE_DATABASE_URL',
+    projectId:   'FIREBASE_PROJECT_ID',
+  };
+  var app = firebase.initializeApp(firebaseConfig);
+  window._firebaseDb = firebase.database(app);
+})();

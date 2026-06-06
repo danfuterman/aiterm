@@ -104,23 +104,31 @@
     }
   };
 
-  // --------- Firebase backend ---------
-  // Lowest latency, real WebSocket subscriptions. Requires Firebase init in config.js.
+  // --------- Firebase Realtime Database backend ---------
+  // Uses WebSocket subscriptions — no polling needed, instant updates,
+  // no rate limits for a 100-person webinar on the free Spark tier.
+  // Requires Firebase compat SDK loaded in index.html + init in config.js.
   const firebaseBackend = {
     name: 'firebase',
+    _db() {
+      if (!window._firebaseDb) throw new Error(
+        'Firebase not initialised. Check FIREBASE_* values in config.js / GitHub secrets.'
+      );
+      return window._firebaseDb;
+    },
+    // Colon-separated keys → slash-separated Firebase paths
+    _path(key) { return key.replace(/:/g, '/'); },
+
     async getKey(key) {
-      if (!window.firebaseDb) throw new Error('Firebase not initialised');
-      const { ref, get } = window.firebaseDbFns;
-      const snap = await get(ref(window.firebaseDb, key.replace(/:/g, '/')));
+      const snap = await this._db().ref(this._path(key)).get();
       return snap.exists() ? snap.val() : null;
     },
     async setKey(key, value) {
-      const { ref, set } = window.firebaseDbFns;
-      await set(ref(window.firebaseDb, key.replace(/:/g, '/')), value);
+      await this._db().ref(this._path(key)).set(value);
     },
     onChange(cb) {
-      const { ref, onValue } = window.firebaseDbFns;
-      onValue(ref(window.firebaseDb, '/'), () => cb());
+      // Real-time listener on the root — fires instantly on any change
+      this._db().ref('/').on('value', () => cb());
     }
   };
 

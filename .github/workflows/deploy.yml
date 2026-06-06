@@ -14,24 +14,39 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Inject backend credentials
+      - name: Inject Firebase credentials
         env:
-          NPOINT_BIN_ID: ${{ secrets.NPOINT_BIN_ID }}
+          FIREBASE_API_KEY:      ${{ secrets.FIREBASE_API_KEY }}
+          FIREBASE_AUTH_DOMAIN:  ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          FIREBASE_DATABASE_URL: ${{ secrets.FIREBASE_DATABASE_URL }}
+          FIREBASE_PROJECT_ID:   ${{ secrets.FIREBASE_PROJECT_ID }}
         run: |
-          if [ -z "${NPOINT_BIN_ID}" ]; then
-            echo "ERROR: NPOINT_BIN_ID secret is not set in GitHub repository secrets."
+          MISSING=""
+          [ -z "$FIREBASE_API_KEY" ]      && MISSING="$MISSING FIREBASE_API_KEY"
+          [ -z "$FIREBASE_AUTH_DOMAIN" ]  && MISSING="$MISSING FIREBASE_AUTH_DOMAIN"
+          [ -z "$FIREBASE_DATABASE_URL" ] && MISSING="$MISSING FIREBASE_DATABASE_URL"
+          [ -z "$FIREBASE_PROJECT_ID" ]   && MISSING="$MISSING FIREBASE_PROJECT_ID"
+          if [ -n "$MISSING" ]; then
+            echo "ERROR: Missing GitHub secrets:$MISSING"
             exit 1
           fi
-          python3 -c "
-          import re, sys
+          python3 - <<'PYEOF'
+          import os, sys
           path = 'webinar_app/public/config.js'
           txt = open(path).read()
-          txt2 = re.sub(r\"window\.NPOINT_BIN_ID = '';\", \"window.NPOINT_BIN_ID = '${NPOINT_BIN_ID}';\", txt)
-          if txt == txt2:
-              sys.exit('ERROR: Pattern not found in config.js — injection failed.')
-          open(path, 'w').write(txt2)
-          print('Injected NPOINT_BIN_ID successfully.')
-          "
+          replacements = {
+            "'FIREBASE_API_KEY'":      f"'{os.environ['FIREBASE_API_KEY']}'",
+            "'FIREBASE_AUTH_DOMAIN'":  f"'{os.environ['FIREBASE_AUTH_DOMAIN']}'",
+            "'FIREBASE_DATABASE_URL'": f"'{os.environ['FIREBASE_DATABASE_URL']}'",
+            "'FIREBASE_PROJECT_ID'":   f"'{os.environ['FIREBASE_PROJECT_ID']}'",
+          }
+          for placeholder, value in replacements.items():
+            if placeholder not in txt:
+              sys.exit(f'ERROR: Placeholder {placeholder} not found in config.js')
+            txt = txt.replace(placeholder, value, 1)
+          open(path, 'w').write(txt)
+          print('Firebase credentials injected successfully.')
+          PYEOF
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
