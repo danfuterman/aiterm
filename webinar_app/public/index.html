@@ -266,6 +266,42 @@
   }
   #ctrl-reset:hover:not(:disabled) { background: rgba(220,38,38,.25) !important; }
 
+  /* ── Panel summary slide — three-column results recap ── */
+  .panel-summary-slide { min-height: auto; }
+  .panel-summary-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: .5rem;
+  }
+  .panel-summary-col {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 16px;
+  }
+  .panel-col-heading {
+    font-size: 11px; font-weight: 700; color: var(--blue);
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .mini-row {
+    display: grid; grid-template-columns: 1fr 1.4fr 36px;
+    align-items: center; gap: 6px; margin-bottom: 6px;
+  }
+  .mini-label { font-size: 11px; color: var(--text); line-height: 1.3; }
+  .mini-track {
+    height: 22px; background: var(--surface); border-radius: 4px;
+    position: relative; overflow: hidden; border: 1px solid var(--border);
+  }
+  .mini-fill { height: 100%; border-radius: 4px; transition: width .5s ease; }
+  .mini-pct  { font-size: 11px; font-weight: 700; text-align: right; font-feature-settings: "tnum"; }
+  .mini-lightning {
+    display: flex; gap: 8px; margin-top: 4px;
+  }
+  .mini-lightning-chip {
+    flex: 1; border: 1.5px solid; border-radius: 8px;
+    padding: 8px; text-align: center;
+    display: flex; flex-direction: column; gap: 3px; align-items: center;
+  }
+  .mini-lightning-letter { font-size: 13px; font-weight: 800; }
+  .mini-lightning-text   { font-size: 10px; color: var(--text-muted); line-height: 1.3; }
+  .mini-lightning-pct    { font-size: 18px; font-weight: 800; line-height: 1; }
+
   /* ── Error ── */
   .error-panel { border-color: var(--red); }
   .error-panel h2 { color: var(--red); }
@@ -287,7 +323,6 @@
 <div class="container">
   <div class="role-bar" id="role-bar">
     <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
-    <button id="role-participant" onclick="setRole('participant')">Participant view</button>
     <span class="spacer"></span>
     <span class="room-code" id="room-code">Loading…</span>
     <span class="backend-tag" id="backend-tag"></span>

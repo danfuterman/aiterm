@@ -222,12 +222,74 @@ async function renderFacilitatorStage() {
   const term = TERMS[tk];
   if (!term) return `<div class="slide"><p class="slide-eyebrow">Loading…</p></div>`;
 
-  // Panel discussion slide
+  // Panel discussion slide — show full results summary for all three formats
   if (fmt === 'panel') {
-    return `<div class="slide slide-panel">
+    const [votesA, votesB, votesC] = await Promise.all([
+      getVotes(tk + '_A'), getVotes(tk + '_B'), getVotes(tk + '_C')
+    ]);
+    const countsA = tally(votesA, term.formatA.options.length);
+    const countsB = tally(votesB, term.formatB.options.length);
+    const countsC = tally(votesC, term.formatC.options.length);
+    const votersA = totalVoters(votesA);
+    const votersB = totalVoters(votesB);
+    const votersC = totalVoters(votesC);
+
+    // Mini bar helper — compact version for the summary panel
+    function miniBar(options, counts, voters, labelFn) {
+      const max = Math.max(...counts, 1);
+      let h = '';
+      options.forEach((opt, i) => {
+        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
+        const w   = Math.round(counts[i] / max * 100);
+        const col = OPT_COLORS[i % OPT_COLORS.length];
+        const lbl = labelFn ? labelFn(opt, i) : `${String.fromCharCode(65+i)} · ${e(short(opt.text, 60))}`;
+        h += `<div class="mini-row">
+          <div class="mini-label">${lbl}</div>
+          <div class="mini-track">
+            <div class="mini-fill" style="width:${w}%;background:${col}"></div>
+          </div>
+          <div class="mini-pct" style="color:${col}">${pct}%</div>
+        </div>`;
+      });
+      if (voters) h += `<p class="res-total" style="margin-top:4px">${voters} response${voters!==1?'s':''}</p>`;
+      return h;
+    }
+
+    // Lightning vote mini: two inline chips
+    function miniLightning(options, counts, voters) {
+      const total = counts[0] + counts[1] || 1;
+      return `<div class="mini-lightning">
+        ${options.map((opt, i) => {
+          const pct = voters ? Math.round(counts[i] / total * 100) : 0;
+          const col = OPT_COLORS[i];
+          return `<div class="mini-lightning-chip" style="border-color:${col}">
+            <span class="mini-lightning-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
+            <span class="mini-lightning-text">${e(short(opt.text, 40))}</span>
+            <span class="mini-lightning-pct" style="color:${col}">${pct}%</span>
+          </div>`;
+        }).join('')}
+      </div>
+      ${voters ? `<p class="res-total" style="margin-top:4px">${voters} response${voters!==1?'s':''}</p>` : ''}`;
+    }
+
+    return `<div class="slide panel-summary-slide">
       <div class="slide-eyebrow">${e(term.name)}</div>
-      <h1 class="slide-title">Panelist Discussion</h1>
-      <p class="slide-body" style="font-size:18px;color:var(--text-muted);margin-top:1rem">Questions &amp; reflections from invited panelists</p>
+      <h1 class="slide-title" style="font-size:clamp(22px,3.5vw,36px);margin-bottom:1.5rem">Discussion &amp; Reflections</h1>
+      <div class="panel-summary-grid">
+        <div class="panel-summary-col">
+          <div class="panel-col-heading">How did you define it?</div>
+          ${miniBar(term.formatA.options, countsA, votersA)}
+        </div>
+        <div class="panel-summary-col">
+          <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
+          ${miniBar(term.formatB.options, countsB, votersB)}
+        </div>
+        <div class="panel-summary-col">
+          <div class="panel-col-heading">Lightning vote</div>
+          <p style="font-size:12px;color:var(--text-muted);margin:0 0 8px">${e(term.formatC.prompt)}</p>
+          ${miniLightning(term.formatC.options, countsC, votersC)}
+        </div>
+      </div>
     </div>`;
   }
 
@@ -337,9 +399,14 @@ async function renderParticipantStage() {
 
   if (fmt === 'panel') {
     return `<div class="panel">
-      <span class="stage-pill">Discussion</span>
+      <span class="stage-pill">Discussion &amp; Reflections</span>
       <h2 style="margin-top:.75rem">${e(term.name)}</h2>
-      <p class="muted">Panelist discussion in progress — listen along.</p>
+      <p>Our panelists are sharing their reflections on the results.</p>
+      <p>Want to contribute?</p>
+      <ul style="font-size:14px;line-height:1.8;margin:0;padding-left:1.25rem;color:var(--text)">
+        <li>Type a question or comment in the <strong>webinar chat</strong></li>
+        <li><strong>Raise your hand</strong> in the webinar platform if you'd like to speak</li>
+      </ul>
     </div>`;
   }
 
