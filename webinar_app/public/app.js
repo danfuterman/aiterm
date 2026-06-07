@@ -96,7 +96,9 @@ function e(s) {
 }
 function short(s, n = 72) { return s.length > n ? s.slice(0, n) + '…' : s; }
 
-// ── Shared panel summary (donut charts) ───────────────────────────────────────
+// ── Shared panel summary ──────────────────────────────────────────────────────
+// Ranked horizontal bars (winner-first, sorted) for multi-option polls;
+// large split cards for the binary lightning vote.
 // Used by both facilitator and participant views during the panel stage.
 async function renderPanelSummary(tk, term) {
   const [votesA, votesB, votesC] = await Promise.all([
@@ -109,54 +111,49 @@ async function renderPanelSummary(tk, term) {
   const votersB = totalVoters(votesB);
   const votersC = totalVoters(votesC);
 
-  function donut(counts, total, sz = 110) {
-    if (!total) return `<p class="donut-empty">No responses yet</p>`;
-    const R = sz * 0.33, CX = sz / 2, CY = sz / 2, sw = sz * 0.16;
-    const circ = 2 * Math.PI * R;
-    let svg = `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" style="display:block;margin:0 auto">`;
-    svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="#E2E8F0" stroke-width="${sw}"/>`;
-    let cum = 0;
-    counts.forEach((c, i) => {
-      if (!c) return;
-      const seg = (c / total) * circ;
-      svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none"
-        stroke="${OPT_COLORS[i % OPT_COLORS.length]}" stroke-width="${sw}"
-        stroke-dasharray="${seg.toFixed(2)} ${circ.toFixed(2)}"
-        stroke-dashoffset="${(-cum).toFixed(2)}"
-        transform="rotate(-90 ${CX} ${CY})"/>`;
-      cum += seg;
-    });
-    svg += `<text x="${CX}" y="${CY - 5}" text-anchor="middle" dominant-baseline="middle"
-      font-size="${sz * 0.155}" font-weight="800" fill="#0F172A" font-family="-apple-system,sans-serif">${total}</text>
-    <text x="${CX}" y="${CY + sz * 0.13}" text-anchor="middle"
-      font-size="${sz * 0.09}" fill="#94A3B8" font-family="-apple-system,sans-serif">responses</text>`;
-    return svg + `</svg>`;
-  }
+  // Ranked bar list — sorted by votes descending, winner highlighted
+  function rankedBars(options, counts, total) {
+    if (!total) return `<p class="summary-empty">No responses yet</p>`;
+    const max = Math.max(...counts, 1);
+    const items = options
+      .map((opt, i) => ({ opt, i, c: counts[i] }))
+      .sort((a, b) => b.c - a.c);
+    const topCount = items[0].c;
 
-  function legend(options, counts, total) {
-    return options.map((opt, i) => {
-      const pct    = total ? Math.round(counts[i] / total * 100) : 0;
+    return items.map(({ opt, i, c }) => {
+      const pct    = Math.round(c / total * 100);
+      const w      = Math.round(c / max * 100);
       const col    = OPT_COLORS[i % OPT_COLORS.length];
-      const winner = counts[i] === Math.max(...counts) && counts[i] > 0;
-      return `<div class="donut-legend-row${winner ? ' donut-winner' : ''}">
-        <span class="donut-dot" style="background:${col}"></span>
-        <span class="donut-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
-        <span class="donut-text">${e(opt.text)}</span>
-        <span class="donut-pct" style="color:${col}">${pct}%</span>
+      const isTop  = c === topCount && c > 0;
+      return `<div class="rank-row${isTop ? ' rank-top' : ''}" style="--col:${col}">
+        <div class="rank-meta">
+          <span class="rank-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
+          ${isTop ? `<span class="rank-badge">Top pick</span>` : ''}
+        </div>
+        <div class="rank-body">
+          <div class="rank-text">${e(opt.text)}</div>
+          <div class="rank-bar-track">
+            <div class="rank-bar-fill" style="width:${w}%;background:${col}"></div>
+          </div>
+        </div>
+        <div class="rank-pct" style="color:${col}">${pct}%</div>
       </div>`;
-    }).join('');
+    }).join('') + `<p class="res-total">${total} response${total!==1?'s':''}</p>`;
   }
 
-  function binaryBar(options, counts, total) {
-    return `<div class="binary-wrap">
+  // Binary split — two large stat cards for the lightning vote
+  function binarySplit(options, counts, total) {
+    const denom = (counts[0] + counts[1]) || 1;
+    return `<div class="binary-split">
       ${options.map((opt, i) => {
-        const pct = total ? Math.round(counts[i] / (counts[0]+counts[1]||1) * 100) : 0;
+        const pct = total ? Math.round(counts[i] / denom * 100) : 0;
         const col = OPT_COLORS[i];
-        return `<div class="binary-col" style="border-top:3px solid ${col}">
+        const isTop = counts[i] > counts[1 - i];
+        return `<div class="binary-card${isTop ? ' binary-top' : ''}" style="--col:${col};border-color:${col}">
           <div class="binary-letter" style="color:${col}">${String.fromCharCode(65+i)}</div>
-          <div class="binary-text">${e(opt.text)}</div>
           <div class="binary-pct" style="color:${col}">${pct}%</div>
-          <div class="binary-n">${counts[i]} vote${counts[i]!==1?'s':''}</div>
+          <div class="binary-text">${e(opt.text)}</div>
+          <div class="binary-count">${counts[i]} vote${counts[i]!==1?'s':''}</div>
         </div>`;
       }).join('')}
     </div>
@@ -167,17 +164,16 @@ async function renderPanelSummary(tk, term) {
     <div class="panel-summary-grid">
       <div class="panel-summary-col">
         <div class="panel-col-heading">How did you define it?</div>
-        ${donut(countsA, votersA)}
-        <div class="donut-legend">${legend(term.formatA.options, countsA, votersA)}</div>
+        ${rankedBars(term.formatA.options, countsA, votersA)}
       </div>
       <div class="panel-summary-col">
         <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
-        ${donut(countsB, votersB)}
-        <div class="donut-legend">${legend(term.formatB.options, countsB, votersB)}</div>
+        ${rankedBars(term.formatB.options, countsB, votersB)}
       </div>
       <div class="panel-summary-col">
-        <div class="panel-col-heading">Lightning vote — ${e(term.formatC.prompt)}</div>
-        ${binaryBar(term.formatC.options, countsC, votersC)}
+        <div class="panel-col-heading">Lightning vote</div>
+        <p class="panel-subheading">${e(term.formatC.prompt)}</p>
+        ${binarySplit(term.formatC.options, countsC, votersC)}
       </div>
     </div>`;
 }
