@@ -222,7 +222,7 @@ async function renderFacilitatorStage() {
   const term = TERMS[tk];
   if (!term) return `<div class="slide"><p class="slide-eyebrow">Loading…</p></div>`;
 
-  // Panel discussion slide — show full results summary for all three formats
+  // Panel discussion slide — donut chart summary for all three formats
   if (fmt === 'panel') {
     const [votesA, votesB, votesC] = await Promise.all([
       getVotes(tk + '_A'), getVotes(tk + '_B'), getVotes(tk + '_C')
@@ -234,66 +234,90 @@ async function renderFacilitatorStage() {
     const votersB = totalVoters(votesB);
     const votersC = totalVoters(votesC);
 
-    // Mini bar helper — compact version for the summary panel
-    function miniBar(options, counts, voters, labelFn) {
-      const max = Math.max(...counts, 1);
-      let h = '';
-      options.forEach((opt, i) => {
-        const pct = voters ? Math.round(counts[i] / voters * 100) : 0;
-        const w   = Math.round(counts[i] / max * 100);
-        const col = OPT_COLORS[i % OPT_COLORS.length];
-        const lbl = labelFn ? labelFn(opt, i) : `${String.fromCharCode(65+i)} · ${e(short(opt.text, 60))}`;
-        h += `<div class="mini-row">
-          <div class="mini-label">${lbl}</div>
-          <div class="mini-track">
-            <div class="mini-fill" style="width:${w}%;background:${col}"></div>
-          </div>
-          <div class="mini-pct" style="color:${col}">${pct}%</div>
-        </div>`;
+    // SVG donut chart
+    function donut(counts, total, sz = 110) {
+      if (!total) return `<p class="donut-empty">No responses yet</p>`;
+      const R = sz * 0.33, CX = sz / 2, CY = sz / 2, sw = sz * 0.16;
+      const circ = 2 * Math.PI * R;
+      let svg = `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" style="display:block;margin:0 auto">`;
+      svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="#E2E8F0" stroke-width="${sw}"/>`;
+      let cum = 0;
+      counts.forEach((c, i) => {
+        if (!c) return;
+        const seg = (c / total) * circ;
+        svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none"
+          stroke="${OPT_COLORS[i % OPT_COLORS.length]}" stroke-width="${sw}"
+          stroke-dasharray="${seg.toFixed(2)} ${circ.toFixed(2)}"
+          stroke-dashoffset="${(-cum).toFixed(2)}"
+          transform="rotate(-90 ${CX} ${CY})"/>`;
+        cum += seg;
       });
-      if (voters) h += `<p class="res-total" style="margin-top:4px">${voters} response${voters!==1?'s':''}</p>`;
-      return h;
+      svg += `<text x="${CX}" y="${CY - 5}" text-anchor="middle" dominant-baseline="middle"
+        font-size="${sz * 0.155}" font-weight="800" fill="#0F172A" font-family="-apple-system,sans-serif">${total}</text>
+      <text x="${CX}" y="${CY + sz * 0.13}" text-anchor="middle"
+        font-size="${sz * 0.09}" fill="#94A3B8" font-family="-apple-system,sans-serif">responses</text>`;
+      return svg + `</svg>`;
     }
 
-    // Lightning vote mini: two inline chips
-    function miniLightning(options, counts, voters) {
-      const total = counts[0] + counts[1] || 1;
-      return `<div class="mini-lightning">
+    // Colour dot legend: A · label · pct%
+    function legend(options, counts, total) {
+      return options.map((opt, i) => {
+        const pct = total ? Math.round(counts[i] / total * 100) : 0;
+        const col = OPT_COLORS[i % OPT_COLORS.length];
+        const winner = counts[i] === Math.max(...counts) && counts[i] > 0;
+        return `<div class="donut-legend-row${winner ? ' donut-winner' : ''}">
+          <span class="donut-dot" style="background:${col}"></span>
+          <span class="donut-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
+          <span class="donut-text">${e(opt.text)}</span>
+          <span class="donut-pct" style="color:${col}">${pct}%</span>
+        </div>`;
+      }).join('');
+    }
+
+    // Binary split bar for lightning vote
+    function binaryBar(options, counts, total) {
+      return `<div class="binary-wrap">
         ${options.map((opt, i) => {
-          const pct = voters ? Math.round(counts[i] / total * 100) : 0;
+          const pct = total ? Math.round(counts[i] / (counts[0]+counts[1]||1) * 100) : 0;
           const col = OPT_COLORS[i];
-          return `<div class="mini-lightning-chip" style="border-color:${col}">
-            <span class="mini-lightning-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
-            <span class="mini-lightning-text">${e(short(opt.text, 40))}</span>
-            <span class="mini-lightning-pct" style="color:${col}">${pct}%</span>
+          return `<div class="binary-col" style="border-top:3px solid ${col}">
+            <div class="binary-letter" style="color:${col}">${String.fromCharCode(65+i)}</div>
+            <div class="binary-text">${e(opt.text)}</div>
+            <div class="binary-pct" style="color:${col}">${pct}%</div>
+            <div class="binary-n">${counts[i]} vote${counts[i]!==1?'s':''}</div>
           </div>`;
         }).join('')}
       </div>
-      ${voters ? `<p class="res-total" style="margin-top:4px">${voters} response${voters!==1?'s':''}</p>` : ''}`;
+      ${total ? `<p class="res-total">${total} response${total!==1?'s':''}</p>` : ''}`;
     }
 
     return `<div class="slide panel-summary-slide">
       <div class="slide-eyebrow">${e(term.name)}</div>
-      <h1 class="slide-title" style="font-size:clamp(22px,3.5vw,36px);margin-bottom:1.5rem">Discussion &amp; Reflections</h1>
+      <h1 class="slide-title" style="font-size:clamp(22px,3.5vw,36px);margin-bottom:1.25rem">Discussion &amp; Reflections</h1>
       <div class="panel-summary-grid">
+
         <div class="panel-summary-col">
           <div class="panel-col-heading">How did you define it?</div>
-          ${miniBar(term.formatA.options, countsA, votersA)}
+          ${donut(countsA, votersA)}
+          <div class="donut-legend">${legend(term.formatA.options, countsA, votersA)}</div>
         </div>
+
         <div class="panel-summary-col">
           <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
-          ${miniBar(term.formatB.options, countsB, votersB)}
+          ${donut(countsB, votersB)}
+          <div class="donut-legend">${legend(term.formatB.options, countsB, votersB)}</div>
         </div>
+
         <div class="panel-summary-col">
-          <div class="panel-col-heading">Lightning vote</div>
-          <p style="font-size:12px;color:var(--text-muted);margin:0 0 8px">${e(term.formatC.prompt)}</p>
-          ${miniLightning(term.formatC.options, countsC, votersC)}
+          <div class="panel-col-heading">Lightning vote — ${e(term.formatC.prompt)}</div>
+          ${binaryBar(term.formatC.options, countsC, votersC)}
         </div>
+
       </div>
     </div>`;
   }
 
-  // Format A — definition vote
+  // Format A — definition vote (full text, stacked layout)
   if (fmt === 'A') {
     const votes  = await getVotes(tk + '_A');
     const counts = tally(votes, term.formatA.options.length);
@@ -301,13 +325,11 @@ async function renderFacilitatorStage() {
     return `<div class="slide">
       <div class="slide-eyebrow">${e(term.name)} · How Do You Define It?</div>
       <h2 class="slide-question">${e(term.formatA.prompt)}</h2>
-      ${renderBars(term.formatA.options, counts, voters, {
-        labelFn: (opt, i) => `<strong>${String.fromCharCode(65 + i)}</strong> · ${e(short(opt.text, 80))}`
-      })}
+      ${renderBars(term.formatA.options, counts, voters, { mode: 'full' })}
     </div>`;
   }
 
-  // Format B — scenario
+  // Format B — scenario (full text, stacked layout)
   if (fmt === 'B') {
     const votes  = await getVotes(tk + '_B');
     const counts = tally(votes, term.formatB.options.length);
@@ -316,7 +338,7 @@ async function renderFacilitatorStage() {
       <div class="slide-eyebrow">${e(term.name)} · Scenario</div>
       <div class="scenario-box"><div class="label">Scenario</div>${e(term.formatB.scenario)}</div>
       <h2 class="slide-question">${e(term.formatB.prompt)}</h2>
-      ${renderBars(term.formatB.options, counts, voters)}
+      ${renderBars(term.formatB.options, counts, voters, { mode: 'full' })}
     </div>`;
   }
 
