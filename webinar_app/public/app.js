@@ -39,12 +39,12 @@ async function getFullSequence() {
   const top3 = ranked[2]?.k || SHORTLIST_KEYS[2];
   return [
     'welcome',
-    'hitl_A', 'hitl_B', 'hitl_C', 'hitl_panel',
+    'hitl_intro', 'hitl_A', 'hitl_B', 'hitl_C', 'hitl_panel',
     'shortlist',
-    `${top1}_A`, `${top1}_B`, `${top1}_C`, `${top1}_panel`,
-    `${top2}_A`, `${top2}_B`, `${top2}_C`, `${top2}_panel`,
-    'optional_choice',                                  // facilitator decides: one more or close
-    `${top3}_A`, `${top3}_B`, `${top3}_C`, `${top3}_panel`,
+    `${top1}_intro`, `${top1}_A`, `${top1}_B`, `${top1}_C`, `${top1}_panel`,
+    `${top2}_intro`, `${top2}_A`, `${top2}_B`, `${top2}_C`, `${top2}_panel`,
+    'optional_choice',
+    `${top3}_intro`, `${top3}_A`, `${top3}_B`, `${top3}_C`, `${top3}_panel`,
     'close'
   ];
 }
@@ -96,6 +96,10 @@ function tallyMulti(votes, n) {
 function totalVoters(votes) { return Object.keys(votes).length; }
 function e(s) {
   return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+// Eyebrow with term name as a highlighted pill, plus optional format label
+function eyebrow(termName, formatLabel) {
+  return `<div class="slide-eyebrow"><span class="term-tag">${e(termName)}</span>${formatLabel ? `<span class="eyebrow-sep">·</span><span class="eyebrow-format">${e(formatLabel)}</span>` : ''}</div>`;
 }
 function short(s, n = 72) { return s.length > n ? s.slice(0, n) + '…' : s; }
 
@@ -260,27 +264,34 @@ async function renderFacilitatorStage() {
     </div>`;
   }
 
-  // ---- Optional choice ----
+  // ---- Optional choice (facilitator-only decision, not advertised to participants) ----
   if (stage === 'optional_choice') {
-    const seq   = await getFullSequence();
-    const top3i = seq.indexOf('optional_choice') + 1; // first stage of 3rd term
-    const top3stage = seq[top3i] || 'close';
+    const seq       = await getFullSequence();
+    const top3stage = seq[seq.indexOf('optional_choice') + 1] || 'close';
     const top3key   = top3stage.split('_')[0];
     const top3term  = TERMS[top3key];
+    // Show a neutral close slide to everyone; the facilitator's control bar
+    // offers the choice between closing and continuing via the ctrl-extra div.
+    const ctrlHtml = top3term
+      ? `<div id="ctrl-extra" style="display:flex;gap:10px;justify-content:center;margin-top:8px">
+          <button class="ctrl-extra-btn" onclick="goToStage('${top3stage}')">+ One more: ${e(top3term.name)}</button>
+          <button class="ctrl-extra-btn ctrl-extra-primary" onclick="goToStage('close')">Close session</button>
+        </div>`
+      : '';
+    // Inject the extra buttons into the ctrl-bar after render
+    setTimeout(() => {
+      const bar = document.getElementById('ctrl-bar');
+      if (bar && role === 'facilitator') {
+        const existing = document.getElementById('ctrl-extra');
+        if (!existing) bar.insertAdjacentHTML('beforeend', ctrlHtml);
+      }
+    }, 50);
     return `<div class="slide slide-hero">
-      <div class="slide-eyebrow">Time permitting</div>
-      <h1 class="slide-title" style="font-size:clamp(24px,3.5vw,38px);margin-bottom:1rem">One more topic?</h1>
-      <p style="font-size:16px;color:var(--text-muted);margin-bottom:2rem">
-        ${top3term ? `The next most popular choice was <strong>${e(top3term.name)}</strong>.` : ''}
+      <div class="slide-eyebrow">Wrapping up</div>
+      <h1 class="slide-title">Thank you</h1>
+      <p class="slide-body" style="max-width:520px;margin:1rem auto 0;text-align:center;color:var(--text-muted);font-size:16px">
+        Thank you for your participation today. The facilitator will continue shortly.
       </p>
-      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-        ${top3term ? `<button class="choice-btn choice-continue" onclick="goToStage('${top3stage}')">
-          Continue with ${e(top3term.name)} →
-        </button>` : ''}
-        <button class="choice-btn choice-close" onclick="goToStage('close')">
-          Wrap up &amp; close
-        </button>
-      </div>
     </div>`;
   }
 
@@ -332,35 +343,57 @@ async function renderFacilitatorStage() {
   const term = TERMS[tk];
   if (!term) return `<div class="slide"><p class="slide-eyebrow">Loading…</p></div>`;
 
-  // Panel — facilitator shared screen: clean title + results summary
+  // Intro — term overview before the definition vote
+  if (fmt === 'intro') {
+    const intro = term.intro || {};
+    return `<div class="slide slide-intro">
+      <div class="intro-icon">${intro.icon || ''}</div>
+      ${eyebrow(term.name)}
+      <h1 class="intro-term">${e(term.name)}</h1>
+      <p class="intro-concept">${e(intro.concept || '')}</p>
+      <div class="intro-cards">
+        <div class="intro-card intro-card-neutral">
+          <div class="intro-card-label">The generic definition</div>
+          <p>${e(intro.concept || '')}</p>
+        </div>
+        <div class="intro-card intro-card-tension">
+          <div class="intro-card-label">In public health practice</div>
+          <p>${e(intro.ambiguity || '')}</p>
+        </div>
+      </div>
+      <p class="intro-question">${e(intro.question || '')}</p>
+    </div>`;
+  }
+
+  // Panel — facilitator shared screen: results summary
   if (fmt === 'panel') {
     const summary = await renderPanelSummary(tk, term);
     return `<div class="slide panel-summary-slide">
-      <div class="slide-eyebrow">${e(term.name)}</div>
+      ${eyebrow(term.name)}
       <h1 class="slide-title" style="font-size:clamp(22px,3.5vw,36px);margin-bottom:1.25rem">Discussion &amp; Reflections</h1>
       ${summary}
     </div>`;
   }
 
-  // Format A — definition vote (full text, stacked layout)
+  // Format A — definition vote
   if (fmt === 'A') {
     const votes  = await getVotes(tk + '_A');
     const counts = tally(votes, term.formatA.options.length);
     const voters = totalVoters(votes);
     return `<div class="slide">
-      <div class="slide-eyebrow">${e(term.name)} · How Do You Define It?</div>
+      ${eyebrow(term.name, 'How Do You Define It?')}
       <h2 class="slide-question">${e(term.formatA.prompt)}</h2>
       ${renderBars(term.formatA.options, counts, voters, { mode: 'full' })}
     </div>`;
   }
 
-  // Format B — scenario (full text, stacked layout)
+  // Format B — scenario
   if (fmt === 'B') {
     const votes  = await getVotes(tk + '_B');
     const counts = tally(votes, term.formatB.options.length);
     const voters = totalVoters(votes);
     return `<div class="slide">
-      <div class="slide-eyebrow">${e(term.name)} · Scenario</div>
+      ${eyebrow(term.name, 'Scenario')}
       <div class="scenario-box"><div class="label">Scenario</div>${e(term.formatB.scenario)}</div>
       <h2 class="slide-question">${e(term.formatB.prompt)}</h2>
       ${renderBars(term.formatB.options, counts, voters, { mode: 'full' })}
@@ -373,7 +406,7 @@ async function renderFacilitatorStage() {
     const counts = tally(votes, term.formatC.options.length);
     const voters = totalVoters(votes);
     return `<div class="slide">
-      <div class="slide-eyebrow">${e(term.name)} · Lightning Vote</div>
+      ${eyebrow(term.name, 'Lightning Vote')}
       <h2 class="slide-question" style="font-size:clamp(18px,2vw,26px);max-width:760px;margin:0 auto 2rem;text-align:center">${e(term.formatC.prompt)}</h2>
       ${renderLightningBars(term.formatC.options, counts, voters)}
     </div>`;
@@ -394,12 +427,11 @@ async function renderParticipantStage() {
     </div>`;
   }
 
-  // ---- Optional choice ----
+  // ---- Optional choice — participants just see a neutral holding screen ----
   if (stage === 'optional_choice') {
     return `<div class="panel">
-      <span class="stage-pill">Time permitting</span>
-      <h2 style="margin-top:.75rem">One more topic?</h2>
-      <p class="muted">The facilitator is deciding whether to continue with a bonus topic or wrap up. Stand by.</p>
+      <h2>Thank you for your participation</h2>
+      <p class="muted">The facilitator will continue shortly.</p>
     </div>`;
   }
 
@@ -452,6 +484,20 @@ async function renderParticipantStage() {
   const [tk, fmt] = stage.split('_');
   const term = TERMS[tk];
   if (!term) return `<div class="panel"><p class="muted">Waiting for next prompt…</p></div>`;
+
+  if (fmt === 'intro') {
+    const intro = term.intro || {};
+    return `<div class="panel">
+      <span class="stage-pill">${e(term.name)}</span>
+      <h2 style="margin-top:.75rem">${e(term.name)}</h2>
+      <p>${e(intro.concept || '')}</p>
+      <div class="intro-ambiguity-box">
+        <div class="intro-ambiguity-label">Why this term is contested</div>
+        <p>${e(intro.ambiguity || '')}</p>
+      </div>
+      <p class="help" style="margin-top:1rem;font-style:italic">"${e(intro.question || '')}"</p>
+    </div>`;
+  }
 
   if (fmt === 'panel') {
     const summary = await renderPanelSummary(tk, term);
@@ -596,7 +642,7 @@ function stageLabel(s) {
   if (s === 'close')           return 'Close';
   const [tk, fmt] = s.split('_');
   const name   = TERMS[tk]?.name || tk;
-  const labels = { A: 'Definition', B: 'Scenario', C: 'Lightning vote', panel: 'Discussion & Reflections' };
+  const labels = { intro: 'Introduction', A: 'Definition', B: 'Scenario', C: 'Lightning vote', panel: 'Discussion & Reflections' };
   return `${name} · ${labels[fmt] || fmt}`;
 }
 
