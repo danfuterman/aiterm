@@ -43,6 +43,18 @@
   .vs-brand { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: -0.01em; }
   .vs-brand .vs-brand-accent { color: var(--blue); }
   .vs-tagline { font-size: 12px; color: var(--text-muted); }
+  /* Discreet session info — only shown to facilitator, sits in header */
+  #header-meta {
+    display: none; align-items: center; gap: 8px;
+  }
+  #header-meta #room-code {
+    font-size: 11px; color: var(--text-light);
+    font-family: ui-monospace, monospace;
+  }
+  #header-meta #backend-tag {
+    font-size: 10px; color: var(--text-light);
+    font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px;
+  }
 
   /* ── Layout ── */
   .container { max-width: 820px; margin: 0 auto; padding: 1.25rem 1rem 100px; }
@@ -307,6 +319,15 @@
   .binary-pct    { font-size: 28px; font-weight: 800; line-height: 1; }
   .binary-n      { font-size: 10px; color: var(--text-light); }
 
+  /* ── Participant panel engagement prompt ── */
+  .panel-engage {
+    margin-top: 1.25rem; padding: 14px 16px;
+    background: var(--blue-light); border: 1px solid var(--blue-mid);
+    border-radius: 10px; font-size: 14px;
+  }
+  .panel-engage p { margin: 0 0 6px; }
+  .panel-engage ul { margin: 0; padding-left: 1.25rem; line-height: 1.9; }
+
   /* ── Error ── */
   .error-panel { border-color: var(--red); }
   .error-panel h2 { color: var(--red); }
@@ -321,16 +342,16 @@
 <div class="vs-header">
   <div class="vs-header-inner">
     <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> for Public Health</div>
-    <div class="vs-tagline">AI terminology · live discussion</div>
+    <div id="header-meta">
+      <span id="room-code"></span>
+      <span id="backend-tag"></span>
+    </div>
   </div>
 </div>
 
 <div class="container">
   <div class="role-bar" id="role-bar">
     <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
-    <span class="spacer"></span>
-    <span class="room-code" id="room-code">Loading…</span>
-    <span class="backend-tag" id="backend-tag"></span>
   </div>
   <div id="main-content"></div>
 </div>

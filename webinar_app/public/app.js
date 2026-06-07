@@ -96,6 +96,92 @@ function e(s) {
 }
 function short(s, n = 72) { return s.length > n ? s.slice(0, n) + '…' : s; }
 
+// ── Shared panel summary (donut charts) ───────────────────────────────────────
+// Used by both facilitator and participant views during the panel stage.
+async function renderPanelSummary(tk, term) {
+  const [votesA, votesB, votesC] = await Promise.all([
+    getVotes(tk + '_A'), getVotes(tk + '_B'), getVotes(tk + '_C')
+  ]);
+  const countsA = tally(votesA, term.formatA.options.length);
+  const countsB = tally(votesB, term.formatB.options.length);
+  const countsC = tally(votesC, term.formatC.options.length);
+  const votersA = totalVoters(votesA);
+  const votersB = totalVoters(votesB);
+  const votersC = totalVoters(votesC);
+
+  function donut(counts, total, sz = 110) {
+    if (!total) return `<p class="donut-empty">No responses yet</p>`;
+    const R = sz * 0.33, CX = sz / 2, CY = sz / 2, sw = sz * 0.16;
+    const circ = 2 * Math.PI * R;
+    let svg = `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" style="display:block;margin:0 auto">`;
+    svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="#E2E8F0" stroke-width="${sw}"/>`;
+    let cum = 0;
+    counts.forEach((c, i) => {
+      if (!c) return;
+      const seg = (c / total) * circ;
+      svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none"
+        stroke="${OPT_COLORS[i % OPT_COLORS.length]}" stroke-width="${sw}"
+        stroke-dasharray="${seg.toFixed(2)} ${circ.toFixed(2)}"
+        stroke-dashoffset="${(-cum).toFixed(2)}"
+        transform="rotate(-90 ${CX} ${CY})"/>`;
+      cum += seg;
+    });
+    svg += `<text x="${CX}" y="${CY - 5}" text-anchor="middle" dominant-baseline="middle"
+      font-size="${sz * 0.155}" font-weight="800" fill="#0F172A" font-family="-apple-system,sans-serif">${total}</text>
+    <text x="${CX}" y="${CY + sz * 0.13}" text-anchor="middle"
+      font-size="${sz * 0.09}" fill="#94A3B8" font-family="-apple-system,sans-serif">responses</text>`;
+    return svg + `</svg>`;
+  }
+
+  function legend(options, counts, total) {
+    return options.map((opt, i) => {
+      const pct    = total ? Math.round(counts[i] / total * 100) : 0;
+      const col    = OPT_COLORS[i % OPT_COLORS.length];
+      const winner = counts[i] === Math.max(...counts) && counts[i] > 0;
+      return `<div class="donut-legend-row${winner ? ' donut-winner' : ''}">
+        <span class="donut-dot" style="background:${col}"></span>
+        <span class="donut-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
+        <span class="donut-text">${e(opt.text)}</span>
+        <span class="donut-pct" style="color:${col}">${pct}%</span>
+      </div>`;
+    }).join('');
+  }
+
+  function binaryBar(options, counts, total) {
+    return `<div class="binary-wrap">
+      ${options.map((opt, i) => {
+        const pct = total ? Math.round(counts[i] / (counts[0]+counts[1]||1) * 100) : 0;
+        const col = OPT_COLORS[i];
+        return `<div class="binary-col" style="border-top:3px solid ${col}">
+          <div class="binary-letter" style="color:${col}">${String.fromCharCode(65+i)}</div>
+          <div class="binary-text">${e(opt.text)}</div>
+          <div class="binary-pct" style="color:${col}">${pct}%</div>
+          <div class="binary-n">${counts[i]} vote${counts[i]!==1?'s':''}</div>
+        </div>`;
+      }).join('')}
+    </div>
+    ${total ? `<p class="res-total">${total} response${total!==1?'s':''}</p>` : ''}`;
+  }
+
+  return `
+    <div class="panel-summary-grid">
+      <div class="panel-summary-col">
+        <div class="panel-col-heading">How did you define it?</div>
+        ${donut(countsA, votersA)}
+        <div class="donut-legend">${legend(term.formatA.options, countsA, votersA)}</div>
+      </div>
+      <div class="panel-summary-col">
+        <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
+        ${donut(countsB, votersB)}
+        <div class="donut-legend">${legend(term.formatB.options, countsB, votersB)}</div>
+      </div>
+      <div class="panel-summary-col">
+        <div class="panel-col-heading">Lightning vote — ${e(term.formatC.prompt)}</div>
+        ${binaryBar(term.formatC.options, countsC, votersC)}
+      </div>
+    </div>`;
+}
+
 // ── Results rendering — Mentimeter-style ──────────────────────────────────────
 // mode: 'full' = full text stacked (participant results on personal device)
 //       'short' = truncated inline (facilitator shared screen)
@@ -222,98 +308,13 @@ async function renderFacilitatorStage() {
   const term = TERMS[tk];
   if (!term) return `<div class="slide"><p class="slide-eyebrow">Loading…</p></div>`;
 
-  // Panel discussion slide — donut chart summary for all three formats
+  // Panel — facilitator shared screen: clean title + results summary
   if (fmt === 'panel') {
-    const [votesA, votesB, votesC] = await Promise.all([
-      getVotes(tk + '_A'), getVotes(tk + '_B'), getVotes(tk + '_C')
-    ]);
-    const countsA = tally(votesA, term.formatA.options.length);
-    const countsB = tally(votesB, term.formatB.options.length);
-    const countsC = tally(votesC, term.formatC.options.length);
-    const votersA = totalVoters(votesA);
-    const votersB = totalVoters(votesB);
-    const votersC = totalVoters(votesC);
-
-    // SVG donut chart
-    function donut(counts, total, sz = 110) {
-      if (!total) return `<p class="donut-empty">No responses yet</p>`;
-      const R = sz * 0.33, CX = sz / 2, CY = sz / 2, sw = sz * 0.16;
-      const circ = 2 * Math.PI * R;
-      let svg = `<svg width="${sz}" height="${sz}" viewBox="0 0 ${sz} ${sz}" style="display:block;margin:0 auto">`;
-      svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none" stroke="#E2E8F0" stroke-width="${sw}"/>`;
-      let cum = 0;
-      counts.forEach((c, i) => {
-        if (!c) return;
-        const seg = (c / total) * circ;
-        svg += `<circle cx="${CX}" cy="${CY}" r="${R}" fill="none"
-          stroke="${OPT_COLORS[i % OPT_COLORS.length]}" stroke-width="${sw}"
-          stroke-dasharray="${seg.toFixed(2)} ${circ.toFixed(2)}"
-          stroke-dashoffset="${(-cum).toFixed(2)}"
-          transform="rotate(-90 ${CX} ${CY})"/>`;
-        cum += seg;
-      });
-      svg += `<text x="${CX}" y="${CY - 5}" text-anchor="middle" dominant-baseline="middle"
-        font-size="${sz * 0.155}" font-weight="800" fill="#0F172A" font-family="-apple-system,sans-serif">${total}</text>
-      <text x="${CX}" y="${CY + sz * 0.13}" text-anchor="middle"
-        font-size="${sz * 0.09}" fill="#94A3B8" font-family="-apple-system,sans-serif">responses</text>`;
-      return svg + `</svg>`;
-    }
-
-    // Colour dot legend: A · label · pct%
-    function legend(options, counts, total) {
-      return options.map((opt, i) => {
-        const pct = total ? Math.round(counts[i] / total * 100) : 0;
-        const col = OPT_COLORS[i % OPT_COLORS.length];
-        const winner = counts[i] === Math.max(...counts) && counts[i] > 0;
-        return `<div class="donut-legend-row${winner ? ' donut-winner' : ''}">
-          <span class="donut-dot" style="background:${col}"></span>
-          <span class="donut-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
-          <span class="donut-text">${e(opt.text)}</span>
-          <span class="donut-pct" style="color:${col}">${pct}%</span>
-        </div>`;
-      }).join('');
-    }
-
-    // Binary split bar for lightning vote
-    function binaryBar(options, counts, total) {
-      return `<div class="binary-wrap">
-        ${options.map((opt, i) => {
-          const pct = total ? Math.round(counts[i] / (counts[0]+counts[1]||1) * 100) : 0;
-          const col = OPT_COLORS[i];
-          return `<div class="binary-col" style="border-top:3px solid ${col}">
-            <div class="binary-letter" style="color:${col}">${String.fromCharCode(65+i)}</div>
-            <div class="binary-text">${e(opt.text)}</div>
-            <div class="binary-pct" style="color:${col}">${pct}%</div>
-            <div class="binary-n">${counts[i]} vote${counts[i]!==1?'s':''}</div>
-          </div>`;
-        }).join('')}
-      </div>
-      ${total ? `<p class="res-total">${total} response${total!==1?'s':''}</p>` : ''}`;
-    }
-
+    const summary = await renderPanelSummary(tk, term);
     return `<div class="slide panel-summary-slide">
       <div class="slide-eyebrow">${e(term.name)}</div>
       <h1 class="slide-title" style="font-size:clamp(22px,3.5vw,36px);margin-bottom:1.25rem">Discussion &amp; Reflections</h1>
-      <div class="panel-summary-grid">
-
-        <div class="panel-summary-col">
-          <div class="panel-col-heading">How did you define it?</div>
-          ${donut(countsA, votersA)}
-          <div class="donut-legend">${legend(term.formatA.options, countsA, votersA)}</div>
-        </div>
-
-        <div class="panel-summary-col">
-          <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
-          ${donut(countsB, votersB)}
-          <div class="donut-legend">${legend(term.formatB.options, countsB, votersB)}</div>
-        </div>
-
-        <div class="panel-summary-col">
-          <div class="panel-col-heading">Lightning vote — ${e(term.formatC.prompt)}</div>
-          ${binaryBar(term.formatC.options, countsC, votersC)}
-        </div>
-
-      </div>
+      ${summary}
     </div>`;
   }
 
@@ -420,15 +421,18 @@ async function renderParticipantStage() {
   if (!term) return `<div class="panel"><p class="muted">Waiting for next prompt…</p></div>`;
 
   if (fmt === 'panel') {
+    const summary = await renderPanelSummary(tk, term);
     return `<div class="panel">
       <span class="stage-pill">Discussion &amp; Reflections</span>
       <h2 style="margin-top:.75rem">${e(term.name)}</h2>
-      <p>Our panelists are sharing their reflections on the results.</p>
-      <p>Want to contribute?</p>
-      <ul style="font-size:14px;line-height:1.8;margin:0;padding-left:1.25rem;color:var(--text)">
-        <li>Type a question or comment in the <strong>webinar chat</strong></li>
-        <li><strong>Raise your hand</strong> in the webinar platform if you'd like to speak</li>
-      </ul>
+      ${summary}
+      <div class="panel-engage">
+        <p><strong>Want to contribute?</strong></p>
+        <ul>
+          <li>Type a question or comment in the <strong>webinar chat</strong></li>
+          <li><strong>Raise your hand</strong> in the webinar platform if you'd like to speak</li>
+        </ul>
+      </div>
     </div>`;
   }
 
@@ -532,14 +536,19 @@ async function renderParticipantStage() {
 // Facilitators get it because they arrived via ?role=facilitator.
 function updateRoleBar() {
   const bar = document.getElementById('role-bar');
+  const meta = document.getElementById('header-meta');
   if (role !== 'facilitator') {
     bar.style.display = 'none';
+    if (meta) meta.style.display = 'none';
     return;
   }
   bar.style.display = '';
+  if (meta) {
+    meta.style.display = 'flex';
+    document.getElementById('room-code').textContent = ROOM;
+    document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
+  }
   document.getElementById('role-facilitator').className = 'active';
-  document.getElementById('room-code').textContent = 'Room: ' + ROOM;
-  document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
 }
 
 function setRole(r) {
