@@ -1,4 +1,4 @@
-# AI Terminology Webinar — voting app
+# AI Terminology for Public Health — Interactive Webinar App
 
 A small, self-contained interactive web app for running the **AI Terminology for Public Health** webinar. Built to support live voting, scenario discussion, and free-text comments from a webinar audience that's mostly on mute.
 
