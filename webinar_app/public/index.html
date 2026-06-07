@@ -207,7 +207,7 @@
   .lightning-letter { font-size: 28px; font-weight: 800; }
   .lightning-text   { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.4; }
   .lightning-pct    { font-size: 72px; font-weight: 800; line-height: 1; letter-spacing: -2px; }
-  .lightning-n      { font-size: 13px; color: var(--text-muted); }
+  .lightning-n      { font-size: 18px; font-weight: 600; color: var(--text-muted); }
 
   /* ── Facilitator slide view ── */
   .slide {
@@ -285,62 +285,69 @@
 
   /* ── Panel summary — ranked bars + binary split ── */
   .panel-summary-slide { min-height: auto; }
+  /* Two-column: definition left (wider), scenario+lightning stacked right */
   .panel-summary-grid {
-    display: grid; grid-template-columns: 2fr 2fr 1.2fr; gap: 20px; margin-top: .75rem;
+    display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; margin-top: .75rem;
   }
+  .panel-right-stack { display: flex; flex-direction: column; gap: 16px; }
   .panel-summary-col {
     background: var(--bg); border: 1px solid var(--border);
-    border-radius: 12px; padding: 18px 16px;
-    display: flex; flex-direction: column; gap: 0;
+    border-radius: 12px; padding: 16px 14px;
   }
   .panel-col-heading {
-    font-size: 11px; font-weight: 700; color: var(--blue);
+    font-size: 10px; font-weight: 700; color: var(--blue);
     text-transform: uppercase; letter-spacing: 1px; line-height: 1.4;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
-  .panel-subheading { font-size: 12px; color: var(--text-muted); margin: 0 0 12px; line-height: 1.4; }
   .summary-empty { font-size: 12px; color: var(--text-light); padding: .5rem 0; }
 
   /* Ranked bar rows */
   .rank-row {
-    display: grid; grid-template-columns: 32px 1fr 44px;
-    align-items: start; gap: 8px;
-    padding: 8px 10px; border-radius: 8px; margin-bottom: 6px;
-    transition: background 0.2s;
+    display: grid; grid-template-columns: 24px 1fr 40px;
+    align-items: start; gap: 6px;
+    padding: 6px 8px; border-radius: 7px; margin-bottom: 5px;
   }
-  .rank-top { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.07); }
-  .rank-meta { display: flex; flex-direction: column; align-items: center; gap: 4px; padding-top: 2px; }
-  .rank-letter { font-size: 15px; font-weight: 800; line-height: 1; }
-  .rank-badge {
-    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
-    background: var(--col, #2563EB); color: white;
-    padding: 2px 5px; border-radius: 3px; white-space: nowrap;
-  }
-  .rank-body { display: flex; flex-direction: column; gap: 5px; }
-  .rank-text { font-size: 12px; line-height: 1.45; color: var(--text); }
+  .rank-top { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .rank-letter { font-size: 13px; font-weight: 800; line-height: 1.6; }
+  .rank-body { display: flex; flex-direction: column; gap: 4px; }
+  .rank-text { font-size: 11px; line-height: 1.45; color: var(--text); }
   .rank-top .rank-text { font-weight: 600; }
-  .rank-bar-track {
-    height: 6px; background: var(--border); border-radius: 3px; overflow: hidden;
+  .rank-bar-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .rank-bar-fill  { height: 100%; border-radius: 3px; transition: width .5s ease; }
+  .rank-badge {
+    display: inline-block; margin-top: 3px;
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+    color: white; padding: 2px 6px; border-radius: 3px;
   }
-  .rank-bar-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
-  .rank-pct {
-    font-size: 18px; font-weight: 800; text-align: right;
-    font-feature-settings: "tnum"; padding-top: 2px;
-  }
-  .rank-top .rank-pct { font-size: 22px; }
+  .rank-pct { font-size: 16px; font-weight: 800; text-align: right; font-feature-settings: "tnum"; padding-top: 1px; }
+  .rank-top .rank-pct { font-size: 19px; }
 
-  /* Binary split cards for lightning vote */
-  .binary-split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+  /* Binary split cards — winner highlighted, loser muted */
+  .binary-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
   .binary-card {
-    border: 2px solid; border-radius: 12px; padding: 20px 12px;
-    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px;
-    background: var(--surface);
+    border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 10px;
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    background: var(--bg);
   }
-  .binary-top { background: color-mix(in srgb, var(--col, #2563EB) 8%, white); }
-  .binary-letter { font-size: 20px; font-weight: 800; }
-  .binary-pct    { font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
-  .binary-text   { font-size: 13px; color: var(--text-muted); line-height: 1.35; }
+  .binary-top {
+    background: var(--surface); border: 2.5px solid; border-color: var(--col, var(--blue));
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .binary-low { opacity: 0.55; }
+  .binary-letter { font-size: 16px; font-weight: 800; }
+  .binary-pct    { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+  .binary-text   { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
   .binary-count  { font-size: 11px; color: var(--text-light); }
+
+  /* Optional choice stage buttons */
+  .choice-btn {
+    padding: 14px 28px; font-size: 15px; font-weight: 600; border-radius: 10px;
+    border: none; cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .choice-continue { background: var(--blue); color: white; }
+  .choice-continue:hover { background: var(--blue-dark); }
+  .choice-close { background: var(--bg); color: var(--text-muted); border: 1.5px solid var(--border-mid); }
+  .choice-close:hover { background: var(--border); color: var(--text); }
 
   /* ── Participant panel engagement prompt ── */
   .panel-engage {

@@ -36,12 +36,15 @@ async function getFullSequence() {
     .sort((a, b) => b.c - a.c || SHORTLIST_KEYS.indexOf(a.k) - SHORTLIST_KEYS.indexOf(b.k));
   const top1 = ranked[0]?.k || SHORTLIST_KEYS[0];
   const top2 = ranked[1]?.k || SHORTLIST_KEYS[1];
+  const top3 = ranked[2]?.k || SHORTLIST_KEYS[2];
   return [
     'welcome',
     'hitl_A', 'hitl_B', 'hitl_C', 'hitl_panel',
     'shortlist',
     `${top1}_A`, `${top1}_B`, `${top1}_C`, `${top1}_panel`,
     `${top2}_A`, `${top2}_B`, `${top2}_C`, `${top2}_panel`,
+    'optional_choice',                                  // facilitator decides: one more or close
+    `${top3}_A`, `${top3}_B`, `${top3}_C`, `${top3}_panel`,
     'close'
   ];
 }
@@ -111,47 +114,45 @@ async function renderPanelSummary(tk, term) {
   const votersB = totalVoters(votesB);
   const votersC = totalVoters(votesC);
 
-  // Ranked bar list — sorted by votes descending, winner highlighted
+  // Ranked bar list — sorted by votes descending, winner highlighted.
+  // "Top pick" badge only shown when there is a single clear winner.
   function rankedBars(options, counts, total) {
     if (!total) return `<p class="summary-empty">No responses yet</p>`;
-    const max = Math.max(...counts, 1);
-    const items = options
-      .map((opt, i) => ({ opt, i, c: counts[i] }))
-      .sort((a, b) => b.c - a.c);
+    const max      = Math.max(...counts, 1);
+    const items    = options.map((opt, i) => ({ opt, i, c: counts[i] })).sort((a, b) => b.c - a.c);
     const topCount = items[0].c;
+    const singleWinner = topCount > 0 && items.filter(x => x.c === topCount).length === 1;
 
     return items.map(({ opt, i, c }) => {
-      const pct    = Math.round(c / total * 100);
-      const w      = Math.round(c / max * 100);
-      const col    = OPT_COLORS[i % OPT_COLORS.length];
-      const isTop  = c === topCount && c > 0;
+      const pct   = Math.round(c / total * 100);
+      const w     = Math.round(c / max * 100);
+      const col   = OPT_COLORS[i % OPT_COLORS.length];
+      const isTop = c === topCount && c > 0;
       return `<div class="rank-row${isTop ? ' rank-top' : ''}" style="--col:${col}">
-        <div class="rank-meta">
-          <span class="rank-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
-          ${isTop ? `<span class="rank-badge">Top pick</span>` : ''}
-        </div>
+        <span class="rank-letter" style="color:${col}">${String.fromCharCode(65+i)}</span>
         <div class="rank-body">
           <div class="rank-text">${e(opt.text)}</div>
           <div class="rank-bar-track">
             <div class="rank-bar-fill" style="width:${w}%;background:${col}"></div>
           </div>
+          ${isTop && singleWinner ? `<span class="rank-badge" style="background:${col}">Top pick</span>` : ''}
         </div>
         <div class="rank-pct" style="color:${col}">${pct}%</div>
       </div>`;
     }).join('') + `<p class="res-total">${total} response${total!==1?'s':''}</p>`;
   }
 
-  // Binary split — two large stat cards for the lightning vote
+  // Binary split — winner gets coloured background, loser gets muted styling
   function binarySplit(options, counts, total) {
     const denom = (counts[0] + counts[1]) || 1;
     return `<div class="binary-split">
       ${options.map((opt, i) => {
-        const pct = total ? Math.round(counts[i] / denom * 100) : 0;
-        const col = OPT_COLORS[i];
+        const pct   = total ? Math.round(counts[i] / denom * 100) : 0;
+        const col   = OPT_COLORS[i];
         const isTop = counts[i] > counts[1 - i];
-        return `<div class="binary-card${isTop ? ' binary-top' : ''}" style="--col:${col};border-color:${col}">
-          <div class="binary-letter" style="color:${col}">${String.fromCharCode(65+i)}</div>
-          <div class="binary-pct" style="color:${col}">${pct}%</div>
+        return `<div class="binary-card${isTop ? ' binary-top' : ' binary-low'}" style="--col:${col}">
+          <div class="binary-letter" style="color:${isTop ? col : 'var(--text-muted)'}">${String.fromCharCode(65+i)}</div>
+          <div class="binary-pct" style="color:${isTop ? col : 'var(--text-muted)'}">${pct}%</div>
           <div class="binary-text">${e(opt.text)}</div>
           <div class="binary-count">${counts[i]} vote${counts[i]!==1?'s':''}</div>
         </div>`;
@@ -160,20 +161,23 @@ async function renderPanelSummary(tk, term) {
     ${total ? `<p class="res-total">${total} response${total!==1?'s':''}</p>` : ''}`;
   }
 
+  // Layout: definition takes left column (4 options = more text);
+  // scenario + lightning stacked in right column (fewer options each).
   return `
     <div class="panel-summary-grid">
       <div class="panel-summary-col">
         <div class="panel-col-heading">How did you define it?</div>
         ${rankedBars(term.formatA.options, countsA, votersA)}
       </div>
-      <div class="panel-summary-col">
-        <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
-        ${rankedBars(term.formatB.options, countsB, votersB)}
-      </div>
-      <div class="panel-summary-col">
-        <div class="panel-col-heading">Lightning vote</div>
-        <p class="panel-subheading">${e(term.formatC.prompt)}</p>
-        ${binarySplit(term.formatC.options, countsC, votersC)}
+      <div class="panel-right-stack">
+        <div class="panel-summary-col">
+          <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
+          ${rankedBars(term.formatB.options, countsB, votersB)}
+        </div>
+        <div class="panel-summary-col">
+          <div class="panel-col-heading">Lightning vote — ${e(term.formatC.prompt)}</div>
+          ${binarySplit(term.formatC.options, countsC, votersC)}
+        </div>
       </div>
     </div>`;
 }
@@ -252,6 +256,30 @@ async function renderFacilitatorStage() {
         <div class="agenda-item"><span class="agenda-num">2</span><span>Participant vote — choose two more topics</span></div>
         <div class="agenda-item"><span class="agenda-num">3</span><span>Two further terms — same format, panelist input</span></div>
         <div class="agenda-item"><span class="agenda-num">4</span><span>Summary &amp; close</span></div>
+      </div>
+    </div>`;
+  }
+
+  // ---- Optional choice ----
+  if (stage === 'optional_choice') {
+    const seq   = await getFullSequence();
+    const top3i = seq.indexOf('optional_choice') + 1; // first stage of 3rd term
+    const top3stage = seq[top3i] || 'close';
+    const top3key   = top3stage.split('_')[0];
+    const top3term  = TERMS[top3key];
+    return `<div class="slide slide-hero">
+      <div class="slide-eyebrow">Time permitting</div>
+      <h1 class="slide-title" style="font-size:clamp(24px,3.5vw,38px);margin-bottom:1rem">One more topic?</h1>
+      <p style="font-size:16px;color:var(--text-muted);margin-bottom:2rem">
+        ${top3term ? `The next most popular choice was <strong>${e(top3term.name)}</strong>.` : ''}
+      </p>
+      <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+        ${top3term ? `<button class="choice-btn choice-continue" onclick="goToStage('${top3stage}')">
+          Continue with ${e(top3term.name)} →
+        </button>` : ''}
+        <button class="choice-btn choice-close" onclick="goToStage('close')">
+          Wrap up &amp; close
+        </button>
       </div>
     </div>`;
   }
@@ -346,7 +374,7 @@ async function renderFacilitatorStage() {
     const voters = totalVoters(votes);
     return `<div class="slide">
       <div class="slide-eyebrow">${e(term.name)} · Lightning Vote</div>
-      <h1 class="slide-title" style="font-size:clamp(20px,3.5vw,34px);max-width:700px;margin:0 auto 2rem">${e(term.formatC.prompt)}</h1>
+      <h2 class="slide-question" style="font-size:clamp(18px,2vw,26px);max-width:760px;margin:0 auto 2rem;text-align:center">${e(term.formatC.prompt)}</h2>
       ${renderLightningBars(term.formatC.options, counts, voters)}
     </div>`;
   }
@@ -363,6 +391,15 @@ async function renderParticipantStage() {
       <h2 style="margin-top:.75rem">AI Terminology for Public Health</h2>
       <p>You'll vote on definitions, scenarios, and priority topics. Results appear live on the shared screen.</p>
       <p class="muted">Waiting for the session to begin…</p>
+    </div>`;
+  }
+
+  // ---- Optional choice ----
+  if (stage === 'optional_choice') {
+    return `<div class="panel">
+      <span class="stage-pill">Time permitting</span>
+      <h2 style="margin-top:.75rem">One more topic?</h2>
+      <p class="muted">The facilitator is deciding whether to continue with a bonus topic or wrap up. Stand by.</p>
     </div>`;
   }
 
@@ -553,14 +590,21 @@ function setRole(r) {
 
 // ── Floating facilitator control bar ─────────────────────────────────────────
 function stageLabel(s) {
-  if (s === 'welcome')   return 'Welcome';
-  if (s === 'shortlist') return 'Shortlist vote';
-  if (s === 'close')     return 'Close';
+  if (s === 'welcome')         return 'Welcome';
+  if (s === 'shortlist')       return 'Shortlist vote';
+  if (s === 'optional_choice') return 'Optional — one more topic?';
+  if (s === 'close')           return 'Close';
   const [tk, fmt] = s.split('_');
   const name   = TERMS[tk]?.name || tk;
-  const labels = { A: 'Definition', B: 'Scenario', C: 'Lightning vote', panel: 'Panelist discussion' };
+  const labels = { A: 'Definition', B: 'Scenario', C: 'Lightning vote', panel: 'Discussion & Reflections' };
   return `${name} · ${labels[fmt] || fmt}`;
 }
+
+// Jump directly to a named stage (used by optional_choice buttons)
+window.goToStage = async function(s) {
+  if (role !== 'facilitator') return;
+  await setStage(s); render();
+};
 
 function updateControlBar(seq) {
   const bar = document.getElementById('ctrl-bar');
