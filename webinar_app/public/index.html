@@ -200,14 +200,14 @@
   /* ── Lightning vote two-column layout ── */
   .lightning-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 1.5rem; }
   .lightning-col {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    padding: 24px 16px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.05);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 40px 24px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
   }
-  .lightning-letter { font-size: 24px; font-weight: 800; }
-  .lightning-text   { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; }
-  .lightning-pct    { font-size: 44px; font-weight: 800; line-height: 1; }
-  .lightning-n      { font-size: 12px; color: var(--text-muted); }
+  .lightning-letter { font-size: 28px; font-weight: 800; }
+  .lightning-text   { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .lightning-pct    { font-size: 72px; font-weight: 800; line-height: 1; letter-spacing: -2px; }
+  .lightning-n      { font-size: 13px; color: var(--text-muted); }
 
   /* ── Facilitator slide view ── */
   .slide {
@@ -332,14 +332,14 @@
   /* Binary split cards for lightning vote */
   .binary-split { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
   .binary-card {
-    border: 2px solid; border-radius: 12px; padding: 16px 10px;
+    border: 2px solid; border-radius: 12px; padding: 20px 12px;
     text-align: center; display: flex; flex-direction: column; align-items: center; gap: 6px;
     background: var(--surface);
   }
   .binary-top { background: color-mix(in srgb, var(--col, #2563EB) 8%, white); }
-  .binary-letter { font-size: 18px; font-weight: 800; }
-  .binary-pct    { font-size: 36px; font-weight: 800; line-height: 1; }
-  .binary-text   { font-size: 12px; color: var(--text-muted); line-height: 1.35; }
+  .binary-letter { font-size: 20px; font-weight: 800; }
+  .binary-pct    { font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+  .binary-text   { font-size: 13px; color: var(--text-muted); line-height: 1.35; }
   .binary-count  { font-size: 11px; color: var(--text-light); }
 
   /* ── Participant panel engagement prompt ── */

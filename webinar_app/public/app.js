@@ -531,20 +531,18 @@ async function renderParticipantStage() {
 // Participants never see the role switcher or technical details.
 // Facilitators get it because they arrived via ?role=facilitator.
 function updateRoleBar() {
-  const bar = document.getElementById('role-bar');
+  // Role bar is hidden for everyone — role is set via ?role=facilitator URL param.
+  // Session info (room, backend) is shown discreetly in the header for facilitators.
+  document.getElementById('role-bar').style.display = 'none';
   const meta = document.getElementById('header-meta');
-  if (role !== 'facilitator') {
-    bar.style.display = 'none';
-    if (meta) meta.style.display = 'none';
-    return;
-  }
-  bar.style.display = '';
-  if (meta) {
+  if (!meta) return;
+  if (role === 'facilitator') {
     meta.style.display = 'flex';
     document.getElementById('room-code').textContent = ROOM;
     document.getElementById('backend-tag').textContent = window.WEBINAR_BACKEND_NAME || '';
+  } else {
+    meta.style.display = 'none';
   }
-  document.getElementById('role-facilitator').className = 'active';
 }
 
 function setRole(r) {
