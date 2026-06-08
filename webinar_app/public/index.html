@@ -217,8 +217,17 @@
     align-items: center; gap: 12px; margin-bottom: 10px;
   }
   @media (max-width: 700px) {
-    .panel-summary-grid { grid-template-columns: 1fr; }
-    .res-row { grid-template-columns: 1fr 1.5fr 44px; }
+    .panel-summary-grid  { grid-template-columns: 1fr; }
+    .res-row             { grid-template-columns: 1fr 1.5fr 44px; }
+    /* Lightning vote: stack cards vertically on mobile */
+    .lightning-wrap      { grid-template-columns: 1fr; gap: 10px; }
+    .lightning-pct       { font-size: 48px; }
+    .lightning-col       { padding: 20px 16px; flex-direction: row;
+                           justify-content: space-between; align-items: center;
+                           gap: 12px; }
+    .lightning-letter    { font-size: 22px; }
+    .lightning-text      { font-size: 14px; flex: 1; text-align: left; }
+    .lightning-n         { font-size: 14px; }
   }
   .res-label { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.35; }
   .res-track {
@@ -498,6 +507,15 @@
     .mob-pct    { font-size: 16px; font-weight: 800; flex-shrink: 0; }
     .mob-empty  { font-size: 12px; color: var(--text-light); font-style: italic; }
   }
+
+  /* ── Shortlist confirm button ── */
+  .shortlist-confirm-btn {
+    padding: 10px 22px; font-size: 14px; font-weight: 600;
+    background: var(--blue); color: white; border: none;
+    border-radius: 8px; cursor: pointer; font-family: inherit;
+    transition: background .15s;
+  }
+  .shortlist-confirm-btn:hover { background: var(--blue-dark); }
 
   /* ── Error ── */
   .error-panel { border-color: var(--red); }
