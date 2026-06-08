@@ -167,6 +167,42 @@ async function renderPanelSummary(tk, term) {
 
   // Layout: definition takes left column (4 options = more text);
   // scenario + lightning stacked in right column (fewer options each).
+  // Mobile-compact summary: just the top pick + % for each section
+  function mobileSummary() {
+    function topPick(options, counts, total, label) {
+      if (!total) return `<div class="mob-row"><span class="mob-label">${label}</span><span class="mob-empty">No votes yet</span></div>`;
+      const max = Math.max(...counts);
+      const winner = options.findIndex((_, i) => counts[i] === max);
+      const pct = Math.round(max / total * 100);
+      const col = OPT_COLORS[winner % OPT_COLORS.length];
+      return `<div class="mob-row">
+        <span class="mob-label">${label}</span>
+        <span class="mob-winner">
+          <span class="mob-letter" style="color:${col}">${String.fromCharCode(65+winner)}</span>
+          <span class="mob-text">${e(short(options[winner].text, 55))}</span>
+          <span class="mob-pct" style="color:${col}">${pct}%</span>
+        </span>
+      </div>`;
+    }
+    const denom = (countsC[0] + countsC[1]) || 1;
+    const lwinner = countsC[0] >= countsC[1] ? 0 : 1;
+    const lpct = votersC ? Math.round(countsC[lwinner] / denom * 100) : 0;
+    const lcol = OPT_COLORS[lwinner];
+    return `<div class="mob-summary">
+      ${topPick(term.formatA.options, countsA, votersA, 'Definition')}
+      ${topPick(term.formatB.options, countsB, votersB, 'Scenario')}
+      <div class="mob-row">
+        <span class="mob-label">Lightning</span>
+        <span class="mob-winner">
+          <span class="mob-letter" style="color:${lcol}">${String.fromCharCode(65+lwinner)}</span>
+          <span class="mob-text">${e(term.formatC.options[lwinner].text)}</span>
+          <span class="mob-pct" style="color:${lcol}">${lpct}%</span>
+        </span>
+      </div>
+      ${votersA ? `<p class="res-total">${votersA} definition responses &middot; ${votersB} scenario &middot; ${votersC} lightning</p>` : ''}
+    </div>`;
+  }
+
   return `
     <div class="panel-summary-grid">
       <div class="panel-summary-col">
@@ -183,7 +219,8 @@ async function renderPanelSummary(tk, term) {
           ${binarySplit(term.formatC.options, countsC, votersC)}
         </div>
       </div>
-    </div>`;
+    </div>
+    ${mobileSummary()}`;
 }
 
 // ── Results rendering — Mentimeter-style ──────────────────────────────────────
@@ -252,16 +289,6 @@ function renderLightningBars(options, counts, voters) {
 async function renderFacilitatorStage() {
   // ---- Welcome ----
   if (stage === 'welcome') {
-    // Build the participant join URL (join.html with room param)
-    const joinUrl = (() => {
-      const u = new URL(location.href);
-      u.pathname = u.pathname.replace(/\/?$/, '/').replace(/\/[^/]*$/, '/join.html');
-      u.searchParams.delete('role');
-      u.searchParams.set('backend', 'firebase');
-      // keep room as-is
-      return u.toString();
-    })();
-
     return `<div class="slide slide-hero">
       <div class="slide-eyebrow">Virtual Webinar &middot; 60 minutes</div>
       <h1 class="slide-title" style="margin-bottom:.75rem">AI Terminology<br>for Public Health</h1>
@@ -269,7 +296,7 @@ async function renderFacilitatorStage() {
         <div class="qr-wrap"><div id="qr-canvas"></div></div>
         <div class="join-url-block">
           <div class="join-url-label">Participant link</div>
-          <div class="join-url">${joinUrl}</div>
+          <div class="join-url" id="join-url-text">Loading…</div>
           <div class="join-hint">Scan the QR code or paste this link in the webinar chat.<br>No login needed &mdash; opens straight to the voting screen.</div>
         </div>
       </div>
@@ -683,6 +710,26 @@ window.toggleCtrl = function() {
 };
 
 // ── Navigation ────────────────────────────────────────────────────────────────
+window.toggleQrPopover = function() {
+  const pop = document.getElementById('qr-popover');
+  if (!pop) return;
+  const open = pop.classList.toggle('open');
+  if (open && !pop.hasChildNodes() && window._joinUrl && typeof QRCode !== 'undefined') {
+    const qrDiv = document.createElement('div');
+    pop.appendChild(qrDiv);
+    new QRCode(qrDiv, {
+      text: window._joinUrl,
+      width: 140, height: 140,
+      colorDark: '1a2857', colorLight: 'ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+    const urlDiv = document.createElement('div');
+    urlDiv.className = 'popover-url';
+    urlDiv.textContent = document.getElementById('join-url-text')?.textContent || window._joinUrl;
+    pop.appendChild(urlDiv);
+  }
+};
+
 window.navigate = async function(delta) {
   if (role !== 'facilitator') return;
   const seq = await getFullSequence();
@@ -702,20 +749,47 @@ async function render() {
       : await renderParticipantStage();
     updateControlBar(seq);
 
-    // If the welcome slide just rendered, generate the QR code
-    if (stage === 'welcome' && role === 'facilitator') {
-      const qrEl = document.getElementById('qr-canvas');
-      if (qrEl && typeof QRCode !== 'undefined') {
-        const u = new URL(location.href);
-        u.pathname = u.pathname.replace(/\/?$/, '/').replace(/\/[^/]*$/, '/join.html');
-        u.searchParams.delete('role');
-        u.searchParams.set('backend', 'firebase');
-        new QRCode(qrEl, {
-          text: u.toString(),
-          width: 160, height: 160,
-          colorDark: '#1a2857', colorLight: '#ffffff',
-          correctLevel: QRCode.CorrectLevel.M
-        });
+    // Build join URL once and use it everywhere
+    if (role === 'facilitator') {
+      const u = new URL(location.href);
+      u.pathname = u.pathname.replace(/\/?$/, '/').replace(/\/[^/]*$/, '/join.html');
+      u.searchParams.delete('role');
+      u.searchParams.set('backend', 'firebase');
+      const fullJoinUrl = u.toString();
+
+      // Welcome slide: QR + short URL
+      if (stage === 'welcome') {
+        const qrEl = document.getElementById('qr-canvas');
+        // Only generate once (polling would re-render)
+        if (qrEl && typeof QRCode !== 'undefined' && !qrEl.hasChildNodes()) {
+          new QRCode(qrEl, {
+            text: fullJoinUrl,
+            width: 160, height: 160,
+            colorDark: '1a2857', colorLight: 'ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+        }
+        // Fetch a short URL from is.gd, fall back to full URL
+        const urlEl = document.getElementById('join-url-text');
+        if (urlEl && urlEl.textContent === 'Loading…') {
+          urlEl.textContent = fullJoinUrl; // show immediately
+          try {
+            const resp = await fetch(
+              `https://is.gd/create.php?format=simple&url=${encodeURIComponent(fullJoinUrl)}`
+            );
+            if (resp.ok) {
+              const short = (await resp.text()).trim();
+              if (short.startsWith('http')) urlEl.textContent = short;
+            }
+          } catch (_) { /* keep full URL */ }
+        }
+      }
+
+      // Seed the persistent ctrl-bar QR button with the join URL
+      if (!window._joinUrl) {
+        window._joinUrl = fullJoinUrl;
+        const btn = document.getElementById('ctrl-qr-btn');
+        if (btn) btn.style.display = 'inline-flex';
       }
     }
   } catch (err) {

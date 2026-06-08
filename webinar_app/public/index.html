@@ -458,6 +458,41 @@
   }
   .join-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
 
+  /* ── QR popover (accessible from any slide via ctrl-bar button) ── */
+  #qr-popover {
+    display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: white; border-radius: 14px; padding: 18px 20px;
+    box-shadow: 0 8px 40px rgba(0,0,0,.28); z-index: 500;
+    text-align: center; cursor: default; min-width: 190px;
+  }
+  #qr-popover.open { display: block; }
+  #qr-popover canvas, #qr-popover img { display: block !important; margin: 0 auto; }
+  .popover-url {
+    font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-muted);
+    margin-top: 10px; word-break: break-all; max-width: 180px;
+  }
+
+  /* ── Mobile panel summary (shown only on small screens) ── */
+  .mob-summary { display: none; }
+  @media (max-width: 700px) {
+    .panel-summary-grid  { display: none !important; }
+    .mob-summary         { display: block; margin-top: .5rem; }
+    .mob-row {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .mob-row:last-of-type { border-bottom: none; }
+    .mob-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--blue); min-width: 68px; padding-top: 2px;
+    }
+    .mob-winner { display: flex; align-items: baseline; gap: 6px; flex: 1; flex-wrap: wrap; }
+    .mob-letter { font-size: 14px; font-weight: 800; flex-shrink: 0; }
+    .mob-text   { font-size: 12px; color: var(--text); line-height: 1.4; flex: 1; }
+    .mob-pct    { font-size: 16px; font-weight: 800; flex-shrink: 0; }
+    .mob-empty  { font-size: 12px; color: var(--text-light); font-style: italic; }
+  }
+
   /* ── Error ── */
   .error-panel { border-color: var(--red); }
   .error-panel h2 { color: var(--red); }
@@ -492,10 +527,14 @@
     <button id="ctrl-prev" onclick="navigate(-1)">← Prev</button>
     <span id="ctrl-label"></span>
     <button id="ctrl-next" onclick="navigate(1)">Next →</button>
+    <button id="ctrl-qr-btn" onclick="toggleQrPopover()" title="Show join QR code" style="display:none">📱 Join</button>
     <button id="ctrl-reset" onclick="resetSession()" title="Reset all votes">↻</button>
   </div>
   <button id="ctrl-toggle" onclick="toggleCtrl()">▼ hide</button>
 </div>
+
+<!-- Persistent QR popover — toggled by ctrl-bar button, accessible on any slide -->
+<div id="qr-popover" onclick="toggleQrPopover()"></div>
 
 <!-- QR code library — used on the welcome slide to display the participant join link -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
