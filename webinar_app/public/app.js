@@ -223,7 +223,7 @@ async function renderPanelSummary(tk, term) {
     ${mobileSummary()}`;
 }
 
-// ── Results rendering — Mentimeter-style ──────────────────────────────────────
+// ── Results rendering ──────────────────────────────────────
 // mode: 'full' = full text stacked (participant results on personal device)
 //       'short' = truncated inline (facilitator shared screen)
 function renderBars(options, counts, voters, { labelFn, mode = 'short' } = {}) {
@@ -290,14 +290,9 @@ async function renderFacilitatorStage() {
   // ---- Welcome ----
   if (stage === 'welcome') {
     return `<div class="slide slide-hero">
-      <div class="slide-eyebrow">Virtual Webinar &middot; 60 minutes</div>
       <h1 class="slide-title">AI Terminology<br>for Public Health</h1>
-      <div class="slide-agenda">
-        <div class="agenda-item"><span class="agenda-num">1</span><span>Human in the Loop &mdash; definition, scenario &amp; lightning vote, then panelist discussion</span></div>
-        <div class="agenda-item"><span class="agenda-num">2</span><span>Participant vote &mdash; choose two more topics</span></div>
-        <div class="agenda-item"><span class="agenda-num">3</span><span>Two further terms &mdash; same format, panelist input</span></div>
-        <div class="agenda-item"><span class="agenda-num">4</span><span>Summary &amp; close</span></div>
-      </div>
+      <div class="slide-eyebrow"><b>Vote on definitions &middot; Test them against public health scenarios</b></div>
+      <div class="slide-eyebrow">See where they hold, where they break.</div>
     </div>`;
   }
 
@@ -324,10 +319,9 @@ async function renderFacilitatorStage() {
       }
     }, 50);
     return `<div class="slide slide-hero">
-      <div class="slide-eyebrow">Wrapping up</div>
-      <h1 class="slide-title">Thank you</h1>
+      <div class="slide-eyebrow">Thank you</div>
+      <h1 class="slide-title">Time check</h1>
       <p class="slide-body" style="max-width:520px;margin:1rem auto 0;text-align:center;color:var(--text-muted);font-size:16px">
-        Thank you for your participation today. The facilitator will continue shortly.
       </p>
     </div>`;
   }
@@ -336,9 +330,9 @@ async function renderFacilitatorStage() {
   if (stage === 'close') {
     return `<div class="slide slide-hero">
       <div class="slide-eyebrow">Thank you</div>
-      <h1 class="slide-title">Summary &amp; Close</h1>
+      <h1 class="slide-title">Closing</h1>
       <p class="slide-body" style="max-width:560px;margin:1.5rem auto 0;text-align:center;color:var(--text-muted);font-size:16px">
-        The terms we explored reflect real tensions in implementation — between clinical and public health framings, between model performance and programme outcomes, between governance as risk management and governance as sovereignty.
+        The terms we explored reflect real tensions in the implementation of AI for public health, and how terminology around this shapes how we design, govern, and implement public health solutions.
       </p>
     </div>`;
   }
@@ -370,7 +364,7 @@ async function renderFacilitatorStage() {
 
     return `<div class="slide">
       <div class="slide-eyebrow">Participant vote</div>
-      <h1 class="slide-title" style="font-size:clamp(24px,4vw,40px)">Which two topics next?</h1>
+      <h1 class="slide-title" style="font-size:clamp(24px,4vw,40px)">Which two topics next??</h1>
       ${bars}
     </div>`;
   }
@@ -474,7 +468,7 @@ async function renderParticipantStage() {
     return `<div class="panel">
       <span class="stage-pill">Close</span>
       <h2 style="margin-top:.75rem">Thank you for joining</h2>
-      <p class="muted">Session recording and resources to follow.</p>
+      <p class="muted">Visit https://www.vitalstrategies.org/resources/foundations-and-futures/ for more info on Vital Strategies Foundations & Futures: Reimagining Public Health in the Artificial Intelligence Era Across the Global South.</p>
     </div>`;
   }
 
