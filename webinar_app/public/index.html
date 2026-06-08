@@ -95,8 +95,13 @@
     border-radius: 12px; padding: 14px 12px;
     box-shadow: 0 1px 4px rgba(0,0,0,.05);
   }
-  /* Main content in the right column */
+  /* Main content in the right column; flex column so .slide can fill height */
   .container.fac-layout #main-content { grid-column: 2; grid-row: 2; }
+  /* Both layouts: main-content sets the height, slides fill it and centre content */
+  #main-content {
+    display: flex; flex-direction: column;
+    min-height: calc(100dvh - 120px);
+  }
 
   .sidebar-label {
     font-size: 10px; font-weight: 700; text-transform: uppercase;
@@ -108,7 +113,6 @@
     word-break: break-all; text-align: center; line-height: 1.45;
   }
 
-  /* Vertically centre slide content within the viewport */
   /* ── Role bar ── */
   .role-bar {
     display: flex; gap: 8px; align-items: center;
@@ -262,7 +266,8 @@
   .slide {
     background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
     padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 3.5rem);
-    min-height: calc(100dvh - 180px);
+    flex: 1;                          /* fill the #main-content flex parent */
+    min-height: 400px;                /* floor so short content still looks like a slide */
     box-shadow: 0 2px 8px rgba(0,0,0,.06);
     display: flex; flex-direction: column; justify-content: center;
   }
@@ -272,7 +277,7 @@
   }
   .slide-panel {
     display: flex; flex-direction: column; align-items: center;
-    justify-content: center; text-align: center; min-height: 440px;
+    justify-content: center; text-align: center;
     background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 100%);
   }
   .slide-eyebrow {

@@ -72,14 +72,30 @@ slide_base = ' '.join(slide_bodies)
 check('.slide has display:flex',           'display: flex' in slide_base)
 check('.slide has flex-direction:column',  'flex-direction: column' in slide_base)
 check('.slide has justify-content:center', 'justify-content: center' in slide_base)
-check('.slide has viewport-based min-height',
-      'min-height: calc(100dvh' in slide_base or 'min-height:calc(100dvh' in slide_base)
+check('.slide has a floor min-height (not viewport calc)',
+      'min-height' in slide_base and 'calc(100dvh' not in slide_base,
+      '.slide should have a modest floor min-height; viewport height is controlled by #main-content')
 
-# .slide-hero must NOT override min-height (it comes after .slide)
-hero_str = ' '.join(hero_bodies)
-check('.slide-hero has no min-height override',
-      'min-height' not in hero_str,
-      '.slide-hero has min-height which overrides .slide — vertical centering breaks')
+# .slide subclasses must NOT override min-height (they come after .slide in the stylesheet)
+for sub, bodies_var in (('slide-hero', hero_bodies),
+                         ('slide-panel', re.findall(r'\.slide-panel\s*\{([^}]+)\}', CSS)),
+                         ('slide-intro', re.findall(r'\.slide-intro\s*\{([^}]+)\}', CSS))):
+    sub_str = ' '.join(bodies_var)
+    check(f'.{sub} has no min-height override',
+          'min-height' not in sub_str,
+          f'.{sub} min-height overrides .slide — breaks vertical centering')
+
+# .slide should use flex:1 (parent-controlled height), not min-height alone
+check('.slide uses flex:1 to fill parent',
+      'flex: 1' in slide_base or 'flex:1' in slide_base,
+      '.slide needs flex:1 — use #main-content to control the height')
+
+# #main-content sets the viewport height for the flex strategy to work
+mc_blocks = re.findall(r'#main-content\s*\{([^}]+)\}', CSS)
+mc_body = ' '.join(mc_blocks)
+check('#main-content has min-height for viewport fill',
+      'min-height' in mc_body,
+      '#main-content needs min-height so slides fill the viewport')
 
 # Facilitator layout uses grid
 check('fac-layout uses display:grid',
