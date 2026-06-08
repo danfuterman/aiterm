@@ -382,7 +382,7 @@ async function renderFacilitatorStage() {
       <h1 class="intro-term">${e(term.name)}</h1>
       <div class="intro-cards">
         <div class="intro-card intro-card-neutral">
-          <div class="intro-card-label">The generic definition</div>
+          <div class="intro-card-label">Generic definition</div>
           <p>${e(intro.concept || '')}</p>
         </div>
         <div class="intro-card intro-card-tension">
@@ -520,7 +520,7 @@ async function renderParticipantStage() {
       <span class="stage-pill">Introduction</span>
       <h2 style="margin-top:.75rem">${e(term.name)}</h2>
       <div class="intro-ambiguity-box">
-        <div class="intro-ambiguity-label">A generic definition</div>
+        <div class="intro-ambiguity-label">Generic definition</div>
         <p>${e(intro.concept || '')}</p>
       </div>
       <div class="intro-ambiguity-box" style="margin-top:.75rem">
