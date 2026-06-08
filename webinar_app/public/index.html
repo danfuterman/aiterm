@@ -41,7 +41,7 @@
     background: var(--brand-navy); padding: 0 1rem;
   }
   .vs-header-inner {
-    max-width: 1120px; margin: 0 auto; height: 56px;
+    max-width: 1170px; margin: 0 auto; height: 56px;
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 1.5rem;
   }
@@ -71,7 +71,7 @@
 
   /* ── Layout — optimised for laptop (1280px+) ── */
   /* ── Facilitator layout: QR sidebar LEFT, main content centred ── */
-  .container { max-width: 1120px; margin: 0 auto; padding: 1.25rem 1.5rem 100px; }
+  .container { max-width: 1170px; margin: 0 auto; padding: 1.25rem 1.5rem 100px; }
 
   /* Sidebar: always in DOM, hidden until fac-layout activated */
   #fac-sidebar {
@@ -79,24 +79,24 @@
   }
   .container.fac-layout {
     display: grid;
-    grid-template-columns: 164px 1fr;
+    grid-template-columns: 1fr 164px;   /* sidebar on the RIGHT */
     grid-template-rows: auto 1fr;
     gap: 0 1.25rem;
     align-items: start;
   }
   /* Role bar spans full width */
   .container.fac-layout .role-bar { grid-column: 1 / -1; }
-  /* Sidebar in the left column, sticks as user scrolls */
+  /* Sidebar in the RIGHT column, sticks as user scrolls */
   .container.fac-layout #fac-sidebar {
     display: flex; flex-direction: column; align-items: center; gap: 10px;
-    grid-column: 1; grid-row: 2;
+    grid-column: 2; grid-row: 2;
     position: sticky; top: 1.25rem;
     background: var(--surface); border: 1px solid var(--border);
     border-radius: 12px; padding: 14px 12px;
     box-shadow: 0 1px 4px rgba(0,0,0,.05);
   }
-  /* Main content in the right column; flex column so .slide can fill height */
-  .container.fac-layout #main-content { grid-column: 2; grid-row: 2; }
+  /* Main content in the LEFT column */
+  .container.fac-layout #main-content { grid-column: 1; grid-row: 2; }
   /* Both layouts: main-content sets the height, slides fill it and centre content */
   #main-content {
     display: flex; flex-direction: column;

@@ -406,8 +406,7 @@ async function renderFacilitatorStage() {
   if (fmt === 'panel') {
     const summary = await renderPanelSummary(tk, term);
     return `<div class="slide panel-summary-slide">
-      ${eyebrow(term.name)}
-      <h1 class="slide-title" style="font-size:clamp(22px,3.5vw,36px);margin-bottom:1.25rem">Discussion &amp; Reflections</h1>
+      ${eyebrow(term.name, 'Discussion & Reflections')}
       ${summary}
     </div>`;
   }

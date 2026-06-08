@@ -109,8 +109,9 @@ sidebar_css = re.search(r'#fac-sidebar\s*\{([^}]+)\}', CSS)
 sidebar_body = sidebar_css.group(1) if sidebar_css else ''
 # Allow either standalone or descendant-selector rule
 all_sidebar = ' '.join(re.findall(r'#fac-sidebar[^{]*\{([^}]+)\}', CSS))
-check('sidebar has grid-column:1',
-      'grid-column: 1' in all_sidebar or 'grid-column:1' in all_sidebar)
+check('sidebar has explicit grid-column',
+      'grid-column: 2' in all_sidebar or 'grid-column:2' in all_sidebar,
+      'sidebar should be at grid-column:2 (right side)')
 check('sidebar has grid-row:2',
       'grid-row: 2' in all_sidebar or 'grid-row:2' in all_sidebar)
 check('sidebar has position:sticky',
