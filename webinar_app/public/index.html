@@ -432,6 +432,32 @@
   }
   .ctrl-extra-primary:hover { background: rgba(245,192,0,.35) !important; }
 
+  /* ── Join QR block on welcome slide ── */
+  .join-block {
+    display: flex; align-items: center; gap: 2.5rem;
+    margin-top: 2rem; justify-content: center; flex-wrap: wrap;
+  }
+  .qr-wrap {
+    background: white; padding: 12px; border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.12);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  #qr-canvas canvas, #qr-canvas img { display: block !important; }
+  .join-url-block { text-align: left; }
+  .join-url-label {
+    font-size: 11px; font-weight: 700; color: var(--brand-yellow);
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px;
+  }
+  .join-url {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: clamp(12px, 1.4vw, 16px); color: var(--text);
+    background: var(--bg); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 10px 16px; word-break: break-all;
+    max-width: 420px;
+  }
+  .join-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+
   /* ── Error ── */
   .error-panel { border-color: var(--red); }
   .error-panel h2 { color: var(--red); }
@@ -470,6 +496,11 @@
   </div>
   <button id="ctrl-toggle" onclick="toggleCtrl()">▼ hide</button>
 </div>
+
+<!-- QR code library — used on the welcome slide to display the participant join link -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+        integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU"
+        crossorigin="anonymous"></script>
 
 <!-- Firebase compat SDK (v9) — always loaded; initialised only when ?backend=firebase.
      SRI hashes lock these to exact known-good builds. -->

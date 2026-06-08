@@ -252,14 +252,26 @@ function renderLightningBars(options, counts, voters) {
 async function renderFacilitatorStage() {
   // ---- Welcome ----
   if (stage === 'welcome') {
+    // Build the participant join URL (join.html with room param)
+    const joinUrl = (() => {
+      const u = new URL(location.href);
+      u.pathname = u.pathname.replace(/\/?$/, '/').replace(/\/[^/]*$/, '/join.html');
+      u.searchParams.delete('role');
+      u.searchParams.set('backend', 'firebase');
+      // keep room as-is
+      return u.toString();
+    })();
+
     return `<div class="slide slide-hero">
-      <div class="slide-eyebrow">Virtual Webinar · 60 minutes</div>
-      <h1 class="slide-title">AI Terminology<br>for Public Health</h1>
-      <div class="slide-agenda">
-        <div class="agenda-item"><span class="agenda-num">1</span><span>Human in the Loop — definition, scenario &amp; lightning vote, then panelist discussion</span></div>
-        <div class="agenda-item"><span class="agenda-num">2</span><span>Participant vote — choose two more topics</span></div>
-        <div class="agenda-item"><span class="agenda-num">3</span><span>Two further terms — same format, panelist input</span></div>
-        <div class="agenda-item"><span class="agenda-num">4</span><span>Summary &amp; close</span></div>
+      <div class="slide-eyebrow">Virtual Webinar &middot; 60 minutes</div>
+      <h1 class="slide-title" style="margin-bottom:.75rem">AI Terminology<br>for Public Health</h1>
+      <div class="join-block">
+        <div class="qr-wrap"><div id="qr-canvas"></div></div>
+        <div class="join-url-block">
+          <div class="join-url-label">Participant link</div>
+          <div class="join-url">${joinUrl}</div>
+          <div class="join-hint">Scan the QR code or paste this link in the webinar chat.<br>No login needed &mdash; opens straight to the voting screen.</div>
+        </div>
       </div>
     </div>`;
   }
@@ -689,6 +701,23 @@ async function render() {
       ? await renderFacilitatorStage()
       : await renderParticipantStage();
     updateControlBar(seq);
+
+    // If the welcome slide just rendered, generate the QR code
+    if (stage === 'welcome' && role === 'facilitator') {
+      const qrEl = document.getElementById('qr-canvas');
+      if (qrEl && typeof QRCode !== 'undefined') {
+        const u = new URL(location.href);
+        u.pathname = u.pathname.replace(/\/?$/, '/').replace(/\/[^/]*$/, '/join.html');
+        u.searchParams.delete('role');
+        u.searchParams.set('backend', 'firebase');
+        new QRCode(qrEl, {
+          text: u.toString(),
+          width: 160, height: 160,
+          colorDark: '#1a2857', colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    }
   } catch (err) {
     root.innerHTML = `<div class="panel error-panel">
       <h2>Backend error</h2>
