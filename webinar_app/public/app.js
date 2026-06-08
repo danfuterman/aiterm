@@ -78,7 +78,6 @@ async function resetSession() {
       await STORAGE.setKey('votes:' + ROOM + ':' + k + '_' + f, {});
     }
   }
-  sessionStorage.removeItem('shortlist_confirmed_' + ROOM);
   stage = 'welcome';
   render();
 }
@@ -246,8 +245,8 @@ function renderBars(options, counts, voters, { labelFn, mode = 'short' } = {}) {
           <div class="res-bar-row">
             <div class="res-track">
               <div class="res-fill" style="width:${w}%;background:${col}"></div>
-              <span class="res-count" style="color:${col}">${counts[i]}</span>
             </div>
+            <span class="res-count" style="color:${col}">${counts[i]}</span>
             <div class="res-pct" style="color:${col}">${pct}%</div>
           </div>
         </div>`;
@@ -257,8 +256,8 @@ function renderBars(options, counts, voters, { labelFn, mode = 'short' } = {}) {
           <div class="res-label">${label}</div>
           <div class="res-track">
             <div class="res-fill" style="width:${w}%;background:${col}"></div>
-            <span class="res-count" style="color:${col}">${counts[i]}</span>
           </div>
+          <span class="res-count" style="color:${col}">${counts[i]}</span>
           <div class="res-pct" style="color:${col}">${pct}%</div>
         </div>`;
     }
@@ -489,9 +488,8 @@ async function renderParticipantStage() {
     const counts   = tallyMulti(allVotes, SHORTLIST_KEYS.length);
     const voters   = totalVoters(allVotes);
 
-    // Show results once 2 are selected OR user explicitly confirms with fewer
-    const confirmed = sessionStorage.getItem('shortlist_confirmed_' + ROOM) === '1';
-    if (myVotes.length >= 2 || confirmed) {
+    // Show results once 2 are selected — selecting the second auto-advances
+    if (myVotes.length >= 2) {
       const picked = myVotes.map(i => e(TERMS[SHORTLIST_KEYS[i]].name)).join(' &amp; ');
       return `<div class="panel">
         <span class="stage-pill">Your vote is in</span>
@@ -517,15 +515,6 @@ async function renderParticipantStage() {
           </div>`;
         }).join('')}
       </div>
-      ${myVotes.length > 0 ? `
-        <div style="margin-top:1rem;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <button class="shortlist-confirm-btn" onclick="confirmShortlist()">
-            Confirm my selection
-          </button>
-          <span class="muted" style="font-size:12px">
-            ${myVotes.length === 1 ? 'or select one more topic above' : ''}
-          </span>
-        </div>` : ''}
     </div>`;
   }
 
@@ -789,12 +778,6 @@ async function render() {
 }
 
 // ── Event handlers ─────────────────────────────────────────────────────────────
-// Explicit confirmation for the shortlist multi-select
-window.confirmShortlist = function() {
-  sessionStorage.setItem('shortlist_confirmed_' + ROOM, '1');
-  render();
-};
-
 window.castVote = async function(pollId, idx) {
   // Prevent changing a vote once cast
   const current = (await getVotes(pollId))[PARTICIPANT_ID];
