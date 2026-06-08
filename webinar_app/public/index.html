@@ -442,36 +442,32 @@
     display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
     width: 100%; max-width: 820px; margin-bottom: 1.5rem;
   }
+  /* Shared intro card styles — used by both facilitator and participant views */
   .intro-card {
     border-radius: 12px; padding: 18px 20px; text-align: left;
+    border-left: 4px solid transparent; /* overridden per variant */
   }
   .intro-card p { font-size: 13px; line-height: 1.6; margin: 0; }
   .intro-card-label {
     font-size: 10px; font-weight: 700; text-transform: uppercase;
     letter-spacing: 1.5px; margin-bottom: 8px;
   }
+  /* Generic definition — cool navy-tinted background, navy accent */
   .intro-card-neutral {
-    background: var(--bg); border: 1px solid var(--border);
+    background: #EEF1FA; border: 1px solid #D0D8F0;
+    border-left: 4px solid var(--brand-navy);
   }
-  .intro-card-neutral .intro-card-label { color: var(--text-muted); }
+  .intro-card-neutral .intro-card-label { color: var(--brand-navy); }
+  /* In public health practice — warm yellow, brand accent */
   .intro-card-tension {
-    background: var(--brand-yellow-light); border: 1.5px solid var(--brand-yellow);
+    background: var(--brand-yellow-light); border: 1px solid #E8D060;
+    border-left: 4px solid var(--brand-yellow);
   }
   .intro-card-tension .intro-card-label { color: #8B6B00; }
   .intro-question {
     font-size: 15px; font-style: italic; color: var(--brand-navy);
     max-width: 600px; line-height: 1.6; font-weight: 600;
   }
-  /* Participant intro ambiguity box */
-  .intro-ambiguity-box {
-    background: var(--brand-yellow-light); border: 1.5px solid var(--brand-yellow);
-    border-radius: 10px; padding: 14px 16px; margin-top: .75rem;
-  }
-  .intro-ambiguity-label {
-    font-size: 10px; font-weight: 700; text-transform: uppercase;
-    letter-spacing: 1.5px; color: #8B6B00; margin-bottom: 6px;
-  }
-  .intro-ambiguity-box p { font-size: 13px; line-height: 1.55; margin: 0; }
 
   /* ── Subtle facilitator choice buttons in ctrl-bar ── */
   .ctrl-extra-btn {

@@ -519,13 +519,15 @@ async function renderParticipantStage() {
     return `<div class="panel">
       <span class="stage-pill">Introduction</span>
       <h2 style="margin-top:.75rem">${e(term.name)}</h2>
-      <div class="intro-ambiguity-box">
-        <div class="intro-ambiguity-label">Generic definition</div>
-        <p>${e(intro.concept || '')}</p>
-      </div>
-      <div class="intro-ambiguity-box" style="margin-top:.75rem">
-        <div class="intro-ambiguity-label">In public health practice</div>
-        <p>${e(intro.ambiguity || '')}</p>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:1rem">
+        <div class="intro-card intro-card-neutral">
+          <div class="intro-card-label">The generic definition</div>
+          <p>${e(intro.concept || '')}</p>
+        </div>
+        <div class="intro-card intro-card-tension">
+          <div class="intro-card-label">In public health practice</div>
+          <p>${e(intro.ambiguity || '')}</p>
+        </div>
       </div>
       <p class="help" style="margin-top:1rem;font-style:italic">"${e(intro.question || '')}"</p>
     </div>`;
