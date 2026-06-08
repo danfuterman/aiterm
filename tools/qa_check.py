@@ -72,23 +72,26 @@ slide_base = ' '.join(slide_bodies)
 check('.slide has display:flex',           'display: flex' in slide_base)
 check('.slide has flex-direction:column',  'flex-direction: column' in slide_base)
 check('.slide has justify-content:center', 'justify-content: center' in slide_base)
-check('.slide has a floor min-height (not viewport calc)',
-      'min-height' in slide_base and 'calc(100dvh' not in slide_base,
-      '.slide should have a modest floor min-height; viewport height is controlled by #main-content')
+check('.slide uses height:calc(100dvh) for definite centering',
+      'height: calc(100dvh' in slide_base or 'height:calc(100dvh' in slide_base,
+      '.slide must use height: (not min-height:) — definite height required for justify-content:center')
 
-# .slide subclasses must NOT override min-height (they come after .slide in the stylesheet)
+# qrcodejs creates canvas + img fallback; only canvas should be visible
+check('sidebar-qr img hidden (suppresses qrcodejs double-render)',
+      'sidebar-qr img' in CSS and 'display: none' in ' '.join(
+          re.findall(r'#sidebar-qr img[^{]*\{([^}]+)\}', CSS)),
+      '#sidebar-qr img must be display:none — qrcodejs img fallback causes double QR')
+
+# .slide subclasses must NOT override height or min-height
 for sub, bodies_var in (('slide-hero', hero_bodies),
                          ('slide-panel', re.findall(r'\.slide-panel\s*\{([^}]+)\}', CSS)),
                          ('slide-intro', re.findall(r'\.slide-intro\s*\{([^}]+)\}', CSS))):
     sub_str = ' '.join(bodies_var)
-    check(f'.{sub} has no min-height override',
-          'min-height' not in sub_str,
-          f'.{sub} min-height overrides .slide — breaks vertical centering')
-
-# .slide should use flex:1 (parent-controlled height), not min-height alone
-check('.slide uses flex:1 to fill parent',
-      'flex: 1' in slide_base or 'flex:1' in slide_base,
-      '.slide needs flex:1 — use #main-content to control the height')
+    has_height_override = 'min-height' in sub_str or (
+        re.search(r'\bheight\s*:', sub_str) and 'min-height' not in sub_str)
+    check(f'.{sub} has no height/min-height override',
+          not has_height_override,
+          f'.{sub} overrides .slide height — breaks vertical centering')
 
 # #main-content sets the viewport height for the flex strategy to work
 mc_blocks = re.findall(r'#main-content\s*\{([^}]+)\}', CSS)
