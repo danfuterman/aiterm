@@ -9,24 +9,24 @@ window.WEBINAR_TERMS = {
     intro: {
       icon: '👤',
       concept: 'A system in which a human provides oversight, validation, or correction of an AI system\'s outputs at defined points, retaining decision authority.',
-      ambiguity: 'Generic definitions assume a qualified specialist is available to review AI outputs. In many public health settings, the person physically present is a community health worker or nurse who may lack the expertise the term implies.',
+      ambiguity: 'The term assumes a qualified specialist is available to review AI outputs. In many public and community health settings, the person physically present may lack the expertise the term implies.',
       question: 'Is any human presence enough to call it "human in the loop", or does the human need the expertise to meaningfully override the AI?'
     },
     formatA: {
-      prompt: 'Four definitions of Human in the Loop. Select the one closest to how YOU use the term.',
+      prompt: 'Four definitions of Human in the Loop. Select the one closest to how YOU understand the term.',
       options: [
-        { text: 'A system in which a person provides oversight, validation, or correction of an AI system\'s outputs at one or more defined points in its operation, with the human retaining decision authority.', source: 'Regulatory framing' },
+        { text: 'A system in which a person provides retains decision authority through oversight, validation, or correction of an AI system\'s outputs at one or more defined points in its operation.', source: 'Regulatory framing' },
         { text: 'An AI deployment pattern in which a clinician reviews and either accepts, modifies, or rejects each AI recommendation before it affects patient care.', source: 'Clinical user lens' },
         { text: 'A workflow design choice in which AI handles routine cases and escalates uncertain or high-risk cases to a human reviewer, optimising for the limited time a human can spend.', source: 'Developer / implementer lens' },
-        { text: 'A risk-mitigation requirement under which a human must be involved in or accountable for an AI-influenced decision, including in settings where the specialist who would otherwise make the decision is absent.', source: 'Public health implementer lens' }
+        { text: 'A risk-mitigation requirement under which a human must be involved in or accountable for AI-driven decisions, including in settings where a specialist who would otherwise make the decision is absent.', source: 'Public health implementer lens' }
       ]
     },
     formatB: {
-      scenario: 'Your organization supports an AI tool that reads chest X-rays for TB, deployed in a district hospital in a rural area. There is no radiologist at the hospital. The nearest one is 6 hours away by road. A trained nurse runs the X-ray, the AI flags the result as "high probability TB," and the patient is started on treatment based on the AI output and the nurse\'s clinical assessment.',
+      scenario: 'Your organization supports an AI tool that reads chest X-rays for diagnosis of TB. The tool is deployed in a district hospital with no radiologist on site. A trained nurse runs the X-ray, the AI flags the result as "high probability TB" and the patient is started on treatment based on the AI\'s output and the nurse\'s clinical assessment.',
       prompt: 'Is this "Human in the Loop"?',
       options: [
         { text: 'Yes. The nurse is the human, and she is in the loop.' },
-        { text: 'No. HITL as the term is normally used means a clinician with the expertise to override the AI, which the nurse does not have.' },
+        { text: 'No. The human should be a specialist with the expertise to validate the AI\'s outputs, which the nurse does not have.' },
         { text: 'It depends on what the term is being used to certify.' }
       ],
       discussion: [
@@ -36,7 +36,7 @@ window.WEBINAR_TERMS = {
       ]
     },
     formatC: {
-      prompt: 'Is "Human in the Loop" primarily a safety mechanism or a workforce-substitution mechanism?',
+      prompt: 'Is Human in the Loop primarily a safety mechanism or a workforce-substitution mechanism?',
       options: [
         { text: 'A safety mechanism' },
         { text: 'A workforce-substitution mechanism' }
@@ -50,21 +50,21 @@ window.WEBINAR_TERMS = {
     short: 'Sensitivity tells the clinician one thing. Population-level coverage and equity tell the programme manager another.',
     intro: {
       icon: '📊',
-      concept: 'Quantitative measures of how well an AI tool performs on a given task, typically derived from model evaluation on a test dataset.',
-      ambiguity: 'A model\'s accuracy on a benchmark and the programme impact on a population are not the same claim. Standard metrics satisfy developers and regulators. Ministries of health need different evidence entirely.',
+      concept: 'Measures of how well an AI tool performs on a given task, typically derived from model evaluation on a test dataset.',
+      ambiguity: 'An AI model\'s accuracy against a benchmark and a health program\'s impact on a population are not the same claim. What metrics are needed to support evidence across algorithmic accuracy and public health utility + impact?',
       question: 'Performance according to whom, measured how, and sufficient for what decision?'
     },
     formatA: {
-      prompt: 'Four ways to think about Performance Metrics for an AI tool in public health. Select the one closest to how YOU understand the term.',
+      prompt: 'Here are four ways to think about performance for an AI tool in public health. Select the one closest to how YOU understand the term.',
       options: [
-        { text: 'Quantitative measures of model accuracy on a test dataset, typically including sensitivity, specificity, AUC, F1 score, and confusion matrix outputs.', source: 'ML / developer lens' },
-        { text: 'Measures of clinical performance: how well the tool supports correct clinical decisions in real practice, including agreement with expert reviewers and impact on diagnostic confidence.', source: 'Clinical evaluation lens' },
-        { text: 'Measures of population-level impact: change in detection rates, equity of detection across subpopulations, time-to-treatment, and downstream health outcomes attributable to the tool.', source: 'Programme evaluation lens' },
-        { text: 'Measures relevant to procurement and sustainability: uptime, integration cost, frontline user adoption, total cost per case detected, and operational reliability.', source: 'Health system / Ministry decision-maker lens' }
+        { text: 'Quantitative measures of model accuracy on a test dataset, typically including precision, recall, F1 scores, and confusion matrix outputs.', source: 'ML / developer lens' },
+        { text: 'Measures of clinical performance: how well the tool supports correct clinical decisions in real practice, including agreement with expert reviewers.', source: 'Clinical evaluation lens' },
+        { text: 'Measures of population-level impact: change in detection rates,time-to-treatment, quality of treatment and downstream health outcomes attributable to the tool.', source: 'Programme evaluation lens' },
+        { text: 'Measures relevant to procurement and sustainability: uptime, integration cost, frontline user adoption, total cost per case and operational reliability.', source: 'Health system / Ministry decision-maker lens' }
       ]
     },
     formatB: {
-      scenario: 'Your organization is reporting on a maternal health WhatsApp chatbot deployed in partnership with the Ministry of Health. After 18 months, the vendor reports: 92% accuracy on intent recognition, 88% user satisfaction in a 500-person sample, 1.2 million messages handled. The Ministry is deciding whether to absorb the chatbot into its routine programme budget.',
+      scenario: 'Your organization has implemented a maternal health WhatsApp chatbot deployed in partnership with the Ministry of Health. After 18 months, you report 92% accuracy on intent recognition, 88% user satisfaction in a 500-person sample, and 1.2 million messages handled. The Ministry is deciding whether to absorb the chatbot into its routine programme budget.',
       prompt: 'Are these the right performance metrics for the Ministry\'s decision?',
       options: [
         { text: 'Yes. These are standard, widely accepted measures.' },
@@ -74,11 +74,11 @@ window.WEBINAR_TERMS = {
       discussion: [
         'What\'s missing? (Common chat answers: equity of access across language groups, behaviour change outcomes, harm cases, performance on sensitive topics like SRH, cost per enrolled user, sustainability after donor exit.)',
         'If you were advising the Ministry, what is the ONE additional metric you would require before sign-off?',
-        'Whose job is it to produce the metrics that get presented? The vendor? The implementing partner? The Ministry? Who SHOULD it be?'
+        'Whose job should it be to produce the metrics that matter? The product developer? The implementing partner? The Ministry of Health?'
       ]
     },
     formatC: {
-      prompt: 'When you hear "this AI tool achieved 95% performance," what should be the FIRST follow-up question?',
+      prompt: 'When you hear "this AI tool achieved 95% accuracy," what should be the first follow-up question?',
       options: [
         { text: 'On what dataset?' },
         { text: 'What changed in programme outcomes?' }
@@ -88,8 +88,8 @@ window.WEBINAR_TERMS = {
   },
 
   hallu: {
-    name: 'GenAI Hallucinations',
-    short: 'A confidently-stated answer that is not grounded in fact. Easy to spot in trivia; much harder when the user is a frontline health worker.',
+    name: 'Hallucinations',
+    short: 'A confidently-stated answer that is not grounded in fact. Easy to spot in trivia, much harder when the user is a frontline health worker.',
     intro: {
       icon: '⚠️',
       concept: 'Outputs from a generative AI model that are factually incorrect, fabricated, or context-inappropriate, presented with the same confidence as correct answers.',
@@ -121,17 +121,17 @@ window.WEBINAR_TERMS = {
       ]
     },
     formatC: {
-      prompt: 'For a GenAI tool used by frontline health workers, the most useful mitigation is:',
+      prompt: 'For a Generative AI tool used by frontline health workers, the most useful mitigation is:',
       options: [
         { text: 'Better models (fewer hallucinations at the model level)' },
-        { text: 'Better grounding (answers tied to a verifiable source the worker can check)' }
+        { text: 'Better grounding (answers tied to a verifiable source that can be checked)' }
       ],
       punchline: 'The technical conversation tends to focus on the first option. For deployment in real programmes, grounding is what allows a CHW or supervisor to catch errors and what gives a Ministry the audit trail it needs.'
     }
   },
 
   bias: {
-    name: 'Bias / Fairness',
+    name: 'Bias',
     short: 'Bias is often discussed as a model property. In public health it\'s also a system property: who is in the data system at all.',
     intro: {
       icon: '⚖️',
@@ -174,17 +174,17 @@ window.WEBINAR_TERMS = {
 
   rwe: {
     name: 'Real World Evidence',
-    short: 'In LMIC public health, "real world" often means the only world. There was never a controlled trial.',
+    short: 'In public health, "real world" evidence for AI often means the only world. There was never a controlled trial.',
     intro: {
       icon: '🌍',
-      concept: 'Evidence about a health intervention derived from analysis of real-world data generated outside randomised controlled trials, typically from routine care, programme delivery, or administrative data.',
-      ambiguity: 'In many LMIC public health settings, a controlled trial was never run and may never be feasible. Programme data is the only available evidence. The question is whether it is sufficient for the decisions being made.',
+      concept: 'Evidence about an AI-powered health intervention derived from analysis of real-world data generated outside randomised controlled trials, typically from routine care, programme delivery, or administrative data.',
+      ambiguity: 'In many public health settings, a controlled trial was never run and may never be feasible. Programme data is the only available evidence. The question is whether it is sufficient for the decisions being made.',
       question: 'Sufficient evidence for what decision, and sufficient according to whose standard?'
     },
     formatA: {
       prompt: 'Four definitions of Real World Evidence. Select the one closest to how YOU use the term.',
       options: [
-        { text: 'Clinical evidence regarding the use and potential benefits or risks of a medical product derived from analysis of real-world data, typically EHRs, claims, registries, and patient-reported outcomes, generated outside randomised trials.', source: 'Regulatory lens (FDA-style)' },
+        { text: 'Clinical evidence regarding the use and potential benefits or risks of a medical product derived from analysis of real-world data, generated outside randomised trials.', source: 'Regulatory lens (FDA-style)' },
         { text: 'Evidence collected from routine use of a tool after deployment, used to monitor whether the tool continues to perform as intended in the populations and settings where it is being used.', source: 'Post-market surveillance lens' },
         { text: 'Operational data generated by a digital health programme (usage logs, user feedback, error rates, programme outcomes) that demonstrates whether the tool is working in practice, regardless of whether it was ever validated through formal trials.', source: 'Implementer lens' },
         { text: 'The only evidence available, because the controlled-trial infrastructure doesn\'t exist in the setting. What is gathered from routine programme delivery is by necessity what counts as evidence sufficient for decisions about scale.', source: 'LMIC public health lens' }
