@@ -351,49 +351,49 @@
   #ctrl-reset:hover:not(:disabled) { background: rgba(220,38,38,.25) !important; }
 
   /* ── Panel summary — ranked bars + binary split ── */
-  .panel-summary-slide { min-height: auto; }
-  /* Two-column: definition left (wider), scenario+lightning stacked right */
+  /* Panel summary slide — tightly packed to fit in one viewport */
+  .panel-summary-slide { min-height: auto; overflow-y: auto; }
   .panel-summary-grid {
-    display: grid; grid-template-columns: 1.35fr 1fr; gap: 16px; margin-top: .75rem;
+    display: grid; grid-template-columns: 1.35fr 1fr; gap: 12px; margin-top: .5rem;
   }
-  .panel-right-stack { display: flex; flex-direction: column; gap: 16px; }
+  .panel-right-stack { display: flex; flex-direction: column; gap: 12px; }
   .panel-summary-col {
     background: var(--bg); border: 1px solid var(--border);
-    border-radius: 12px; padding: 16px 14px;
+    border-radius: 10px; padding: 12px 12px;
   }
   .panel-col-heading {
-    font-size: 10px; font-weight: 700; color: var(--blue);
+    font-size: 9px; font-weight: 700; color: var(--blue);
     text-transform: uppercase; letter-spacing: 1px; line-height: 1.4;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
-  .summary-empty { font-size: 12px; color: var(--text-light); padding: .5rem 0; }
+  .summary-empty { font-size: 11px; color: var(--text-light); padding: .25rem 0; }
 
-  /* Ranked bar rows */
+  /* Ranked bar rows — compact for panel summary */
   .rank-row {
-    display: grid; grid-template-columns: 24px 1fr 40px;
-    align-items: start; gap: 6px;
-    padding: 6px 8px; border-radius: 7px; margin-bottom: 5px;
+    display: grid; grid-template-columns: 20px 1fr 36px;
+    align-items: start; gap: 5px;
+    padding: 4px 6px; border-radius: 6px; margin-bottom: 3px;
   }
-  .rank-top { background: var(--surface); box-shadow: 0 1px 3px rgba(0,0,0,.06); }
-  .rank-letter { font-size: 13px; font-weight: 800; line-height: 1.6; }
-  .rank-body { display: flex; flex-direction: column; gap: 4px; }
-  .rank-text { font-size: 11px; line-height: 1.45; color: var(--text); }
+  .rank-top { background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .rank-letter { font-size: 12px; font-weight: 800; line-height: 1.5; }
+  .rank-body { display: flex; flex-direction: column; gap: 3px; }
+  .rank-text { font-size: 10.5px; line-height: 1.4; color: var(--text); }
   .rank-top .rank-text { font-weight: 600; }
-  .rank-bar-track { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
-  .rank-bar-fill  { height: 100%; border-radius: 3px; transition: width .5s ease; }
+  .rank-bar-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .rank-bar-fill  { height: 100%; border-radius: 2px; transition: width .5s ease; }
   .rank-badge {
-    display: inline-block; margin-top: 3px;
-    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
-    color: white; padding: 2px 6px; border-radius: 3px;
+    align-self: flex-start;          /* prevent stretching full width */
+    font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+    color: white; padding: 2px 5px; border-radius: 3px; margin-top: 2px;
   }
-  .rank-pct { font-size: 16px; font-weight: 800; text-align: right; font-feature-settings: "tnum"; padding-top: 1px; }
-  .rank-top .rank-pct { font-size: 19px; }
+  .rank-pct { font-size: 14px; font-weight: 800; text-align: right; font-feature-settings: "tnum"; }
+  .rank-top .rank-pct { font-size: 16px; }
 
   /* Binary split cards — winner highlighted, loser muted */
   .binary-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
   .binary-card {
-    border: 1.5px solid var(--border); border-radius: 10px; padding: 14px 10px;
-    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 5px;
+    border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 8px;
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px;
     background: var(--bg);
   }
   .binary-top {
