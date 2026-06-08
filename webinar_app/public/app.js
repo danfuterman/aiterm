@@ -292,7 +292,7 @@ async function renderFacilitatorStage() {
     return `<div class="slide slide-hero">
       <h1 class="slide-title">AI Terminology<br>for Public Health</h1>
       <div class="slide-eyebrow"><b>Vote on definitions &middot; Test them against public health scenarios</b></div>
-      <div class="slide-eyebrow">See where they hold, where they break.</div>
+      <div class="slide-eyebrow"><b>See where they hold &middot; Where they break.</b></div>
     </div>`;
   }
 
@@ -450,7 +450,7 @@ async function renderParticipantStage() {
     return `<div class="panel">
       <span class="stage-pill">Welcome</span>
       <h2 style="margin-top:.75rem">AI Terminology for Public Health</h2>
-      <p>You'll vote on definitions, scenarios, and priority topics. Results appear live on the shared screen.</p>
+      <p>Vote on definitions &middot; Test them against public health scenarios &middot; See where they hold &middot; Where they break</p>
       <p class="muted">Waiting for the session to begin…</p>
     </div>`;
   }
@@ -459,7 +459,7 @@ async function renderParticipantStage() {
   if (stage === 'optional_choice') {
     return `<div class="panel">
       <h2>Thank you for your participation</h2>
-      <p class="muted">The facilitator will continue shortly.</p>
+      <p class="muted"></p>
     </div>`;
   }
 
@@ -468,7 +468,7 @@ async function renderParticipantStage() {
     return `<div class="panel">
       <span class="stage-pill">Close</span>
       <h2 style="margin-top:.75rem">Thank you for joining</h2>
-      <p class="muted">Visit https://www.vitalstrategies.org/resources/foundations-and-futures/ for more info on Vital Strategies Foundations & Futures: Reimagining Public Health in the Artificial Intelligence Era Across the Global South.</p>
+      <p class="muted">See <a href="https://www.vitalstrategies.org/resources/foundations-and-futures/">Vital Strategies Foundations and Futures Report</a> for more on reimagining Public Health in the Artificial Intelligence era.</p>
     </div>`;
   }
 
@@ -520,7 +520,7 @@ async function renderParticipantStage() {
       <span class="stage-pill">Introduction</span>
       <h2 style="margin-top:.75rem">${e(term.name)}</h2>
       <div class="intro-ambiguity-box">
-        <div class="intro-ambiguity-label">The generic definition</div>
+        <div class="intro-ambiguity-label">A generic definition</div>
         <p>${e(intro.concept || '')}</p>
       </div>
       <div class="intro-ambiguity-box" style="margin-top:.75rem">
