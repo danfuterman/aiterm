@@ -710,26 +710,6 @@ window.toggleCtrl = function() {
 };
 
 // ── Navigation ────────────────────────────────────────────────────────────────
-window.toggleQrPopover = function() {
-  const pop = document.getElementById('qr-popover');
-  if (!pop) return;
-  const open = pop.classList.toggle('open');
-  if (open && !pop.hasChildNodes() && window._joinUrl && typeof QRCode !== 'undefined') {
-    const qrDiv = document.createElement('div');
-    pop.appendChild(qrDiv);
-    new QRCode(qrDiv, {
-      text: window._joinUrl,
-      width: 140, height: 140,
-      colorDark: '1a2857', colorLight: 'ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
-    const urlDiv = document.createElement('div');
-    urlDiv.className = 'popover-url';
-    urlDiv.textContent = document.getElementById('join-url-text')?.textContent || window._joinUrl;
-    pop.appendChild(urlDiv);
-  }
-};
-
 window.navigate = async function(delta) {
   if (role !== 'facilitator') return;
   const seq = await getFullSequence();
@@ -749,47 +729,61 @@ async function render() {
       : await renderParticipantStage();
     updateControlBar(seq);
 
-    // Build join URL once and use it everywhere
+    // Facilitator sidebar: generate QR once and show throughout
     if (role === 'facilitator') {
-      const u = new URL(location.href);
-      u.pathname = u.pathname.replace(/\/?$/, '/').replace(/\/[^/]*$/, '/join.html');
-      u.searchParams.delete('role');
-      u.searchParams.set('backend', 'firebase');
-      const fullJoinUrl = u.toString();
+      // Activate the sidebar layout
+      document.getElementById('main-content')?.closest('.container')
+        ?.classList.add('fac-layout');
 
-      // Welcome slide: QR + short URL
-      if (stage === 'welcome') {
-        const qrEl = document.getElementById('qr-canvas');
-        // Only generate once (polling would re-render)
-        if (qrEl && typeof QRCode !== 'undefined' && !qrEl.hasChildNodes()) {
+      // Build join URL (fix: strip filename before appending join.html)
+      if (!window._joinUrl) {
+        const u = new URL(location.href);
+        const base = u.pathname.endsWith('/')
+          ? u.pathname
+          : u.pathname.slice(0, u.pathname.lastIndexOf('/') + 1);
+        u.pathname = base + 'join.html';
+        u.searchParams.delete('role');
+        u.searchParams.set('backend', 'firebase');
+        window._joinUrl = u.toString();
+
+        // Generate sidebar QR (only once)
+        const qrEl = document.getElementById('sidebar-qr');
+        if (qrEl && !qrEl.hasChildNodes() && typeof QRCode !== 'undefined') {
           new QRCode(qrEl, {
-            text: fullJoinUrl,
-            width: 160, height: 160,
-            colorDark: '1a2857', colorLight: 'ffffff',
+            text: window._joinUrl,
+            width: 124, height: 124,
+            colorDark: '#1a2857', colorLight: '#ffffff',
             correctLevel: QRCode.CorrectLevel.M
           });
         }
-        // Fetch a short URL from is.gd, fall back to full URL
-        const urlEl = document.getElementById('join-url-text');
-        if (urlEl && urlEl.textContent === 'Loading…') {
-          urlEl.textContent = fullJoinUrl; // show immediately
-          try {
-            const resp = await fetch(
-              `https://is.gd/create.php?format=simple&url=${encodeURIComponent(fullJoinUrl)}`
-            );
-            if (resp.ok) {
-              const short = (await resp.text()).trim();
-              if (short.startsWith('http')) urlEl.textContent = short;
-            }
-          } catch (_) { /* keep full URL */ }
+
+        // Show full URL immediately, then try to shorten
+        const urlEl = document.getElementById('sidebar-url');
+        if (urlEl) {
+          urlEl.textContent = window._joinUrl;
+          fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(window._joinUrl)}`)
+            .then(r => r.ok ? r.text() : null)
+            .then(s => { if (s?.startsWith('http')) { urlEl.textContent = s.trim(); window._shortUrl = s.trim(); } })
+            .catch(() => {});
         }
       }
 
-      // Seed the persistent ctrl-bar QR button with the join URL
-      if (!window._joinUrl) {
-        window._joinUrl = fullJoinUrl;
-        const btn = document.getElementById('ctrl-qr-btn');
-        if (btn) btn.style.display = 'inline-flex';
+      // Welcome slide: also show join URL inline on the slide
+      if (stage === 'welcome') {
+        const inlineUrl = document.getElementById('join-url-text');
+        if (inlineUrl) {
+          inlineUrl.textContent = window._shortUrl || window._joinUrl || '';
+          // Regenerate inline QR
+          const qrEl = document.getElementById('qr-canvas');
+          if (qrEl && !qrEl.hasChildNodes() && typeof QRCode !== 'undefined' && window._joinUrl) {
+            new QRCode(qrEl, {
+              text: window._joinUrl,
+              width: 160, height: 160,
+              colorDark: '#1a2857', colorLight: '#ffffff',
+              correctLevel: QRCode.CorrectLevel.M
+            });
+          }
+        }
       }
     }
   } catch (err) {

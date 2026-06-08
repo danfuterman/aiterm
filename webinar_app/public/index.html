@@ -70,7 +70,29 @@
   }
 
   /* ── Layout — optimised for laptop (1280px+) ── */
+  /* ── Facilitator layout: main content + sticky QR sidebar ── */
   .container { max-width: 1120px; margin: 0 auto; padding: 1.25rem 1.5rem 100px; }
+  .container.fac-layout { display: flex; align-items: flex-start; gap: 1.25rem; }
+  .container.fac-layout #main-content { flex: 1; min-width: 0; }
+
+  #fac-sidebar {
+    display: none; flex-direction: column; align-items: center; gap: 10px;
+    width: 148px; flex-shrink: 0;
+    position: sticky; top: 1.25rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .container.fac-layout #fac-sidebar { display: flex; }
+  .sidebar-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--blue);
+  }
+  #sidebar-qr canvas, #sidebar-qr img { display: block !important; border-radius: 4px; }
+  .sidebar-url {
+    font-family: ui-monospace, monospace; font-size: 9.5px; color: var(--text-muted);
+    word-break: break-all; text-align: center; line-height: 1.4;
+  }
 
   /* ── Role bar ── */
   .role-bar {
@@ -458,19 +480,6 @@
   }
   .join-hint { font-size: 12px; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
 
-  /* ── QR popover (accessible from any slide via ctrl-bar button) ── */
-  #qr-popover {
-    display: none; position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-    background: white; border-radius: 14px; padding: 18px 20px;
-    box-shadow: 0 8px 40px rgba(0,0,0,.28); z-index: 500;
-    text-align: center; cursor: default; min-width: 190px;
-  }
-  #qr-popover.open { display: block; }
-  #qr-popover canvas, #qr-popover img { display: block !important; margin: 0 auto; }
-  .popover-url {
-    font-family: ui-monospace, monospace; font-size: 11px; color: var(--text-muted);
-    margin-top: 10px; word-break: break-all; max-width: 180px;
-  }
 
   /* ── Mobile panel summary (shown only on small screens) ── */
   .mob-summary { display: none; }
@@ -515,6 +524,13 @@
 </div>
 
 <div class="container">
+  <!-- Persistent QR sidebar — shown to facilitators throughout the session -->
+  <div id="fac-sidebar">
+    <div class="sidebar-label">Join</div>
+    <div id="sidebar-qr"></div>
+    <div id="sidebar-url" class="sidebar-url"></div>
+  </div>
+
   <div class="role-bar" id="role-bar">
     <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
   </div>
@@ -527,14 +543,10 @@
     <button id="ctrl-prev" onclick="navigate(-1)">← Prev</button>
     <span id="ctrl-label"></span>
     <button id="ctrl-next" onclick="navigate(1)">Next →</button>
-    <button id="ctrl-qr-btn" onclick="toggleQrPopover()" title="Show join QR code" style="display:none">📱 Join</button>
     <button id="ctrl-reset" onclick="resetSession()" title="Reset all votes">↻</button>
   </div>
   <button id="ctrl-toggle" onclick="toggleCtrl()">▼ hide</button>
 </div>
-
-<!-- Persistent QR popover — toggled by ctrl-bar button, accessible on any slide -->
-<div id="qr-popover" onclick="toggleQrPopover()"></div>
 
 <!-- QR code library — used on the welcome slide to display the participant join link -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
