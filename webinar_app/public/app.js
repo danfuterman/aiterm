@@ -735,7 +735,10 @@ async function render() {
 
       // Build join URL once — join.html handles the backend param,
       // so we only need the room code here.
+      // Set to 'pending' synchronously first to prevent a second concurrent
+      // render() call (e.g. Firebase onChange + direct call) from racing in.
       if (!window._joinUrl) {
+        window._joinUrl = 'pending'; // claim the slot before any async work
         const u = new URL(location.href);
         const base = u.pathname.endsWith('/')
           ? u.pathname

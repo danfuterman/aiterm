@@ -1,4 +1,4 @@
-// terms.js — content for the AI Terminology Webinar voting app.
+// terms.js - content for the AI Terminology Webinar voting app.
 // Each term has: name, short, intro, formatA, formatB, formatC.
 // Definitions paraphrased; stakeholder lens labels are deliberately generic.
 
