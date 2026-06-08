@@ -385,9 +385,7 @@ async function renderFacilitatorStage() {
     const intro = term.intro || {};
     return `<div class="slide slide-intro">
       <div class="intro-icon">${intro.icon || ''}</div>
-      ${eyebrow(term.name)}
       <h1 class="intro-term">${e(term.name)}</h1>
-      <p class="intro-concept">${e(intro.concept || '')}</p>
       <div class="intro-cards">
         <div class="intro-card intro-card-neutral">
           <div class="intro-card-label">The generic definition</div>
@@ -525,11 +523,14 @@ async function renderParticipantStage() {
   if (fmt === 'intro') {
     const intro = term.intro || {};
     return `<div class="panel">
-      <span class="stage-pill">${e(term.name)}</span>
+      <span class="stage-pill">Introduction</span>
       <h2 style="margin-top:.75rem">${e(term.name)}</h2>
-      <p>${e(intro.concept || '')}</p>
       <div class="intro-ambiguity-box">
-        <div class="intro-ambiguity-label">Why this term is contested</div>
+        <div class="intro-ambiguity-label">The generic definition</div>
+        <p>${e(intro.concept || '')}</p>
+      </div>
+      <div class="intro-ambiguity-box" style="margin-top:.75rem">
+        <div class="intro-ambiguity-label">In public health practice</div>
         <p>${e(intro.ambiguity || '')}</p>
       </div>
       <p class="help" style="margin-top:1rem;font-style:italic">"${e(intro.question || '')}"</p>
