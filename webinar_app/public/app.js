@@ -291,14 +291,12 @@ async function renderFacilitatorStage() {
   if (stage === 'welcome') {
     return `<div class="slide slide-hero">
       <div class="slide-eyebrow">Virtual Webinar &middot; 60 minutes</div>
-      <h1 class="slide-title" style="margin-bottom:.75rem">AI Terminology<br>for Public Health</h1>
-      <div class="join-block">
-        <div class="qr-wrap"><div id="qr-canvas"></div></div>
-        <div class="join-url-block">
-          <div class="join-url-label">Participant link</div>
-          <div class="join-url" id="join-url-text">Loading…</div>
-          <div class="join-hint">Scan the QR code or paste this link in the webinar chat.<br>No login needed &mdash; opens straight to the voting screen.</div>
-        </div>
+      <h1 class="slide-title">AI Terminology<br>for Public Health</h1>
+      <div class="slide-agenda">
+        <div class="agenda-item"><span class="agenda-num">1</span><span>Human in the Loop &mdash; definition, scenario &amp; lightning vote, then panelist discussion</span></div>
+        <div class="agenda-item"><span class="agenda-num">2</span><span>Participant vote &mdash; choose two more topics</span></div>
+        <div class="agenda-item"><span class="agenda-num">3</span><span>Two further terms &mdash; same format, panelist input</span></div>
+        <div class="agenda-item"><span class="agenda-num">4</span><span>Summary &amp; close</span></div>
       </div>
     </div>`;
   }
@@ -735,18 +733,20 @@ async function render() {
       document.getElementById('main-content')?.closest('.container')
         ?.classList.add('fac-layout');
 
-      // Build join URL (fix: strip filename before appending join.html)
+      // Build join URL once — join.html handles the backend param,
+      // so we only need the room code here.
       if (!window._joinUrl) {
         const u = new URL(location.href);
         const base = u.pathname.endsWith('/')
           ? u.pathname
           : u.pathname.slice(0, u.pathname.lastIndexOf('/') + 1);
         u.pathname = base + 'join.html';
-        u.searchParams.delete('role');
-        u.searchParams.set('backend', 'firebase');
-        window._joinUrl = u.toString();
+        // Only pass room — join.html adds ?backend=firebase itself
+        const clean = new URL(u.origin + u.pathname);
+        clean.searchParams.set('room', ROOM);
+        window._joinUrl = clean.toString();
 
-        // Generate sidebar QR (only once)
+        // Generate sidebar QR once
         const qrEl = document.getElementById('sidebar-qr');
         if (qrEl && !qrEl.hasChildNodes() && typeof QRCode !== 'undefined') {
           new QRCode(qrEl, {
@@ -757,33 +757,9 @@ async function render() {
           });
         }
 
-        // Show full URL immediately, then try to shorten
+        // Show the clean URL
         const urlEl = document.getElementById('sidebar-url');
-        if (urlEl) {
-          urlEl.textContent = window._joinUrl;
-          fetch(`https://is.gd/create.php?format=simple&url=${encodeURIComponent(window._joinUrl)}`)
-            .then(r => r.ok ? r.text() : null)
-            .then(s => { if (s?.startsWith('http')) { urlEl.textContent = s.trim(); window._shortUrl = s.trim(); } })
-            .catch(() => {});
-        }
-      }
-
-      // Welcome slide: also show join URL inline on the slide
-      if (stage === 'welcome') {
-        const inlineUrl = document.getElementById('join-url-text');
-        if (inlineUrl) {
-          inlineUrl.textContent = window._shortUrl || window._joinUrl || '';
-          // Regenerate inline QR
-          const qrEl = document.getElementById('qr-canvas');
-          if (qrEl && !qrEl.hasChildNodes() && typeof QRCode !== 'undefined' && window._joinUrl) {
-            new QRCode(qrEl, {
-              text: window._joinUrl,
-              width: 160, height: 160,
-              colorDark: '#1a2857', colorLight: '#ffffff',
-              correctLevel: QRCode.CorrectLevel.M
-            });
-          }
-        }
+        if (urlEl) urlEl.textContent = window._joinUrl;
       }
     }
   } catch (err) {
