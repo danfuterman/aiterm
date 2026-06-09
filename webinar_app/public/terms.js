@@ -149,7 +149,7 @@ window.WEBINAR_TERMS = {
       ]
     },
     formatB: {
-      scenario: 'A national early-warning system uses AI to flag districts at elevated risk of cholera outbreaks, drawing on routine health facility data, mobile-phone movement patterns, and rainfall data. Six months in, an evaluation finds: the model correctly flagged 9 of 11 outbreaks in urban districts, but missed 4 of 5 outbreaks in nomadic and remote rural areas.',
+      scenario: 'A national early-warning system uses AI to flag districts at elevated risk of cholera outbreaks, drawing on routine health facility data, mobile-phone movement patterns, and rainfall data. Six months in, an evaluation finds: the model correctly flagged 9 of 11 outbreaks in urban districts, but missed 4 of 5 outbreaks in remote rural areas.',
       prompt: 'Is this a biased model?',
       options: [
         { text: 'Yes. The model performs unequally across populations.' },
