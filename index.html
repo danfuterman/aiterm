@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Terminology for Public Health</title>
+<style>
+  /* ── Palette ── */
+  :root {
+    --blue:         #2563EB;
+    --blue-dark:    #1D4ED8;
+    --blue-light:   #EFF6FF;
+    --blue-mid:     #BFDBFE;
+    --bg:           #F1F5F9;
+    --surface:      #FFFFFF;
+    --border:       #E2E8F0;
+    --border-mid:   #CBD5E1;
+    --text:         #0F172A;
+    --text-muted:   #64748B;
+    --text-light:   #94A3B8;
+    --red:          #DC2626;
+    --red-light:    #FEF2F2;
+    /* Brand colours (from event flyer) */
+    --brand-navy:   #1a2857;
+    --brand-yellow: #F5C000;
+    --brand-yellow-light: #FFF8D6;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
+                 "Helvetica Neue", system-ui, sans-serif;
+    background: var(--bg); color: var(--text);
+    margin: 0; padding: 0; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Header ── */
+  .vs-header {
+    background: var(--brand-navy); padding: 0 1rem;
+  }
+  .vs-header-inner {
+    max-width: 1170px; margin: 0 auto; height: 56px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 1.5rem;
+  }
+  .vs-brand { font-size: 15px; font-weight: 700; color: white; letter-spacing: -0.01em; }
+  .vs-brand .vs-brand-accent { color: var(--brand-yellow); }
+  /* Term tag — yellow pill used in eyebrows to highlight the current term */
+  .term-tag {
+    display: inline-block; background: var(--brand-yellow); color: var(--brand-navy);
+    font-weight: 800; padding: 2px 10px; border-radius: 4px;
+    text-transform: uppercase; letter-spacing: 1.5px; font-size: 11px;
+    margin-right: 4px;
+  }
+  .eyebrow-sep { margin: 0 6px; opacity: .4; }
+  .eyebrow-format { opacity: .8; }
+  /* Discreet session info — only shown to facilitator, sits in header */
+  #header-meta {
+    display: none; align-items: center; gap: 8px;
+  }
+  #header-meta #room-code {
+    font-size: 11px; color: rgba(255,255,255,.4);
+    font-family: ui-monospace, monospace;
+  }
+  #header-meta #backend-tag {
+    font-size: 10px; color: rgba(255,255,255,.3);
+    font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ── Layout — optimised for laptop (1280px+) ── */
+  /* ── Facilitator layout: QR sidebar LEFT, main content centred ── */
+  .container { max-width: 1170px; margin: 0 auto; padding: 1.25rem 1.5rem 100px; }
+
+  /* Sidebar: always in DOM, hidden until fac-layout activated */
+  #fac-sidebar {
+    display: none;
+  }
+  .container.fac-layout {
+    display: grid;
+    grid-template-columns: 1fr 164px;   /* sidebar on the RIGHT */
+    grid-template-rows: auto 1fr;
+    gap: 0 1.25rem;
+    align-items: start;
+  }
+  /* Role bar spans full width */
+  .container.fac-layout .role-bar { grid-column: 1 / -1; }
+  /* Sidebar in the RIGHT column, sticks as user scrolls */
+  .container.fac-layout #fac-sidebar {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    grid-column: 2; grid-row: 2;
+    position: sticky; top: 1.25rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  /* Main content in the LEFT column */
+  .container.fac-layout #main-content { grid-column: 1; grid-row: 2; }
+  /* Both layouts: main-content sets the height, slides fill it and centre content */
+  #main-content {
+    display: flex; flex-direction: column;
+    min-height: calc(100dvh - 120px);
+  }
+
+  .sidebar-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; color: var(--blue);
+  }
+  #sidebar-qr canvas { display: block !important; border-radius: 4px; }
+  #sidebar-qr img    { display: none   !important; } /* hide qrcodejs fallback img */
+  .sidebar-url {
+    font-family: ui-monospace, monospace; font-size: 9px; color: var(--text-muted);
+    word-break: break-all; text-align: center; line-height: 1.45;
+  }
+
+  /* ── Role bar ── */
+  .role-bar {
+    display: flex; gap: 8px; align-items: center;
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 10px 14px; border-radius: 10px; margin-bottom: 1.25rem;
+    flex-wrap: wrap; font-size: 13px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .role-bar button {
+    padding: 6px 16px; font-size: 13px; font-weight: 500;
+    border: 1px solid var(--border-mid); background: var(--bg);
+    border-radius: 6px; cursor: pointer; font-family: inherit; color: var(--text);
+    transition: all 0.15s;
+  }
+  .role-bar button:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+  .role-bar .active { background: var(--blue); color: white; border-color: var(--blue); }
+  .role-bar .active:hover { background: var(--blue-dark); border-color: var(--blue-dark); color: white; }
+  .role-bar .spacer { flex: 1; }
+  .room-code {
+    color: var(--text-muted); font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px; background: var(--bg); padding: 3px 8px;
+    border-radius: 4px; border: 1px solid var(--border);
+  }
+  .backend-tag {
+    font-size: 10px; color: var(--text-muted); padding: 2px 8px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 4px;
+    font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ── Participant panels ── */
+  .panel {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.75rem; margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,.05);
+  }
+  .panel h2 {
+    font-size: 19px; font-weight: 700; margin: 0 0 .6rem;
+    color: var(--text); line-height: 1.3; letter-spacing: -0.02em;
+  }
+  .panel p { font-size: 14px; margin: 0 0 .75rem; }
+  .panel .muted { color: var(--text-muted); font-size: 13px; }
+  .help { font-size: 12px; color: var(--text-muted); margin-top: 6px; }
+
+  /* ── Stage pill ── */
+  .stage-pill {
+    display: inline-block; padding: 3px 12px;
+    background: var(--blue-light); color: var(--blue);
+    border: 1px solid var(--blue-mid); border-radius: 20px;
+    font-size: 11px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+
+  /* ── Shortlist term cards ── */
+  .term-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: .75rem; }
+  .term-card {
+    padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px;
+    cursor: pointer; background: var(--surface); transition: all 0.15s;
+  }
+  .term-card:hover { border-color: var(--blue); background: var(--blue-light); }
+  .term-card.selected {
+    background: var(--blue-light); border-color: var(--blue); border-width: 2px;
+    box-shadow: 0 0 0 3px var(--blue-mid);
+  }
+  .term-card .t-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
+  .term-card .t-desc { font-size: 12px; color: var(--text-muted); line-height: 1.45; }
+
+  /* ── Definition options ── */
+  .def-option {
+    padding: 14px 16px; border: 1.5px solid var(--border); border-radius: 10px;
+    margin-bottom: 8px; cursor: pointer; background: var(--surface);
+    display: flex; gap: 14px; align-items: flex-start; transition: all 0.15s;
+  }
+  .def-option:hover { border-color: var(--blue); background: var(--blue-light); }
+  .def-option.selected {
+    background: var(--blue-light); border-color: var(--blue); border-width: 2px;
+    box-shadow: 0 0 0 3px var(--blue-mid);
+  }
+  .def-letter {
+    font-weight: 700; min-width: 28px; height: 28px; border-radius: 50%;
+    background: var(--bg); border: 1.5px solid var(--border-mid);
+    color: var(--text-muted); display: flex; align-items: center; justify-content: center;
+    font-size: 12px; flex-shrink: 0; margin-top: 1px; transition: all 0.15s;
+  }
+  .def-option.selected .def-letter { background: var(--blue); border-color: var(--blue); color: white; }
+  .def-text { font-size: 14px; flex: 1; line-height: 1.55; }
+
+  /* ── Scenario box ── */
+  .scenario-box {
+    background: var(--blue-light); border: 1.5px solid var(--blue-mid);
+    border-radius: 10px; padding: 16px 18px; margin-bottom: 1rem;
+    font-size: 14px; line-height: 1.6; color: var(--text);
+  }
+  .scenario-box .label {
+    font-size: 10px; color: var(--blue); text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 700;
+  }
+
+  /* ── Mentimeter-style results bars ── */
+  .results-wrap { margin-top: 1.25rem; }
+  .res-row {
+    display: grid; grid-template-columns: 1fr 2.5fr 36px 52px;
+    align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  @media (max-width: 700px) {
+    .panel-summary-grid  { grid-template-columns: 1fr; }
+    .res-row             { grid-template-columns: 1fr 1.5fr 28px 40px; }
+  }
+  .res-label { font-size: 13px; font-weight: 500; color: var(--text); line-height: 1.35; }
+  .res-track {
+    height: 44px; background: var(--bg); border-radius: 8px;
+    position: relative; overflow: hidden; border: 1px solid var(--border);
+  }
+  .res-fill {
+    height: 100%; border-radius: 8px;
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+  }
+  .res-count {
+    font-size: 13px; font-weight: 700; text-align: right;
+    font-feature-settings: "tnum"; white-space: nowrap;
+  }
+  .res-pct {
+    font-size: 16px; font-weight: 700; text-align: right;
+    font-feature-settings: "tnum";
+  }
+  .res-total { font-size: 12px; color: var(--text-muted); margin-top: 4px; text-align: right; }
+
+  /* Stacked layout for participant results — full definition text above the bar */
+  .results-stacked .res-row-stacked { margin-bottom: 14px; }
+  .results-stacked .res-label-stacked {
+    font-size: 13px; font-weight: 500; color: var(--text);
+    line-height: 1.45; margin-bottom: 6px;
+  }
+  .results-stacked .res-bar-row {
+    display: grid; grid-template-columns: 1fr 36px 52px;
+    align-items: center; gap: 10px;
+  }
+
+  /* ── Lightning vote two-column layout ── */
+  .lightning-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 1.5rem; }
+  .lightning-col {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: 40px 24px; text-align: center; box-shadow: 0 1px 4px rgba(0,0,0,.05);
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .lightning-letter { font-size: 28px; font-weight: 800; }
+  .lightning-text   { font-size: 16px; font-weight: 500; color: var(--text); line-height: 1.4; }
+  .lightning-pct    { font-size: 72px; font-weight: 800; line-height: 1; letter-spacing: -2px; }
+  .lightning-n      { font-size: 18px; font-weight: 600; color: var(--text-muted); }
+
+  /* ── Facilitator slide view ── */
+  .slide {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    padding: clamp(2rem, 5vw, 3.5rem) clamp(1.5rem, 5vw, 3.5rem);
+    /* Use height (not min-height) so justify-content:center has a definite size to work with */
+    height: calc(100dvh - 160px);
+    overflow-y: auto;                 /* scroll if content taller than viewport */
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .slide-hero {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center;
+  }
+  .slide-panel {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center;
+    background: linear-gradient(135deg, #EFF6FF 0%, #F5F3FF 100%);
+  }
+  .slide-eyebrow {
+    font-size: 11px; font-weight: 700; color: var(--blue);
+    text-transform: uppercase; letter-spacing: 2.5px; margin-bottom: 12px;
+  }
+  .slide-title {
+    font-size: clamp(28px, 5vw, 50px); font-weight: 800;
+    color: var(--text); line-height: 1.12; letter-spacing: -0.03em; margin: 0 0 1.5rem;
+  }
+  .slide-question {
+    font-size: clamp(15px, 2.2vw, 19px); font-weight: 600;
+    color: var(--text); margin: .5rem 0 0; line-height: 1.4;
+  }
+  .slide-agenda {
+    display: flex; flex-direction: column; gap: 12px;
+    margin-top: 2rem; text-align: left; max-width: 500px; width: 100%;
+  }
+  .agenda-item { display: flex; gap: 14px; align-items: flex-start; font-size: 15px; }
+  .agenda-num {
+    min-width: 28px; height: 28px; border-radius: 50%;
+    background: var(--blue); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+  }
+
+  /* ── Floating facilitator control bar ── */
+  #ctrl-bar {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: rgba(15,23,42,.9); backdrop-filter: blur(10px);
+    border-radius: 16px; padding: 12px 18px;
+    flex-direction: column; align-items: center; gap: 8px;
+    box-shadow: 0 4px 32px rgba(0,0,0,.3);
+    z-index: 200; min-width: 360px;
+  }
+  #ctrl-bar button {
+    background: rgba(255,255,255,.12); color: white;
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 8px; padding: 8px 20px; font-size: 13px; font-weight: 600;
+    cursor: pointer; font-family: inherit; transition: background 0.15s;
+  }
+  #ctrl-bar button:hover:not(:disabled) { background: rgba(255,255,255,.22); }
+  #ctrl-bar button:disabled { opacity: 0.3; cursor: default; }
+  #ctrl-body { display: flex; align-items: center; gap: 10px; }
+  #ctrl-label {
+    color: rgba(255,255,255,.75); font-size: 12px;
+    min-width: 180px; text-align: center; line-height: 1.3;
+  }
+  #ctrl-toggle {
+    background: transparent !important; border: none !important;
+    color: rgba(255,255,255,.4) !important; font-size: 11px !important;
+    padding: 2px 6px !important;
+  }
+  #ctrl-reset {
+    background: transparent !important;
+    border: 1px solid rgba(255,100,100,.35) !important;
+    color: rgba(255,150,150,.85) !important;
+    font-size: 12px !important; padding: 6px 12px !important;
+  }
+  #ctrl-reset:hover:not(:disabled) { background: rgba(220,38,38,.25) !important; }
+
+  /* ── Panel summary — ranked bars + binary split ── */
+  /* Panel summary slide — tightly packed to fit in one viewport */
+  .panel-summary-slide { min-height: auto; overflow-y: auto; }
+  .panel-summary-grid {
+    display: grid; grid-template-columns: 1.35fr 1fr; gap: 12px; margin-top: .5rem;
+  }
+  .panel-right-stack { display: flex; flex-direction: column; gap: 12px; }
+  .panel-summary-col {
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 12px;
+  }
+  .panel-col-heading {
+    font-size: 9px; font-weight: 700; color: var(--blue);
+    text-transform: uppercase; letter-spacing: 1px; line-height: 1.4;
+    margin-bottom: 8px;
+  }
+  .summary-empty { font-size: 11px; color: var(--text-light); padding: .25rem 0; }
+
+  /* Ranked bar rows — compact for panel summary */
+  .rank-row {
+    display: grid; grid-template-columns: 20px 1fr 36px;
+    align-items: start; gap: 5px;
+    padding: 4px 6px; border-radius: 6px; margin-bottom: 3px;
+  }
+  .rank-top { background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,.05); }
+  .rank-letter { font-size: 12px; font-weight: 800; line-height: 1.5; }
+  .rank-body { display: flex; flex-direction: column; gap: 3px; }
+  .rank-text { font-size: 10.5px; line-height: 1.4; color: var(--text); }
+  .rank-top .rank-text { font-weight: 600; }
+  .rank-bar-track { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .rank-bar-fill  { height: 100%; border-radius: 2px; transition: width .5s ease; }
+  .rank-badge {
+    align-self: flex-start;          /* prevent stretching full width */
+    font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+    color: white; padding: 2px 5px; border-radius: 3px; margin-top: 2px;
+  }
+  .rank-pct { font-size: 14px; font-weight: 800; text-align: right; font-feature-settings: "tnum"; }
+  .rank-top .rank-pct { font-size: 16px; }
+
+  /* Binary split cards — winner highlighted, loser muted */
+  .binary-split { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .binary-card {
+    border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 8px;
+    text-align: center; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    background: var(--bg);
+  }
+  .binary-top {
+    background: var(--surface); border: 2.5px solid; border-color: var(--col, var(--blue));
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  .binary-low { opacity: 0.55; }
+  .binary-letter { font-size: 16px; font-weight: 800; }
+  .binary-pct    { font-size: 38px; font-weight: 800; line-height: 1; letter-spacing: -1px; }
+  .binary-text   { font-size: 12px; color: var(--text-muted); line-height: 1.3; }
+  .binary-count  { font-size: 11px; color: var(--text-light); }
+
+  /* Optional choice stage buttons */
+  .choice-btn {
+    padding: 14px 28px; font-size: 15px; font-weight: 600; border-radius: 10px;
+    border: none; cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .choice-continue { background: var(--blue); color: white; }
+  .choice-continue:hover { background: var(--blue-dark); }
+  .choice-close { background: var(--bg); color: var(--text-muted); border: 1.5px solid var(--border-mid); }
+  .choice-close:hover { background: var(--border); color: var(--text); }
+
+  /* ── Participant panel engagement prompt ── */
+  .panel-engage {
+    margin-top: 1.25rem; padding: 14px 16px;
+    background: var(--blue-light); border: 1px solid var(--blue-mid);
+    border-radius: 10px; font-size: 14px;
+  }
+  .panel-engage p { margin: 0 0 6px; }
+  .panel-engage ul { margin: 0; padding-left: 1.25rem; line-height: 1.9; }
+
+  /* ── Term intro slide ── */
+  .slide-intro {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  .intro-icon { font-size: 48px; margin-bottom: .5rem; line-height: 1; }
+  .intro-term {
+    font-size: clamp(28px, 4vw, 48px); font-weight: 800;
+    color: var(--brand-navy); margin: .25rem 0 .75rem; letter-spacing: -0.03em;
+  }
+  .intro-concept {
+    font-size: 15px; color: var(--text-muted); max-width: 640px; line-height: 1.6;
+    margin-bottom: 1.75rem;
+  }
+  .intro-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    width: 100%; max-width: 820px; margin-bottom: 1.5rem;
+  }
+  /* Shared intro card styles — used by both facilitator and participant views */
+  .intro-card {
+    border-radius: 12px; padding: 18px 20px; text-align: left;
+    border-left: 4px solid transparent; /* overridden per variant */
+  }
+  .intro-card p { font-size: 13px; line-height: 1.6; margin: 0; }
+  .intro-card-label {
+    font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1.5px; margin-bottom: 8px;
+  }
+  /* Generic definition — cool navy-tinted background, navy accent */
+  .intro-card-neutral {
+    background: #EEF1FA; border: 1px solid #D0D8F0;
+    border-left: 4px solid var(--brand-navy);
+  }
+  .intro-card-neutral .intro-card-label { color: var(--brand-navy); }
+  /* In public health practice — warm yellow, brand accent */
+  .intro-card-tension {
+    background: var(--brand-yellow-light); border: 1px solid #E8D060;
+    border-left: 4px solid var(--brand-yellow);
+  }
+  .intro-card-tension .intro-card-label { color: #8B6B00; }
+  .intro-question {
+    font-size: 15px; font-style: italic; color: var(--brand-navy);
+    max-width: 600px; line-height: 1.6; font-weight: 600;
+  }
+
+  /* ── Subtle facilitator choice buttons in ctrl-bar ── */
+  .ctrl-extra-btn {
+    background: rgba(255,255,255,.1); color: rgba(255,255,255,.7);
+    border: 1px solid rgba(255,255,255,.2); border-radius: 8px;
+    padding: 6px 14px; font-size: 12px; font-weight: 500;
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .ctrl-extra-btn:hover { background: rgba(255,255,255,.2); color: white; }
+  .ctrl-extra-primary {
+    background: rgba(245,192,0,.2) !important; color: var(--brand-yellow) !important;
+    border-color: rgba(245,192,0,.4) !important;
+  }
+  .ctrl-extra-primary:hover { background: rgba(245,192,0,.35) !important; }
+
+
+
+  /* ── Mobile overrides — all in one block to prevent cascade conflicts ── */
+  .mob-summary { display: none; }
+  @media (max-width: 700px) {
+    /* Panel summary */
+    .panel-summary-grid  { display: none !important; }
+    .mob-summary         { display: block; margin-top: .5rem; }
+    .mob-row {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .mob-row:last-of-type { border-bottom: none; }
+    .mob-label {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--blue); min-width: 68px; padding-top: 2px;
+    }
+    .mob-winner { display: flex; align-items: baseline; gap: 6px; flex: 1; flex-wrap: wrap; }
+    .mob-letter { font-size: 14px; font-weight: 800; flex-shrink: 0; }
+    .mob-text   { font-size: 12px; color: var(--text); line-height: 1.4; flex: 1; }
+    .mob-pct    { font-size: 16px; font-weight: 800; flex-shrink: 0; }
+    .mob-empty  { font-size: 12px; color: var(--text-light); font-style: italic; }
+
+    /* Lightning vote — compact stacked rows instead of two tall cards */
+    .lightning-wrap {
+      display: flex; flex-direction: column; gap: 8px; margin-top: 1rem;
+    }
+    .lightning-col {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      grid-template-rows: auto auto;
+      column-gap: 10px; row-gap: 2px;
+      align-items: center;
+      padding: 12px 14px; border-radius: 10px;
+      border-top: none;
+      border-left: 4px solid;
+      text-align: left;
+    }
+    .lightning-letter {
+      font-size: 16px; font-weight: 800;
+      grid-column: 1; grid-row: 1 / 3;
+      align-self: center;
+    }
+    .lightning-text {
+      font-size: 13px; font-weight: 500; line-height: 1.35;
+      grid-column: 2; grid-row: 1;
+    }
+    .lightning-pct {
+      font-size: 32px; font-weight: 800; line-height: 1; letter-spacing: -1px;
+      grid-column: 3; grid-row: 1 / 3;
+      align-self: center;
+    }
+    .lightning-n {
+      font-size: 11px; color: var(--text-muted); font-weight: 400;
+      grid-column: 2; grid-row: 2;
+    }
+  }
+
+
+  /* ── Error ── */
+  .error-panel { border-color: var(--red); }
+  .error-panel h2 { color: var(--red); }
+  .error-panel pre {
+    font-size: 12px; background: var(--red-light); padding: 12px; border-radius: 6px;
+    overflow: auto; white-space: pre-wrap; margin: .5rem 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="vs-header">
+  <div class="vs-header-inner">
+    <div class="vs-brand">AI <span class="vs-brand-accent">Terminology</span> for Public Health</div>
+    <div id="header-meta">
+      <span id="room-code"></span>
+      <span id="backend-tag"></span>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <!-- Persistent QR sidebar — shown to facilitators throughout the session -->
+  <div id="fac-sidebar">
+    <div class="sidebar-label">Join</div>
+    <div id="sidebar-qr"></div>
+    <div id="sidebar-url" class="sidebar-url"></div>
+  </div>
+
+  <div class="role-bar" id="role-bar">
+    <button id="role-facilitator" onclick="setRole('facilitator')">Facilitator view</button>
+  </div>
+  <div id="main-content"></div>
+</div>
+
+<!-- Floating facilitator control bar — only visible in facilitator role -->
+<div id="ctrl-bar" style="display:none">
+  <div id="ctrl-body">
+    <button id="ctrl-prev" onclick="navigate(-1)">← Prev</button>
+    <span id="ctrl-label"></span>
+    <button id="ctrl-next" onclick="navigate(1)">Next →</button>
+    <button id="ctrl-reset" onclick="resetSession()" title="Reset all votes">↻</button>
+  </div>
+  <button id="ctrl-toggle" onclick="toggleCtrl()">▼ hide</button>
+</div>
+
+<!-- QR code library — used on the welcome slide to display the participant join link -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+        integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU"
+        crossorigin="anonymous"></script>
+
+<!-- Firebase compat SDK (v9) — always loaded; initialised only when ?backend=firebase.
+     SRI hashes lock these to exact known-good builds. -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"
+        integrity="sha384-ajMUFBUFMCyjh8uxJg6bkGcKe9RTolyjwbxB3yES0QQMenP3Oztj/W9vA2SJPcIh"
+        crossorigin="anonymous"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"
+        integrity="sha384-f6/UpzjTjIXASlp20cArQsaRh1EvHVJd5kegy/gYR9W2D0a32TnEqUEiW4Zm/5O0"
+        crossorigin="anonymous"></script>
+<script src="config.js"></script>
+<script src="terms.js"></script>
+<script src="storage.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
