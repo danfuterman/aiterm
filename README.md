@@ -1,11 +1,6 @@
 # AI Terminology for Public Health — Interactive Webinar App
 
-A small, self-contained interactive web app for running the **AI Terminology for Public Health** webinar. Built to support live voting, scenario discussion, and free-text comments from a webinar audience that's mostly on mute.
-
-The app pairs with two documents:
-
-- `AI_Terminology_Webinar_RunSheet.docx` — facilitator run-sheet
-- `AI_Terminology_Webinar_ExercisePack.docx` — full exercise pack with all six terms
+A small interactive web app for running the **AI Terminology for Public Health** webinar. Built to support live voting, scenario discussion webinar participants and panelists.
 
 This README covers what the app is, how to run it, and how to extend it.
 
@@ -15,12 +10,10 @@ This README covers what the app is, how to run it, and how to extend it.
 
 A single-page web app with two views:
 
-- **Facilitator view** — drives the session. Pick which "stage" everyone sees (welcome → shortlist vote → term 1 Format A → term 1 Format B → … → close). See live tallies, top-3 starred, sources revealed for facilitator notes, discussion prompts, and live chat for Format B.
-- **Participant view** — what the audience sees. Tap-to-vote, drag-style multi-select for the shortlist, free-text input for Format B and the close.
+- **Facilitator view** — drives the session. Pick which "stage" everyone sees (welcome → shortlist vote → term 1 Format A → term 1 Format B → … → close). See live tallies and discussion prompts.
+- **Participant view** — what the audience sees. Tap-to-vote.
 
-Everything updates live across all participants within ~2 seconds. Default polling interval is 2.5s; the localStorage backend also pushes via `storage` events for instant cross-tab updates on the same device.
-
-The session walks through six terms (any of which can be deep-dived):
+The session walks through six terms:
 
 - Human in the Loop
 - Performance Metrics
@@ -29,7 +22,7 @@ The session walks through six terms (any of which can be deep-dived):
 - Real World Evidence
 - Governance
 
-Each term has three exercise formats: How Do You Define It? (4 stakeholder-tagged definitions), Scenario Test (a real-world scenario + multi-choice + chat), and Lightning Vote (binary).
+Each term has three exercise formats: How Do You Define It, Scenario Test and Lightning Vote.
 
 ---
 
@@ -77,16 +70,6 @@ You need a backend so votes sync across participants' devices. Three options are
 - Setup: create a Firebase project, enable Realtime Database, paste config into `public/config.js`, uncomment the import block.
 - Use case: large webinars (>50 concurrent voters), or if you care about <500ms updates.
 
-### Hosting
-
-Any static host will do. Three free options:
-
-- **GitHub Pages** — push the `public/` folder to a `gh-pages` branch.
-- **Netlify drop** — drag the `public/` folder onto https://app.netlify.com/drop. You get a URL within seconds.
-- **Vercel** — `vercel deploy public/`.
-
-For the single-file build, you can also just upload `AI_Terminology_Webinar_App.html` to anywhere that serves static files (Dropbox public link, S3, your organisation's intranet, etc.).
-
 ### Local development
 
 ```bash
@@ -116,7 +99,7 @@ node build_standalone.js
 
 Example: `https://yourhost.com/?room=may-2026-rehearsal&backend=bin`
 
-The role (facilitator vs participant) is set with the toggle in the top-left bar and is remembered per-browser via `sessionStorage`.
+The role (facilitator vs participant) is remembered per-browser via `sessionStorage`.
 
 ---
 
@@ -151,18 +134,6 @@ All styling is in `public/index.html` `<style>` block, using CSS variables at th
 
 ---
 
-## Security notes
-
-This is a **lightweight, ephemeral webinar tool**, not a production system.
-
-- No authentication. Anyone with the URL can vote, post chat, or (if facilitator role) reset the session.
-- The reset button is gated behind a confirm dialog and only works in facilitator mode (which is just a sessionStorage flag — easily bypassed by anyone determined to do so). For a public webinar that's normally fine.
-- jsonbin and Firebase configs in `config.js` ARE shipped to the browser. Use bins/projects you don't mind being public-readable. For Firebase, set Realtime DB rules to restrict writes to the specific paths your app uses.
-- No data is sent anywhere except the backend you configure. localStorage stays on-device.
-- If you're running this for sensitive audiences, change the room code per session and reset between sessions.
-
----
-
 ## Why this is built the way it is
 
 Three design notes for anyone editing this later:
@@ -173,19 +144,3 @@ Three design notes for anyone editing this later:
 
 3. **The facilitator drives the stage; participants follow.** All participants see the same stage, set by the facilitator. There's no per-participant pacing. This matches how the webinar actually runs and avoids the failure mode where someone arrives late and is on a different question from everyone else.
 
----
-
-## Pre-session checklist
-
-- [ ] Test with two devices 24 hours before the live session.
-- [ ] Decide on hosting — note the URL.
-- [ ] Decide on a unique `room` code for the live session (not the rehearsal one).
-- [ ] If using jsonbin or Firebase, confirm config is filled in.
-- [ ] Reset the session via the reset button right before going live.
-- [ ] Have Zoom/Teams polls ready as a fallback if the app misbehaves.
-
----
-
-## Attribution
-
-Definitions are paraphrased from public source families (WHO/PAHO, IMDRF/regulatory bodies, FDA, academic clinical literature, and public health implementation literature) so they're recognisable but not verbatim — intentional, both for copyright and to keep the vote about meaning rather than guessing the source.
