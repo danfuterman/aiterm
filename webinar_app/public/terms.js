@@ -15,10 +15,10 @@ window.WEBINAR_TERMS = {
     formatA: {
       prompt: 'Four definitions of Human in the Loop. Select the one closest to how YOU understand the term.',
       options: [
-        { text: 'A system in which a person provides retains decision authority through oversight, validation, or correction of an AI system\'s outputs at one or more defined points in its operation.', source: 'Regulatory framing' },
+        { text: 'A risk-mitigation requirement under which a human must be involved in or accountable for AI-driven decisions, including in settings where a specialist who would otherwise make the decision is absent.', source: 'Public health implementer lens' },
         { text: 'An AI deployment pattern in which a clinician reviews and either accepts, modifies, or rejects each AI recommendation before it affects patient care.', source: 'Clinical user lens' },
         { text: 'A workflow design choice in which AI handles routine cases and escalates uncertain or high-risk cases to a human reviewer, optimising for the limited time a human can spend.', source: 'Developer / implementer lens' },
-        { text: 'A risk-mitigation requirement under which a human must be involved in or accountable for AI-driven decisions, including in settings where a specialist who would otherwise make the decision is absent.', source: 'Public health implementer lens' }
+        { text: 'A system in which a person retains decision authority through oversight, validation, or correction of an AI system\'s outputs at one or more defined points in its operation.', source: 'Regulatory framing' }
       ]
     },
     formatB: {
@@ -30,7 +30,7 @@ window.WEBINAR_TERMS = {
         { text: 'It depends on what the term is being used to certify.' }
       ],
       discussion: [
-        'If we accept that the nurse is the "human in the loop," is the term doing any work? What is it actually certifying?',
+        'If we accept that the nurse is the human in the loop, is the term doing any work? What is it actually certifying?',
         'If we say it\'s not HITL, are we saying this deployment shouldn\'t happen? Because in many districts, the alternative is no diagnostic at all.',
         'Should the term distinguish between "human supervising AI" (clinician oversight) and "human enabled by AI" (frontline worker using AI to operate beyond their scope)? They\'re being conflated under one label.'
       ]
@@ -46,8 +46,8 @@ window.WEBINAR_TERMS = {
   },
 
   perf: {
-    name: 'Performance Metrics',
-    short: 'Sensitivity tells the clinician one thing. Population-level coverage and equity tell the programme manager another.',
+    name: 'Performance',
+    short: 'Sensitivity tells the clinician one thing. Population-level coverage and equity tell the program manager another.',
     intro: {
       icon: '📊',
       concept: 'Measures of how well an AI tool performs on a given task, typically derived from model evaluation on a test dataset.',
@@ -57,14 +57,14 @@ window.WEBINAR_TERMS = {
     formatA: {
       prompt: 'Here are four ways to think about performance for an AI tool in public health. Select the one closest to how YOU understand the term.',
       options: [
-        { text: 'Quantitative measures of model accuracy on a test dataset, typically including precision, recall, F1 scores, and confusion matrix outputs.', source: 'ML / developer lens' },
         { text: 'Measures of clinical performance: how well the tool supports correct clinical decisions in real practice, including agreement with expert reviewers.', source: 'Clinical evaluation lens' },
-        { text: 'Measures of population-level impact: change in detection rates,time-to-treatment, quality of treatment and downstream health outcomes attributable to the tool.', source: 'Programme evaluation lens' },
-        { text: 'Measures relevant to procurement and sustainability: uptime, integration cost, frontline user adoption, total cost per case and operational reliability.', source: 'Health system / Ministry decision-maker lens' }
+        { text: 'Measures of model accuracy on a test dataset, typically including precision, recall, F1 scores, and confusion matrix outputs.', source: 'ML / developer lens' },
+        { text: 'Measures relevant to procurement and sustainability: uptime, integration cost, frontline user adoption, total cost per case and operational reliability.', source: 'Health system / Ministry decision-maker lens' },
+        { text: 'Measures of population-level impact: change in detection rates,time-to-treatment, quality of treatment and downstream health outcomes attributable to the tool.', source: 'program evaluation lens' }
       ]
     },
     formatB: {
-      scenario: 'Your organization has implemented a maternal health WhatsApp chatbot deployed in partnership with the Ministry of Health. After 18 months, you report 92% accuracy on intent recognition, 88% user satisfaction in a 500-person sample, and 1.2 million messages handled. The Ministry is deciding whether to absorb the chatbot into its routine programme budget.',
+      scenario: 'Your organization has implemented a maternal health WhatsApp chatbot deployed in partnership with the Ministry of Health. After 18 months, you report 92% accuracy on intent recognition, 88% user satisfaction in a 500-person sample, and 1.2 million messages handled. The Ministry is deciding whether to absorb the chatbot into its routine program budget.',
       prompt: 'Are these the right performance metrics for the Ministry\'s decision?',
       options: [
         { text: 'Yes. These are standard, widely accepted measures.' },
@@ -78,12 +78,12 @@ window.WEBINAR_TERMS = {
       ]
     },
     formatC: {
-      prompt: 'When you hear "this AI tool achieved 95% accuracy," what should be the first follow-up question?',
+      prompt: 'When you hear "this AI tool achieved 95% accuracy", what should the first follow-up question be?',
       options: [
         { text: 'On what dataset?' },
-        { text: 'What changed in programme outcomes?' }
+        { text: 'What changed in program outcomes?' }
       ],
-      punchline: 'The split tells you whether the audience is reading "performance" as a model property or a system and programme property. Both are valid; the gap matters.'
+      punchline: 'The split tells you whether the audience is reading "performance" as a model property or a system and program property. Both are valid; the gap matters.'
     }
   },
 
@@ -97,19 +97,19 @@ window.WEBINAR_TERMS = {
       question: 'What is the right comparison group: ideal performance, average clinician performance, or no guidance at all?'
     },
     formatA: {
-      prompt: 'Four ways to define a GenAI hallucination. Select the one closest to how YOU use the term.',
+      prompt: 'Four ways to define Hallucinations. Select the one closest to how YOU use the term.',
       options: [
-        { text: 'An output from a generative model that is factually incorrect, fabricated, or unsupported by its training data, produced with a tone of confidence indistinguishable from a correct answer.', source: 'ML / technical lens' },
         { text: 'A safety event in which a generative AI tool, deployed in a clinical or health-information context, gives advice that is plausibly worded but medically wrong, with potential to cause harm.', source: 'Clinical safety lens' },
         { text: 'A failure mode of the model-context fit: an output that may be technically accurate against the model\'s training data but is wrong in the specific context where the user is reading it (wrong country, wrong guideline version, wrong population).', source: 'Deployment / context lens' },
-        { text: 'A trust failure: any output that a user reasonably acts upon, but which is not traceable to a verifiable source, regardless of whether the underlying fact happens to be correct.', source: 'Public health implementer lens' }
+        { text: 'A trust failure: any output that a user reasonably acts upon, but which is not traceable to a verifiable source, regardless of whether the underlying fact happens to be correct.', source: 'Public health implementer lens' },
+        { text: 'An output from a generative model that is factually incorrect, fabricated, or unsupported by its training data, produced with a tone of confidence indistinguishable from a correct answer.', source: 'ML / technical lens' }
       ]
     },
     formatB: {
-      scenario: 'A generative AI chatbot is being piloted with community health workers to support quick clinical guidance during home visits. During the pilot, an evaluator finds that for roughly 3% of queries the chatbot gives an answer that contradicts the national clinical guideline. In roughly 1% of queries it contradicts WHO guidance. In all of these cases the answer is presented with the same confidence as the correct answers. The programme team is debating whether to continue scaling the pilot.',
-      prompt: 'How should the programme team respond?',
+      scenario: 'A generative AI chatbot is being piloted with Community Health Workers to support quick clinical guidance during home visits. During the pilot, an evaluator finds that for roughly 3% of queries the chatbot gives an answer that contradicts the national clinical guideline. In roughly 1% of queries it contradicts WHO guidance. In all of these cases the answer is presented with the same confidence as the correct answers. The program team is debating whether to continue scaling the pilot.',
+      prompt: 'How should the program team respond?',
       options: [
-        { text: 'Continue scaling. 96% guideline-aligned is better than what most CHWs can achieve unaided, and humans hallucinate too.' },
+        { text: 'Continue scaling. 96% guideline-aligned is better than what can be achieve witout the tool.' },
         { text: 'Pause scaling until the rate of guideline-contradicting answers is brought below a defined threshold.' },
         { text: 'Continue scaling, but with mandatory grounding (RAG against the national guideline) and a visible source citation on every answer.' },
         { text: 'Reframe the tool as a search aid that surfaces sources, not as a question-answering tool.' }
@@ -121,12 +121,12 @@ window.WEBINAR_TERMS = {
       ]
     },
     formatC: {
-      prompt: 'For a Generative AI tool used by frontline health workers, the most useful mitigation is:',
+      prompt: 'For a Generative AI tool used by Community Health Workers, the most useful mitigation against hallucinations is:',
       options: [
         { text: 'Better models (fewer hallucinations at the model level)' },
         { text: 'Better grounding (answers tied to a verifiable source that can be checked)' }
       ],
-      punchline: 'The technical conversation tends to focus on the first option. For deployment in real programmes, grounding is what allows a CHW or supervisor to catch errors and what gives a Ministry the audit trail it needs.'
+      punchline: 'The technical conversation tends to focus on the first option. For deployment in real programs, grounding is what allows a CHW or supervisor to catch errors and what gives a Ministry the audit trail it needs.'
     }
   },
 
@@ -142,10 +142,10 @@ window.WEBINAR_TERMS = {
     formatA: {
       prompt: 'Four framings of Bias / Fairness in AI for health. Select the one closest to how YOU understand the term.',
       options: [
-        { text: 'Bias is a statistical property of a model: systematic deviation between predictions and ground truth, typically measured by performance differences across demographic subgroups.', source: 'ML / technical lens' },
-        { text: 'Bias is a training data problem: when the data used to build a model under-represents certain populations, the model\'s performance on those populations will be poorer.', source: 'Data science lens' },
-        { text: 'Bias is a clinical safety issue: when an AI tool produces systematically different recommendations for patients with similar clinical needs but different demographic profiles, leading to inequitable care.', source: 'Clinical / patient-safety lens' },
-        { text: 'Bias is a system-level problem of who is in the data at all: the populations least visible to digital health systems are the ones most at risk of being further excluded by AI tools built on those systems.', source: 'Equity / public health lens' }
+        { text: 'A statistical property of a model: systematic deviation between predictions and ground truth, typically measured by performance differences across demographic subgroups.', source: 'ML / technical lens' },
+        { text: 'A training data problem: when the data used to build a model under-represents certain populations, the model\'s performance on those populations will be poorer.', source: 'Data science lens' },
+        { text: 'A system-level problem of who is in the data at all: the populations least visible to digital health systems are the ones most at risk of being further excluded by AI tools built on those systems.', source: 'Equity / public health lens' },
+        { text: 'A clinical safety issue: when an AI tool produces systematically different recommendations for patients with similar clinical needs but different demographic profiles, leading to inequitable care.', source: 'Clinical / patient-safety lens' }
       ]
     },
     formatB: {
@@ -157,7 +157,7 @@ window.WEBINAR_TERMS = {
         { text: 'Both. And only naming both is useful.' }
       ],
       discussion: [
-        'If the answer is "both," how do we communicate that to a Ministry deciding whether to keep using the tool?',
+        'If the answer is both, how do we communicate that to a Ministry deciding whether to keep using the tool?',
         'Who is responsible for fixing it? The vendor? The Ministry\'s data team? The donor that funded the underlying surveillance system? Your organization?',
         'Is calling this "model bias" actually unhelpful, because it routes the conversation toward retraining when the real fix is investment in the data infrastructure?'
       ]
@@ -172,88 +172,90 @@ window.WEBINAR_TERMS = {
     }
   },
 
-  rwe: {
-    name: 'Real World Evidence',
-    short: 'In public health, "real world" evidence for AI often means the only world. There was never a controlled trial.',
+  val: {
+    name: 'Validation',
+    short: 'A model assessed in a particular setting. Deployed in another setting, does it perform as well?',
     intro: {
-      icon: '🌍',
-      concept: 'Evidence about an AI-powered health intervention derived from analysis of real-world data generated outside randomised controlled trials, typically from routine care, programme delivery, or administrative data.',
-      ambiguity: 'In many public health settings, a controlled trial was never run and may never be feasible. Programme data is the only available evidence. The question is whether it is sufficient for the decisions being made.',
-      question: 'Sufficient evidence for what decision, and sufficient according to whose standard?'
+      icon: '✅',
+      concept: 'The process of testing an AI model to confirm it performs as intended, typically by evaluating it on data it has not previously seen.',
+      ambiguity: 'Validation is often treated as a one-time pre-deployment step conducted in the development setting. For implementing organisations deploying tools across different populations and contexts, the more pressing question is whether that validation holds locally.',
+      question: 'If a tool was validated somewhere else, how do you know it works here?'
     },
     formatA: {
-      prompt: 'Four definitions of Real World Evidence. Select the one closest to how YOU use the term.',
+      prompt: 'Four definitions of Validation for an AI tool in health. Which one most closely reflects how YOU would apply the term in your work?',
       options: [
-        { text: 'Clinical evidence regarding the use and potential benefits or risks of a medical product derived from analysis of real-world data, generated outside randomised trials.', source: 'Regulatory lens (FDA-style)' },
-        { text: 'Evidence collected from routine use of a tool after deployment, used to monitor whether the tool continues to perform as intended in the populations and settings where it is being used.', source: 'Post-market surveillance lens' },
-        { text: 'Operational data generated by a digital health programme (usage logs, user feedback, error rates, programme outcomes) that demonstrates whether the tool is working in practice, regardless of whether it was ever validated through formal trials.', source: 'Implementer lens' },
-        { text: 'The only evidence available, because the controlled-trial infrastructure doesn\'t exist in the setting. What is gathered from routine programme delivery is by necessity what counts as evidence sufficient for decisions about scale.', source: 'LMIC public health lens' }
+        { text: 'A continuous process rather than a one-time event: ongoing assessment of whether a deployed model continues to perform as intended as populations, data systems, and care delivery patterns change over time.', source: 'Post-market surveillance lens' },
+        { text: 'The process of testing a trained AI model on a dataset not used during development, drawn from a different institution, population, or time period, to assess whether its performance holds beyond the original development context.', source: 'Regulatory / technical lens' },
+        { text: 'The process of assessing whether a model validated internally still performs in a local context on specific populations, facilities and data infrastructure.', source: 'Public health implementer lens' },
+        { text: 'A one-time pre-deployment requirement: evidence that a model performs adequately on an independent test set before it is approved for clinical or program use.', source: 'Procurement / approval lens' }
       ]
     },
     formatB: {
-      scenario: 'Your organization has supported a WhatsApp-based maternal health chatbot for three years. Programme data shows: 4 million enrolled users, retention curves, message engagement, self-reported satisfaction, and (through linkage with facility data) some indication of antenatal care attendance among enrolled users. There has never been a randomised trial. The Ministry of Health is deciding whether to absorb the chatbot into its routine budget.',
-      prompt: 'Is the available evidence sufficient to make that decision?',
+      scenario: 'Your organisation is supporting the rollout of an AI clinical scribe across a network of public health facilities. The product documentation states the tool has been validated with high accuracy on clinical consultation transcripts. Your team establishes that all validation datasets came from private hospital settings in two high-income countries with structured consultation formats. Your facilities run high-volume consultations with patient histories that include conditions underrepresented in the training data. Clinicians are required to review and sign off each AI-generated note before it enters the patient record.',
+      prompt: 'Is this tool validated for this deployment?',
       options: [
-        { text: 'Yes. Three years of real programme data is more meaningful than a one-year trial would be.' },
-        { text: 'No. Without a counterfactual, you can\'t attribute the outcomes to the chatbot.' },
-        { text: 'Yes for some decisions (continued operation), no for others (claims of impact, scale to new geographies).' }
+        { text: 'Yes - the vendor met a recognised standard for validation. What was done is what the term requires.' },
+        { text: 'No - a separate local validation study would be needed before this deployment can be trusted.' },
+        { text: 'The term is being used to mean two different things, and neither party is wrong on their own terms.' }
       ],
       discussion: [
-        'Who is qualified to judge whether real-world evidence is "sufficient"? The Ministry? Your organization? The donor? An external evaluator?',
-        'If the answer is "wait for a trial," who funds and runs it? In what timeframe? And what happens to the programme in the meantime?',
-        'Are we holding RWE for AI tools to a stricter standard than we hold RWE for other public health interventions like SBCC programmes?'
+        'If the clinician signs off each note, does that substitute for local validation, or does it transfer the risk to the clinician?',
+        'The vendor says validated. The procurement team read that as applicable to this context. Is that a miscommunication, or the predictable result of a term that doesn\'t require context to be specified?',
+        'What would a minimum viable local validation study look like for an AI scribe in this setting, and who should fund it?'
       ]
     },
     formatC: {
-      prompt: 'For an AI tool deployed in a public health programme, "real world evidence" should primarily be evidence of:',
+      prompt: 'When an AI tool is described as validated, the responsibility for ensuring this applies to the deployment context sits with:',
       options: [
-        { text: 'Whether the tool works as the model says it does.' },
-        { text: 'Whether programme outcomes are improved with the tool present.' }
+        { text: 'The product or software vendor, to demonstrate the validation is applicable to the local deployment context.' },
+        { text: 'The implementing organisation, to conduct or commission local validation before deployment.' }
       ],
-      punchline: 'Option A is what most evaluations measure. Option B is what Ministries actually want to know. Implementing partners are often the only actor positioned to produce Option B.'
+      punchline: 'In practice it sits with neither. It falls into the gap between them, and the patient or population bears the risk, with responsibility for funding and conducting it unresolved.'
     }
   },
 
   gov: {
     name: 'AI Governance',
-    short: '"AI governance" often means model risk management. In public health it has to also mean data sovereignty and who controls the architecture.',
+    short: 'AI governance often covers model risk management. In public health, should it also cover data sovereignty and who controls the architecture?',
     intro: {
       icon: '🏛️',
       concept: 'The frameworks, processes, regulations, and accountability structures that guide how AI systems are built, deployed, monitored, and controlled.',
-      ambiguity: 'Regulatory frameworks focus on model risk. Public health practitioners need to govern the underlying data pipelines, digital infrastructure ownership, and procurement terms that determine who controls AI tools over time.',
+      ambiguity: 'Regulatory frameworks focus on model risk management. Public health practitioners need to govern the underlying data pipelines, digital infrastructure ownership, and procurement terms that determine who controls AI tools over time.',
       question: 'Can you meaningfully govern an AI tool without governing the infrastructure it runs on?'
     },
     formatA: {
-      prompt: 'Four definitions of AI Governance in the context of health. Select the one closest to how YOU understand the term.',
+      prompt: 'Four definitions of AI Governance in the context of public health. Which one best matches how YOU think it should apply?',
       options: [
-        { text: 'The internal processes by which an organization managing or developing an AI system documents its decisions, manages its risks, and ensures accountability for the system\'s behaviour.', source: 'Corporate / ML governance lens' },
+        { text: 'The internal processes by which an organisation managing or developing an AI system documents its decisions, manages its risks, and ensures accountability for the system\'s behaviour.', source: 'AI/ML governance lens' },
         { text: 'The set of laws, regulations, and oversight bodies that authorise, constrain, and audit the deployment of AI in health, including data protection, model approval, and post-market surveillance.', source: 'Regulatory lens' },
-        { text: 'The framework of policies, ethical principles, transparency requirements, and consent mechanisms that ensure AI in health respects rights, prevents harm, and operates within publicly accountable boundaries.', source: 'Ethics / human rights lens' },
-        { text: 'Government ownership and public stewardship of the foundational digital architecture (identifiers, registries, data pipelines, hosting, procurement terms) that determines what AI can be built on, who controls it, and who benefits from it over time.', source: 'Data sovereignty lens' }
+        { text: 'Government ownership and public stewardship of the foundational digital architecture that determines what AI can be built on, who controls it, and who benefits from it over time.', source: 'Data sovereignty lens' },
+        { text: 'The framework of policies, ethical principles, transparency requirements, and consent mechanisms that ensure AI in health respects rights, prevents harm, and operates within publicly accountable boundaries.', source: 'Ethics lens' }
       ]
     },
     formatB: {
-      scenario: 'An AI tool for HIV cohort retention, built by a third-party vendor, has been operating for 4 years, integrated with the national HIV programme. Your organization is the implementing partner, supporting deployment, training, and M&E, but neither the developer nor the host of the tool. The donor has announced funding will end in 18 months. The Ministry discovers: the model is hosted on the vendor\'s cloud infrastructure; the training data and fine-tuned model weights are the vendor\'s IP; continued operation after funding ends would require a commercial licence the Ministry cannot afford.',
+      scenario: 'Your organisation supports a national AI program for maternal health in a country. Over three years, the program generates a large dataset of labelled clinical interactions, outcome data, and patient records. The vendor that built and hosts the AI tool uses this data to train an improved global model, licensed commercially to health systems in other countries. The data sharing agreement signed at the start of the program permitted the vendor to use anonymised data for model improvement, but made no distinction between internal improvement and commercial application.',
       prompt: 'Is this an AI governance failure?',
       options: [
-        { text: 'Yes. The procurement and contracting were inadequate.' },
-        { text: 'Yes, but the failure was upstream, in the absence of a national framework that would have set the procurement terms.' },
-        { text: 'No. This is a sustainability failure, not a governance one.' }
+        { text: 'Yes — the vendor exploited a data sharing clause that the Ministry did not intend to include commercial use.' },
+        { text: 'Yes — but the failure was upstream, in the absence of a national framework that could have classified training data as a sovereign asset.' },
+        { text: 'No — the data sharing agreement was signed and complied with. This is a contracting failure, not a governance one.' }
       ],
       discussion: [
-        'If we accept this is a governance failure, who in the country should have been positioned to prevent it? Was that role even funded? Did your organization, as the implementing partner, have a role to play?',
-        'What contractual or policy terms, set at the start, would have prevented this outcome?',
-        'Is it realistic for individual ministries to negotiate this, or does it require regional or peer-network leverage that implementing partners could help broker?'
+        'This issue only exists because the data was used to train a model that creates commercial value elsewhere. Does AI governance as a term — as it is currently used — cover this? If not, what would?',
+        'What is the difference between data protection (a legal concept most countries have frameworks for) and data sovereignty (a governance concept most countries do not)? Is that distinction doing real work here?',
+        'What role can implementing partners play in helping Ministries negotiate data terms that protect sovereign interests — and is that role currently funded or expected?'
       ]
     },
     formatC: {
-      prompt: 'When we say "AI governance," the primary subject of the verb should be:',
+      prompt: 'When we say AI governance, the primary subject should be:',
       options: [
-        { text: 'The AI model and its developer' },
-        { text: 'The data and digital infrastructure the AI runs on' }
+        { text: 'The AI model and its behaviour.' },
+        { text: 'The data and digital infrastructure the AI runs on.' }
       ],
-      punchline: 'The regulatory community has spent the last 5 years building frameworks for Option A. The argument from public health is that without Option B, Option A doesn\'t bite. You can\'t govern what you don\'t control.'
+      punchline: 'The regulatory community has spent the last five years building frameworks for (a). The argument from public health implementation is that without (b), (a) doesn\'t bite — you cannot govern what you do not control.'
     }
+
+    
   }
 };
 
