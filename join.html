@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Join — AI Terminology for Public Health</title>
+<style>
+  body { font-family: -apple-system, sans-serif; background: #1a2857; color: white;
+         display: flex; align-items: center; justify-content: center;
+         min-height: 100vh; margin: 0; text-align: center; }
+  .msg { max-width: 400px; padding: 2rem; }
+  h1 { font-size: 22px; margin: 0 0 .5rem; }
+  p  { font-size: 14px; color: rgba(255,255,255,.6); margin: 0; }
+  .spinner { width: 32px; height: 32px; border: 3px solid rgba(255,255,255,.2);
+             border-top-color: #F5C000; border-radius: 50%;
+             animation: spin .8s linear infinite; margin: 1.5rem auto 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="msg">
+  <h1>AI Terminology for Public Health</h1>
+  <p>Joining the interactive session…</p>
+  <div class="spinner"></div>
+</div>
+<script>
+  // Read room from query string, fall back to default
+  const room = new URLSearchParams(location.search).get('room') || 'live-jun2026';
+  location.replace('index.html?backend=firebase&room=' + encodeURIComponent(room));
+</script>
+</body>
+</html>
