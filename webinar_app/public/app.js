@@ -795,6 +795,48 @@ window.toggleShortlist = async function(idx) {
 window.setRole      = setRole;
 window.resetSession = resetSession;
 
+// ── Facilitator passcode gate ──────────────────────────────────────────────────
+// Only shown when role=facilitator AND FACILITATOR_SECURE_MODE='true' in config.js.
+// Participants are never shown this — they never have role=facilitator.
+function passcodeGate(onSuccess) {
+  if (role !== 'facilitator') { onSuccess(); return; }
+  if ((window.FACILITATOR_SECURE_MODE || '') !== 'true') { onSuccess(); return; }
+  if (sessionStorage.getItem('fac_auth') === '1') { onSuccess(); return; }
+
+  const overlay = document.createElement('div');
+  overlay.id = 'passcode-gate';
+  overlay.innerHTML = `
+    <div class="gate-card">
+      <div class="gate-logo">AI <span>Terminology</span><br>for Public Health</div>
+      <div class="gate-subtitle">Facilitator access</div>
+      <input id="gate-input" type="password" placeholder="Enter passcode" autocomplete="off" spellcheck="false">
+      <button id="gate-btn" onclick="window._gateSubmit()">Continue</button>
+      <div id="gate-error"></div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  const input = document.getElementById('gate-input');
+  input.focus();
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') window._gateSubmit(); });
+
+  window._gateSubmit = function () {
+    if (input.value === (window.FACILITATOR_PASSCODE || '')) {
+      sessionStorage.setItem('fac_auth', '1');
+      overlay.remove();
+      delete window._gateSubmit;
+      onSuccess();
+    } else {
+      input.value = '';
+      const card = overlay.querySelector('.gate-card');
+      card.classList.remove('gate-shake');
+      void card.offsetWidth; // restart animation
+      card.classList.add('gate-shake');
+      document.getElementById('gate-error').textContent = 'Incorrect passcode — try again.';
+      input.focus();
+    }
+  };
+}
+
 // ── Polling & init ─────────────────────────────────────────────────────────────
 let pollTimer = null;
 function startPolling() {
@@ -803,7 +845,9 @@ function startPolling() {
 }
 
 (async function init() {
-  if (STORAGE.onChange) STORAGE.onChange(render);
-  render();
-  startPolling();
+  passcodeGate(function () {
+    if (STORAGE.onChange) STORAGE.onChange(render);
+    render();
+    startPolling();
+  });
 })();

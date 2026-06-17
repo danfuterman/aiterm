@@ -2,6 +2,13 @@
 // You only need to fill this in if you're using a shared backend (npoint or firebase).
 // For localStorage (default), leave this file as-is.
 
+// ---- Facilitator passcode gate (optional) ----
+// Set FACILITATOR_SECURE_MODE to 'true' and FACILITATOR_PASSCODE to a short phrase
+// via GitHub Secrets to require a passcode before the facilitator view loads.
+// Participants are never shown this gate — it only applies to ?role=facilitator.
+window.FACILITATOR_PASSCODE    = 'FACILITATOR_PASSCODE';
+window.FACILITATOR_SECURE_MODE = 'FACILITATOR_SECURE_MODE';
+
 // ---- npoint.io (simplest shared backend) ----
 // 1. Go to https://www.npoint.io
 // 2. Click "Create JSON Bin", paste {} as the content, save.

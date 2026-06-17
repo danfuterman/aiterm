@@ -540,6 +540,50 @@
     font-size: 12px; background: var(--red-light); padding: 12px; border-radius: 6px;
     overflow: auto; white-space: pre-wrap; margin: .5rem 0;
   }
+
+  /* ── Facilitator passcode gate ─────────────────────────────────────────── */
+  #passcode-gate {
+    position: fixed; inset: 0; z-index: 9999;
+    background: var(--brand-navy);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .gate-card {
+    background: #fff; border-radius: 16px;
+    padding: 2.5rem 2.5rem 2rem; width: 360px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+  }
+  .gate-logo {
+    font-size: 1.25rem; font-weight: 800; color: var(--brand-navy); line-height: 1.3;
+    margin-bottom: 0.2rem;
+  }
+  .gate-logo span { color: var(--brand-yellow); }
+  .gate-subtitle {
+    font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;
+    letter-spacing: 0.09em; margin-bottom: 1.6rem;
+  }
+  #gate-input {
+    width: 100%; box-sizing: border-box;
+    padding: 0.75rem 1rem; margin-bottom: 0.75rem;
+    border: 2px solid var(--border); border-radius: 8px;
+    font-size: 1.1rem; text-align: center; letter-spacing: 0.18em;
+    outline: none; font-family: inherit;
+  }
+  #gate-input:focus { border-color: var(--brand-navy); }
+  #gate-btn {
+    width: 100%; padding: 0.75rem; margin-bottom: 0.75rem;
+    background: var(--brand-yellow); border: none; border-radius: 8px;
+    font-size: 1rem; font-weight: 700; color: var(--brand-navy);
+    cursor: pointer;
+  }
+  #gate-btn:hover { background: #e5b000; }
+  #gate-error { color: var(--red); font-size: 0.875rem; min-height: 1.25em; }
+  @keyframes gate-shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60%  { transform: translateX(-9px); }
+    40%, 80%  { transform: translateX(9px); }
+  }
+  .gate-shake { animation: gate-shake 0.4s ease; }
 </style>
 </head>
 <body>
