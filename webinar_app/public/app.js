@@ -800,7 +800,7 @@ window.resetSession = resetSession;
 // Participants are never shown this — they never have role=facilitator.
 function passcodeGate(onSuccess) {
   if (role !== 'facilitator') { onSuccess(); return; }
-  if ((window.FACILITATOR_SECURE_MODE || '') !== 'true') { onSuccess(); return; }
+  if ((window.FACILITATOR_SECURE_MODE || '').toLowerCase() !== 'true') { onSuccess(); return; }
   if (sessionStorage.getItem('fac_auth') === '1') { onSuccess(); return; }
 
   const overlay = document.createElement('div');
