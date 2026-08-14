@@ -41,6 +41,7 @@ async function getFullSequence() {
   const top3 = ranked[2]?.k || SHORTLIST_KEYS[2];
   return [
     'welcome',
+    ...(CFG.introStages || []),
     'hitl_intro', 'hitl_A', 'hitl_B', 'hitl_C', 'hitl_panel',
     'shortlist',
     `${top1}_intro`, `${top1}_A`, `${top1}_B`, `${top1}_C`, `${top1}_panel`,
@@ -341,6 +342,38 @@ async function renderFacilitatorStage() {
     </div>`;
   }
 
+  // ---- CODA Primer ----
+  if (stage === 'coda_primer') {
+    const primer = CFG.primer || {};
+    const flow   = CFG.flow   || [];
+    return `<div class="slide slide-intro" style="justify-content:flex-start;padding-top:clamp(1.5rem,3vw,2.5rem)">
+      <h1 class="intro-term" style="margin-bottom:1.25rem">${e(primer.heading || 'CODA in ninety seconds')}</h1>
+      <div class="primer-bullets">
+        ${(primer.points || []).map(p => `<div class="primer-bullet"><span class="primer-dot">▸</span><span>${e(p)}</span></div>`).join('')}
+      </div>
+      ${primer.framingNote ? `<div class="primer-framing">${e(primer.framingNote)}</div>` : ''}
+      ${flow.length ? `<div class="primer-flow">${flow.map(s => `<div class="flow-step"><span class="flow-num">${s.step}</span><span class="flow-label">${e(s.label)}</span></div>`).join('')}</div>` : ''}
+      ${CFG.runGuidance ? `<div class="primer-run-note">${e(CFG.runGuidance)}</div>` : ''}
+    </div>`;
+  }
+
+  // ---- Glossary ----
+  if (stage === 'coda_glossary') {
+    const glossary = CFG.glossary || {};
+    const items    = glossary.items || [];
+    return `<div class="slide" style="justify-content:flex-start;padding-top:clamp(1.5rem,3vw,2.5rem)">
+      <div class="slide-eyebrow">Quick Reference</div>
+      <h1 class="slide-title" style="font-size:clamp(22px,3vw,32px);margin-bottom:${glossary.note ? '.25rem' : '1.25rem'}">${e(glossary.heading || 'Glossary')}</h1>
+      ${glossary.note ? `<p style="font-size:12px;color:var(--text-muted);margin:0 0 1rem;font-style:italic">${e(glossary.note)}</p>` : ''}
+      <div class="glossary-grid">
+        ${items.map(item => `<div class="glossary-item">
+          <div class="glossary-term">${e(item.term)}</div>
+          <div class="glossary-def">${e(item.plain)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
   // ---- Shortlist ----
   if (stage === 'shortlist') {
     const votes  = await getMultiVotes('shortlist');
@@ -395,15 +428,43 @@ async function renderFacilitatorStage() {
         </div>
       </div>
       <p class="intro-question">${e(intro.question || '')}</p>
+      ${term.conceptPrimer ? `<div class="concept-primer">
+        <div class="concept-primer-label">${e(term.conceptPrimer.heading)}</div>
+        <div class="concept-chips">
+          ${term.conceptPrimer.items.map(item => `<div class="concept-chip"><span class="concept-chip-term">${e(item.term)}</span><span class="concept-chip-sep"> — </span><span class="concept-chip-def">${e(item.plain)}</span></div>`).join('')}
+        </div>
+      </div>` : ''}
     </div>`;
   }
 
-  // Panel — facilitator shared screen: results summary
+  // Panel — facilitator shared screen: results summary + facilitation cues
   if (fmt === 'panel') {
     const summary = await renderPanelSummary(tk, term);
+    const cues = term.interaction || null;
     return `<div class="slide panel-summary-slide">
       ${eyebrow(term.name, 'Discussion & Reflections')}
       ${summary}
+      ${cues ? `<div class="fac-cues">
+        <div class="fac-cues-row">
+          ${cues.openFloor ? `<div class="fac-cue fac-cue-open">
+            <div class="fac-cue-label">${cues.openFloor.type === 'word cloud' ? '☁ Word cloud' : '✎ Open response'}</div>
+            <p>${e(cues.openFloor.prompt)}</p>
+          </div>` : ''}
+          ${cues.toChat ? `<div class="fac-cue fac-cue-chat">
+            <div class="fac-cue-label">💬 Chat prompt</div>
+            <p>${e(cues.toChat)}</p>
+          </div>` : ''}
+          ${cues.toCodaTeam ? `<div class="fac-cue fac-cue-team">
+            <div class="fac-cue-label">→ CODA team</div>
+            <p>${e(cues.toCodaTeam)}</p>
+          </div>` : ''}
+        </div>
+        ${cues.facilitatorLanding ? `<div class="fac-landing">
+          <div class="fac-cue-label">Synthesis</div>
+          <ul>${cues.facilitatorLanding.map(pt => `<li>${e(pt)}</li>`).join('')}</ul>
+        </div>` : ''}
+        ${cues.optionalReVote ? `<div class="fac-revote"><span class="fac-cue-label">Optional re-vote — </span>${e(cues.optionalReVote)}</div>` : ''}
+      </div>` : ''}
     </div>`;
   }
 
@@ -477,6 +538,34 @@ async function renderParticipantStage() {
     </div>`;
   }
 
+  // ---- CODA-mode intro slides (participant view) ----
+  if (stage === 'coda_primer') {
+    const primer = CFG.primer || {};
+    return `<div class="panel">
+      <span class="stage-pill">Introduction</span>
+      <h2 style="margin-top:.75rem">${e(primer.heading || 'CODA in ninety seconds')}</h2>
+      <div style="margin-top:.75rem;display:flex;flex-direction:column;gap:10px">
+        ${(primer.points || []).map(p => `<p style="margin:0;font-size:14px;line-height:1.6">${e(p)}</p>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  if (stage === 'coda_glossary') {
+    const glossary = CFG.glossary || {};
+    const items    = glossary.items || [];
+    return `<div class="panel">
+      <span class="stage-pill">Quick Reference</span>
+      <h2 style="margin-top:.75rem">${e(glossary.heading || 'Glossary')}</h2>
+      ${glossary.note ? `<p class="muted" style="margin-bottom:.75rem">${e(glossary.note)}</p>` : ''}
+      <div style="display:flex;flex-direction:column;gap:6px;margin-top:.5rem">
+        ${items.map(item => `<div class="glossary-item-p">
+          <span class="glossary-term-p">${e(item.term)}</span>
+          <span class="glossary-def-p"> — ${e(item.plain)}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  }
+
   // ---- Shortlist ----
   if (stage === 'shortlist') {
     const allVotes = await getMultiVotes('shortlist');
@@ -535,6 +624,10 @@ async function renderParticipantStage() {
         </div>
       </div>
       <p class="help" style="margin-top:1rem;font-style:italic">"${e(intro.question || '')}"</p>
+      ${term.conceptPrimer ? `<div class="concept-primer-p">
+        <div class="concept-primer-label-p">${e(term.conceptPrimer.heading)}</div>
+        ${term.conceptPrimer.items.map(item => `<div class="concept-chip-p"><strong>${e(item.term)}</strong> — ${e(item.plain)}</div>`).join('')}
+      </div>` : ''}
     </div>`;
   }
 
@@ -676,6 +769,8 @@ function setRole(r) {
 // ── Floating facilitator control bar ─────────────────────────────────────────
 function stageLabel(s) {
   if (s === 'welcome')         return 'Welcome';
+  if (s === 'coda_primer')     return 'CODA Primer';
+  if (s === 'coda_glossary')   return 'Glossary';
   if (s === 'shortlist')       return 'Shortlist vote';
   if (s === 'optional_choice') return 'Optional — one more topic?';
   if (s === 'close')           return 'Close';

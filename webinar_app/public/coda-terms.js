@@ -16,6 +16,14 @@
         ambiguity: 'CODA\'s central claim is that a human always signs off. But in the community use case, the person operating CODA is a surveillance agent — not a clinician — and the clinician who signs off was never present at the death.',
         question: 'Is any human presence enough to call it "human in the loop", or does the human need the expertise, and the context, to meaningfully overrule the AI?'
       },
+      conceptPrimer: {
+        heading: 'Before you vote — quick concepts',
+        items: [
+          { term: 'Verbal autopsy', plain: 'Where no clinician saw the death, a structured interview with a relative is used to work out the probable cause. The standard method for deaths at home.' },
+          { term: 'Community surveillance agent', plain: 'A trained non-clinician who visits households. In CODA\'s community setting, this is who runs the interview.' },
+          { term: 'Sign-off / certification', plain: 'Putting a named, qualified person\'s authority behind the recorded cause of death.' }
+        ]
+      },
       formatA: {
         prompt: 'Four definitions of Human in the Loop. Vote for the one closest to how YOU use the term in your work.',
         options: [
@@ -46,6 +54,17 @@
           { text: 'An accountability mechanism (so a named person is answerable for the certified cause)' }
         ],
         punchline: 'CODA asks the human to do both at once: catch errors and own the result. Those are different jobs needing different competencies, which is why "who signs off" is contested.'
+      },
+      interaction: {
+        openFloor: { type: 'word cloud', prompt: 'In one word: what does the clinician\'s sign-off actually guarantee here?' },
+        toChat: 'Where else in your work does a "human in the loop" sit at a point where they can\'t really check the machine? Drop an example in chat.',
+        toCodaTeam: 'CODA team: in the community use case as it stands today, where does the clinician sign-off actually happen, and on what information?',
+        facilitatorLanding: [
+          'The nurse-and-X-ray problem exists in CODA: the person operating the tool often can\'t overrule it, and the person who can never met the deceased.',
+          'The term is doing two jobs at once — catching errors and carrying accountability — and those need different things to be true.',
+          'Sign-off is a real guardrail only if the reviewer has something to check against. For CODA that is a live design question, not a slogan.'
+        ],
+        optionalReVote: 'Re-run the lightning vote — safety or accountability. Did anyone move?'
       }
     },
 
@@ -57,6 +76,14 @@
         concept: 'The process of testing an AI model to confirm it performs as intended, typically by evaluating it on data it has not previously seen.',
         ambiguity: 'CODA is trained and evaluated on CHAMPS data: under-five deaths, from specific surveillance sites, against expert panels. It is meant to be used far beyond that. Validated on under-five surveillance deaths — validated for whom?',
         question: 'If a tool was validated somewhere else, on someone else, how do you know it works here?'
+      },
+      conceptPrimer: {
+        heading: 'Before you vote — quick concepts',
+        items: [
+          { term: 'CHAMPS', plain: 'A network that investigates under-five deaths using post-mortem sampling and expert review. CODA\'s training data comes from here.' },
+          { term: 'Gold standard / DeCoDe panel', plain: 'The most rigorous available cause of death, set by an expert panel using all evidence including post-mortem tests. CODA is scored against it.' },
+          { term: 'Under-five focus', plain: 'Current evidence is for deaths of children under five. Adults are not yet in scope.' }
+        ]
       },
       formatA: {
         prompt: 'Four definitions of Validation for an AI tool in health. Which reflects how YOU would apply the term?',
@@ -88,6 +115,17 @@
           { text: 'The deploying Centre of Excellence or ministry, to run local validation first' }
         ],
         punchline: 'Where you locate that responsibility is a governance choice, not a technical one, and it shapes whether "Southern-led" means owning the validation or inheriting someone else\'s.'
+      },
+      interaction: {
+        openFloor: { type: 'open response', prompt: 'Finish the sentence: "Validated elsewhere isn\'t validated here because ______."' },
+        toChat: 'Have you inherited a tool that was "validated" somewhere else and didn\'t hold locally? What broke? Chat it.',
+        toCodaTeam: 'CODA team: what would a realistic first local validation look like at a site with no post-mortem sampling and no expert panel?',
+        facilitatorLanding: [
+          '"Validated" is carrying two meanings — passed its evaluation and fit for this deployment. Both can be true and still leave a gap.',
+          'The gold standard barely exists outside CHAMPS sites, which is exactly where CODA is most needed, so "just validate locally" is not free.',
+          'Where we place the burden of local validation is a Southern-led governance question as much as a technical one.'
+        ],
+        optionalReVote: 'Lightning re-vote: developers show it transfers, or deployers validate locally.'
       }
     },
 
@@ -99,6 +137,14 @@
         concept: 'The frameworks, processes, regulations, and accountability structures that guide how AI systems are built, deployed, monitored, and controlled.',
         ambiguity: 'CODA trains on pooled CHAMPS data from sites across several countries. The trained model will have value beyond the project. CODA\'s stated aim is a progressive transition to Southern-led governance through its Centres of Excellence.',
         question: 'Can you meaningfully govern an AI tool without governing the data and infrastructure it is built on and runs on?'
+      },
+      conceptPrimer: {
+        heading: 'Before you vote — quick concepts',
+        items: [
+          { term: 'CRVS', plain: 'The government system that registers deaths and produces vital statistics. Cause of death is part of it.' },
+          { term: 'Data sovereignty', plain: 'A country\'s claim to control over data generated about its people, and over what gets built from it.' },
+          { term: 'The model as an asset', plain: 'Once trained, the model itself has value and can be reused or licensed — separately from the raw data.' }
+        ]
       },
       formatA: {
         prompt: 'Four definitions of AI Governance in the context of public health. Which matches what YOU mean by it?',
@@ -130,6 +176,17 @@
           { text: 'The data and digital infrastructure the model is built on and runs on' }
         ],
         punchline: 'You can\'t govern what you don\'t control. If the model, weights, and hosting sit outside the country, governing the outputs alone doesn\'t bite.'
+      },
+      interaction: {
+        openFloor: { type: 'word cloud', prompt: 'Who should own the CODA model once it is trained on many countries\' data? One word.' },
+        toChat: 'Data protection versus data sovereignty: in one line, what\'s the difference in your view?',
+        toCodaTeam: 'CODA team: what has to be written into the agreements now for "Southern-led" to be real later rather than aspirational?',
+        facilitatorLanding: [
+          'CODA already has a Governing Board, a Scientific Advisory Committee, and Technical Working Groups. That is project governance; AI governance also has to reach the data and the model.',
+          'You can\'t govern what you don\'t control. If the model and hosting sit outside the country, governing the outputs alone doesn\'t bite.',
+          'The COE ownership model is genuinely unresolved. Naming it here is the point, not smoothing it over.'
+        ],
+        optionalReVote: 'Lightning re-vote: govern the model, or the data and infrastructure.'
       }
     },
 
@@ -141,6 +198,14 @@
         concept: 'Measures of how well an AI tool performs on a task, typically derived from model evaluation on a test dataset.',
         ambiguity: 'CODA faces an August go/no-go gate. The bar is: beat the existing verbal-autopsy tool on under-five cases. That is not the same as "market-ready", which the target product profile puts years out.',
         question: 'Performance according to whom, measured how, and sufficient for what decision?'
+      },
+      conceptPrimer: {
+        heading: 'Before you vote — quick concepts',
+        items: [
+          { term: 'Go/no-go gate', plain: 'The August 2026 decision point on whether CODA proceeds to the next phase.' },
+          { term: 'Concordance / agreement', plain: 'How often two methods reach the same cause. Used to score accuracy against the gold standard.' },
+          { term: 'Human certification is imperfect too', plain: 'Medical certification agrees with expert review only about 40–80% of the time.' }
+        ]
       },
       formatA: {
         prompt: 'Four ways to think about Performance for an AI tool in public health. Which reflects how YOU evaluate it?',
@@ -162,7 +227,7 @@
         discussion: [
           'The go/no-go bar and "market-ready" are different bars, potentially years apart. Minimum is not the gate.',
           'Accuracy against a research gold standard doesn\'t tell you whether the cause actually gets recorded differently in practice.',
-          'If we compare CODA to human certification, we have to say which humans. Certification itself is only 40 to 80% concordant with expert review.'
+          'If we compare CODA to human certification, we have to say which humans. Certification itself is 40–80% concordant with expert review.'
         ]
       },
       formatC: {
@@ -172,6 +237,17 @@
           { text: 'Does it change what actually gets recorded as the cause of death?' }
         ],
         punchline: 'Option A reads performance as a model property; option B reads it as a system property. Both are valid; the gap between them is where "building a tool" and "building adoption" separate.'
+      },
+      interaction: {
+        openFloor: { type: 'open response', prompt: 'One metric you would insist on before saying CODA is "ready"?' },
+        toChat: 'When a vendor says "X% accuracy", what is the first question you ask? Chat it.',
+        toCodaTeam: 'CODA team: what performance claim can we honestly make in external communications today, and what can\'t we?',
+        facilitatorLanding: [
+          'The go/no-go bar and "market-ready" are different bars, potentially years apart. Minimum is not the gate.',
+          'Accuracy against a research gold standard doesn\'t tell you whether the cause actually gets recorded differently in practice.',
+          'If we compare CODA to human certification, we have to say which humans. Certification itself is 40–80% concordant with expert review.'
+        ],
+        optionalReVote: 'Lightning re-vote: "on which cases and standard?" or "does it change what gets recorded?"'
       }
     },
 
@@ -183,6 +259,14 @@
         concept: 'Outputs from a generative AI model that are factually incorrect, fabricated, or context-inappropriate, presented with the same confidence as correct answers.',
         ambiguity: 'CODA uses language-model components for the interview and the explanation, and a separate algorithm to assign cause. A confabulated but plausible cause is especially dangerous in cause-of-death work: it reads as correct, and CODA\'s confidence score is currently uncalibrated.',
         question: 'What is the right comparison: ideal performance, an average certifier, or no usable cause of death at all?'
+      },
+      conceptPrimer: {
+        heading: 'Before you vote — quick concepts',
+        items: [
+          { term: 'Causal chain', plain: 'The ordered sequence of conditions leading to death, not just a single label. CODA drafts this for the certifier.' },
+          { term: 'Confidence score', plain: 'A number the tool attaches to its own answer. If not calibrated, a confident number can be more misleading than no number.' },
+          { term: 'Chain-of-thought explanation', plain: 'CODA\'s written account of why it reached a given cause — the reasoning the certifier reviews.' }
+        ]
       },
       formatA: {
         prompt: 'Four ways to define a hallucination. Which is closest to how YOU use the term?',
@@ -215,6 +299,17 @@
           { text: 'Better grounding (every conclusion traceable to a source the reviewer can check)' }
         ],
         punchline: 'Grounding is what lets a certifier catch the error and gives the system an audit trail. It\'s also what makes the human-in-the-loop guardrail real rather than nominal.'
+      },
+      interaction: {
+        openFloor: { type: 'word cloud', prompt: 'What would make you trust — or distrust — a confident CODA answer? One word.' },
+        toChat: 'Where have you seen a fluent, confident, wrong answer slip past review? Chat an example.',
+        toCodaTeam: 'CODA team: given the language model is a query engine and the algorithm assigns the cause, where does the confabulation risk actually live?',
+        facilitatorLanding: [
+          'A plausible wrong cause is more dangerous than an obviously wrong one, because it invites the reviewer to nod along.',
+          'Grounding — showing the exact evidence each part of the chain rests on — is what makes sign-off real rather than a rubber stamp.',
+          'An uncalibrated confidence number can be worse than none. That is a live design decision for CODA right now.'
+        ],
+        optionalReVote: 'Lightning re-vote: better model, or better grounding.'
       }
     },
 
@@ -226,6 +321,14 @@
         concept: 'Systematic patterns in AI outputs that affect some populations differently from others, often along lines of geography, language, income, or demographic group.',
         ambiguity: 'CODA\'s training data is under-five deaths from particular CHAMPS sites; the prototype supports English only; adults and injuries are out of scope; languages like Bangla and Brazilian Portuguese raise translation issues. Who is in the data, and who isn\'t?',
         question: 'Is this a model problem or a data-system problem, and does the answer change what we do about it?'
+      },
+      conceptPrimer: {
+        heading: 'Before you vote — quick concepts',
+        items: [
+          { term: 'Training data', plain: 'What the model learned from. CODA learned from CHAMPS under-five deaths, so gaps in that data become gaps in CODA.' },
+          { term: 'Cause list', plain: 'The set of causes CODA can assign, bounded by what is in the training data.' },
+          { term: 'Coverage limits', plain: 'The prototype is English-only; adults and injuries are out of scope.' }
+        ]
       },
       formatA: {
         prompt: 'Four framings of Bias / Fairness in AI for health. Which is closest to how YOU understand it?',
@@ -257,6 +360,17 @@
           { text: 'In the mortality-data systems the model was built on' }
         ],
         punchline: 'Where you locate the bias decides who you ask to fix it: retrain the model, or invest in the data infrastructure. That is a governance and funding question as much as a technical one.'
+      },
+      interaction: {
+        openFloor: { type: 'open response', prompt: 'Whose deaths are most at risk of staying invisible to a tool like CODA?' },
+        toChat: 'Model problem or data-system problem? Say which and why in one line.',
+        toCodaTeam: 'CODA team: which gap worries you most first — adults, rare causes, or languages — and who closes it?',
+        facilitatorLanding: [
+          'CODA exists because most deaths here have no usable cause. Building on the little data that exists risks hard-coding those same blind spots.',
+          'Where you locate the bias decides who you ask to fix it: retrain the model, or invest in the data systems.',
+          '"Out of scope" is an honest limit today. It becomes an equity problem if CODA scales on it without closing the gap.'
+        ],
+        optionalReVote: 'Lightning re-vote: in the model, or in the data system.'
       }
     }
 
@@ -273,13 +387,48 @@
     shortlistPrompt: 'Which terms should we put through CODA next? Choose two.',
     ambiguityLabel: 'In CODA',
     closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. For each term: what does it certify, who is responsible for what it claims, and what decision does it inform? Every scenario today is a real question CODA is working through right now.',
+
+    // Opening slides injected before Human in the Loop
+    introStages: ['coda_primer', 'coda_glossary'],
+
     primer: {
       heading: 'CODA in ninety seconds',
       points: [
-        'Only about 1 in 5 deaths worldwide has meaningful cause-of-death information. 54% of WHO Member States have low-quality, very-low-quality, or no cause-of-death data.',
-        'CODA is an AI-powered decision-support tool for cause-of-death determination. A qualified person reviews, edits, and signs every determination. It is decision support, not automation.',
-        'It is trained on CHAMPS surveillance data: deaths of children under five. Adults and injuries are out of current scope.',
-        'Phase: prototyping through an August 2026 go/no-go gate; then Experimentation from November 2026 at Centres of Excellence in Africa, South Asia, and Brazil.'
+        'Only about 1 in 5 deaths worldwide has meaningful cause-of-death information. 54% of WHO Member States have low-quality, very-low-quality, or no cause-of-death data — and the gap is worst where the burden of death is highest.',
+        'CODA is an AI-powered decision-support tool for cause-of-death determination. It brings together clinical records, family interviews, diagnostic results, and local surveillance, and returns a draft determination with an explanation. It is decision support, not automation: a qualified person reviews, edits, and signs every determination.',
+        'Two settings. In a facility, a clinician must certify the death; CODA reads the record and drafts the causal chain for review. In the community, where most deaths in many lower-income settings happen with no clinician, CODA runs an adaptive voice interview and stops once it can determine a cause with sufficient confidence.',
+        'Currently: prototyping through an August 2026 go/no-go gate. Trained on CHAMPS under-five deaths; adults and injuries are out of current scope. Experimentation phase begins November 2026 at Centres of Excellence in Africa, South Asia, and Brazil.'
+      ],
+      framingNote: 'Language to hold throughout: CODA augments and guides rather than replaces; a qualified human reviews and signs; current evidence is under-five only.',
+      statsSource: 'WHO World Health Statistics 2026 (Chapter 3)'
+    },
+
+    runGuidance: 'Sixty minutes, solo. Per-term budget ~14 minutes: concept primer + definition vote (4 min), scenario vote (4 min), open discussion + landing (6 min). Keep ~5 minutes to close on the three throughline questions. A fourth term only fits as a lightning-only round if you are ahead.',
+
+    flow: [
+      { step: 1, label: 'Welcome, CODA primer, quick glossary' },
+      { step: 2, label: 'Human in the Loop (fixed anchor term)' },
+      { step: 3, label: 'Audience votes: which two terms next?' },
+      { step: 4, label: 'Term 2 (top-voted)' },
+      { step: 5, label: 'Term 3 (second-voted)' },
+      { step: 6, label: 'Close' }
+    ],
+
+    glossary: {
+      heading: 'Quick glossary',
+      note: 'Share early, revisit as needed.',
+      items: [
+        { term: 'CRVS', plain: 'Civil Registration and Vital Statistics: the government system that records births and deaths and produces the statistics built on them. Cause of death is part of the death record.' },
+        { term: 'Cause-of-death certification', plain: 'The formal record of what someone died of, made by an authorised person. It needs the underlying cause plus the sequence of conditions that led to death.' },
+        { term: 'Underlying cause of death', plain: 'The disease or injury that started the chain of events leading to death. It is the single cause used for statistics.' },
+        { term: 'MCCD', plain: 'Medical Certificate of Cause of Death: the standard form a clinician completes to certify a death in a facility.' },
+        { term: 'Verbal autopsy', plain: 'Where no clinician saw the death, a structured interview with a relative about the final illness, used to infer the probable cause.' },
+        { term: 'Mortality surveillance', plain: 'Ongoing collection of data on who is dying and of what, used to guide public-health decisions.' },
+        { term: 'MITS / post-mortem testing', plain: 'Minimally invasive tissue sampling: small samples taken after death and lab-tested to establish cause with high accuracy. Used in surveillance, not routine care.' },
+        { term: 'CHAMPS', plain: 'A surveillance network that investigates under-five deaths across several countries using post-mortem sampling and expert review. It is where CODA\'s training data comes from.' },
+        { term: 'DeCoDe panel / gold standard', plain: 'The CHAMPS expert panel that weighs all the evidence to set the most rigorous available cause of death. CODA is measured against it.' },
+        { term: 'ICD-11', plain: 'WHO\'s international classification of diseases: the standard codes used to record causes of death. CODA outputs ICD-11 codes.' },
+        { term: 'Human in the loop / sign-off', plain: 'A qualified person reviews the AI\'s output and takes responsibility for it before it becomes the record.' }
       ]
     }
   };
