@@ -25,8 +25,12 @@
 </div>
 <script>
   // Read room from query string, fall back to default
-  const room = new URLSearchParams(location.search).get('room') || 'live-jun2026';
-  location.replace('index.html?backend=firebase&room=' + encodeURIComponent(room));
+  const params = new URLSearchParams(location.search);
+  const room = params.get('room') || 'live-jun2026';
+  const mode = params.get('mode') || '';
+  const dest = 'index.html?backend=firebase&room=' + encodeURIComponent(room)
+             + (mode ? '&mode=' + encodeURIComponent(mode) : '');
+  location.replace(dest);
 </script>
 </body>
 </html>

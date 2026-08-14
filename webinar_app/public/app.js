@@ -3,7 +3,9 @@
 const TERMS     = window.WEBINAR_TERMS;
 const TERM_KEYS = window.WEBINAR_TERM_KEYS;
 const STORAGE   = window.WEBINAR_STORAGE;
-const ROOM      = new URLSearchParams(location.search).get('room') || 'ai-terms-webinar';
+const CFG  = window.WEBINAR_CONFIG || {};
+const MODE = new URLSearchParams(location.search).get('mode') || '';
+const ROOM = new URLSearchParams(location.search).get('room') || (MODE === 'coda' ? 'coda-webinar' : 'ai-terms-webinar');
 
 // Human in the Loop is always term 1; shortlist is from the remaining 5
 const SHORTLIST_KEYS = TERM_KEYS.filter(k => k !== 'hitl');
@@ -291,8 +293,10 @@ async function renderFacilitatorStage() {
   if (stage === 'welcome') {
     return `<div class="slide slide-hero">
       <h1 class="slide-title">AI Terminology<br>for Public Health</h1>
+      ${CFG.subtitle ? `<p style="font-size:16px;color:var(--text-muted);margin:0 0 1.5rem;font-style:italic">${e(CFG.subtitle)}</p>` : ''}
       <div class="slide-eyebrow"><b>Vote on definitions &middot; Test them against public health scenarios</b></div>
       <div class="slide-eyebrow"><b>See where they hold &middot; Where they break.</b></div>
+      ${CFG.hook ? `<p class="intro-question" style="margin-top:1.5rem;max-width:640px;font-size:14px;font-weight:500">${e(CFG.hook)}</p>` : ''}
     </div>`;
   }
 
@@ -332,7 +336,7 @@ async function renderFacilitatorStage() {
       <div class="slide-eyebrow">Thank you</div>
       <h1 class="slide-title">Closing</h1>
       <p class="slide-body" style="max-width:560px;margin:1.5rem auto 0;text-align:center;color:var(--text-muted);font-size:16px">
-        The terms we explored reflect real tensions in the implementation of AI for public health, and how terminology around this shapes how we design, govern, and implement public health solutions.
+        ${e(CFG.closeText || 'The terms we explored reflect real tensions in the implementation of AI for public health, and how terminology around this shapes how we design, govern, and implement public health solutions.')}
       </p>
     </div>`;
   }
@@ -364,7 +368,7 @@ async function renderFacilitatorStage() {
 
     return `<div class="slide">
       <div class="slide-eyebrow">Participant vote</div>
-      <h1 class="slide-title" style="font-size:clamp(24px,4vw,40px)">Which two topics next??</h1>
+      <h1 class="slide-title" style="font-size:clamp(24px,4vw,40px)">${e(CFG.shortlistHeading || 'Which two topics next?')}</h1>
       ${bars}
     </div>`;
   }
@@ -386,7 +390,7 @@ async function renderFacilitatorStage() {
           <p>${e(intro.concept || '')}</p>
         </div>
         <div class="intro-card intro-card-tension">
-          <div class="intro-card-label">In public health practice</div>
+          <div class="intro-card-label">${e(CFG.ambiguityLabel || 'In public health practice')}</div>
           <p>${e(intro.ambiguity || '')}</p>
         </div>
       </div>
@@ -450,6 +454,7 @@ async function renderParticipantStage() {
     return `<div class="panel">
       <span class="stage-pill">Welcome</span>
       <h2 style="margin-top:.75rem">AI Terminology for Public Health</h2>
+      ${CFG.subtitle ? `<p style="color:var(--text-muted);font-style:italic;font-size:13px;margin-bottom:.25rem">${e(CFG.subtitle)}</p>` : ''}
       <p>Vote on definitions &middot; Test them against public health scenarios &middot; See where they hold &middot; Where they break</p>
       <p class="muted">Waiting for the session to begin…</p>
     </div>`;
@@ -494,7 +499,7 @@ async function renderParticipantStage() {
 
     return `<div class="panel">
       <span class="stage-pill">Vote</span>
-      <h2 style="margin-top:.75rem">Choose two topics</h2>
+      <h2 style="margin-top:.75rem">${e(CFG.shortlistHeading || 'Choose two topics')}</h2>
       <p>Pick <strong>two</strong> terms you most want to explore today.</p>
       <p class="muted">${myVotes.length} / 2 selected</p>
       <div class="term-grid">
@@ -525,7 +530,7 @@ async function renderParticipantStage() {
           <p>${e(intro.concept || '')}</p>
         </div>
         <div class="intro-card intro-card-tension">
-          <div class="intro-card-label">In public health practice</div>
+          <div class="intro-card-label">${e(CFG.ambiguityLabel || 'In public health practice')}</div>
           <p>${e(intro.ambiguity || '')}</p>
         </div>
       </div>
@@ -744,6 +749,7 @@ async function render() {
         // Only pass room — join.html adds ?backend=firebase itself
         const clean = new URL(u.origin + u.pathname);
         clean.searchParams.set('room', ROOM);
+        if (MODE) clean.searchParams.set('mode', MODE);
         window._joinUrl = clean.toString();
 
         // Generate sidebar QR once
