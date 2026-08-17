@@ -29,25 +29,21 @@ let role  = sessionStorage.getItem('webinar_role') || 'participant';
 let stage = 'welcome';
 
 // ── Stage sequence ────────────────────────────────────────────────────────────
-// Determined dynamically after shortlist: top 2 voted terms follow hitl.
+// Determined dynamically after shortlist: all ranked terms follow hitl in order.
+// The facilitator ends the session whenever they choose using the panel action row.
 async function getFullSequence() {
   const votes  = await getMultiVotes('shortlist');
   const counts = tallyMulti(votes, SHORTLIST_KEYS.length);
   const ranked = SHORTLIST_KEYS
     .map((k, i) => ({ k, c: counts[i] }))
     .sort((a, b) => b.c - a.c || SHORTLIST_KEYS.indexOf(a.k) - SHORTLIST_KEYS.indexOf(b.k));
-  const top1 = ranked[0]?.k || SHORTLIST_KEYS[0];
-  const top2 = ranked[1]?.k || SHORTLIST_KEYS[1];
-  const top3 = ranked[2]?.k || SHORTLIST_KEYS[2];
+  const stages = k => [`${k}_intro`, `${k}_A`, `${k}_B`, `${k}_C`, `${k}_panel`];
   return [
     'welcome',
     ...(CFG.introStages || []),
-    'hitl_intro', 'hitl_A', 'hitl_B', 'hitl_C', 'hitl_panel',
+    ...stages('hitl'),
     'shortlist',
-    `${top1}_intro`, `${top1}_A`, `${top1}_B`, `${top1}_C`, `${top1}_panel`,
-    `${top2}_intro`, `${top2}_A`, `${top2}_B`, `${top2}_C`, `${top2}_panel`,
-    'optional_choice',
-    `${top3}_intro`, `${top3}_A`, `${top3}_B`, `${top3}_C`, `${top3}_panel`,
+    ...ranked.flatMap(r => stages(r.k)),
     'close'
   ];
 }
@@ -301,36 +297,6 @@ async function renderFacilitatorStage() {
     </div>`;
   }
 
-  // ---- Optional choice (facilitator-only decision, not advertised to participants) ----
-  if (stage === 'optional_choice') {
-    const seq       = await getFullSequence();
-    const top3stage = seq[seq.indexOf('optional_choice') + 1] || 'close';
-    const top3key   = top3stage.split('_')[0];
-    const top3term  = TERMS[top3key];
-    // Show a neutral close slide to everyone; the facilitator's control bar
-    // offers the choice between closing and continuing via the ctrl-extra div.
-    const ctrlHtml = top3term
-      ? `<div id="ctrl-extra" style="display:flex;gap:10px;justify-content:center;margin-top:8px">
-          <button class="ctrl-extra-btn" onclick="goToStage('${top3stage}')">+ One more: ${e(top3term.name)}</button>
-          <button class="ctrl-extra-btn ctrl-extra-primary" onclick="goToStage('close')">Close session</button>
-        </div>`
-      : '';
-    // Inject the extra buttons into the ctrl-bar after render
-    setTimeout(() => {
-      const bar = document.getElementById('ctrl-bar');
-      if (bar && role === 'facilitator') {
-        const existing = document.getElementById('ctrl-extra');
-        if (!existing) bar.insertAdjacentHTML('beforeend', ctrlHtml);
-      }
-    }, 50);
-    return `<div class="slide slide-hero">
-      <div class="slide-eyebrow">Thank you</div>
-      <h1 class="slide-title">Time check</h1>
-      <p class="slide-body" style="max-width:520px;margin:1rem auto 0;text-align:center;color:var(--text-muted);font-size:16px">
-      </p>
-    </div>`;
-  }
-
   // ---- Close ----
   if (stage === 'close') {
     return `<div class="slide slide-hero">
@@ -437,10 +403,19 @@ async function renderFacilitatorStage() {
     </div>`;
   }
 
-  // Panel — facilitator shared screen: results summary + facilitation cues
+  // Panel — facilitator shared screen: results summary + facilitation cues + session navigation
   if (fmt === 'panel') {
     const summary = await renderPanelSummary(tk, term);
     const cues = term.interaction || null;
+    const seq = await getFullSequence();
+    const nextStage = seq[seq.indexOf(stage) + 1];
+    let continueHtml = '';
+    if (nextStage && nextStage !== 'close') {
+      const label = nextStage === 'shortlist'
+        ? 'Shortlist vote'
+        : (TERMS[nextStage.split('_')[0]]?.name || nextStage);
+      continueHtml = `<button class="fac-action-next" onclick="goToStage('${nextStage}')">→ Continue: ${e(label)}</button>`;
+    }
     return `<div class="slide panel-summary-slide">
       ${eyebrow(term.name, 'Discussion & Reflections')}
       ${summary}
@@ -465,6 +440,10 @@ async function renderFacilitatorStage() {
         </div>` : ''}
         ${cues.optionalReVote ? `<div class="fac-revote"><span class="fac-cue-label">Optional re-vote — </span>${e(cues.optionalReVote)}</div>` : ''}
       </div>` : ''}
+      <div class="fac-choice-row">
+        ${continueHtml}
+        <button class="fac-action-close" onclick="goToStage('close')">✓ Close session</button>
+      </div>
     </div>`;
   }
 
@@ -521,13 +500,8 @@ async function renderParticipantStage() {
     </div>`;
   }
 
-  // ---- Optional choice — participants just see a neutral holding screen ----
-  if (stage === 'optional_choice') {
-    return `<div class="panel">
-      <h2>Thank you for your participation</h2>
-      <p class="muted"></p>
-    </div>`;
-  }
+  // ---- optional_choice is retired — redirect to close for any stale sessions ----
+  if (stage === 'optional_choice') { stage = 'close'; }
 
   // ---- Close ----
   if (stage === 'close') {
@@ -772,7 +746,6 @@ function stageLabel(s) {
   if (s === 'coda_primer')     return 'CODA Primer';
   if (s === 'coda_glossary')   return 'Glossary';
   if (s === 'shortlist')       return 'Shortlist vote';
-  if (s === 'optional_choice') return 'Optional — one more topic?';
   if (s === 'close')           return 'Close';
   const [tk, fmt] = s.split('_');
   const name   = TERMS[tk]?.name || tk;
@@ -780,7 +753,7 @@ function stageLabel(s) {
   return `${name} · ${labels[fmt] || fmt}`;
 }
 
-// Jump directly to a named stage (used by optional_choice buttons)
+// Jump directly to a named stage (used by panel action row buttons)
 window.goToStage = async function(s) {
   if (role !== 'facilitator') return;
   await setStage(s); render();

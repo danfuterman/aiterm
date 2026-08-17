@@ -623,6 +623,31 @@
   }
   .fac-landing .fac-cue-label { color: var(--brand-navy); }
   .fac-landing ul { margin: 5px 0 0; padding-left: 1.25rem; font-size: 11.5px; line-height: 1.6; color: var(--text); }
+  /* ── Panel session-flow action row (facilitator only) ── */
+  .fac-choice-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
+  }
+  .fac-action-next, .fac-action-close {
+    padding: 9px 20px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: opacity .15s;
+  }
+  .fac-action-next { background: #1a2857; color: #fff; }
+  .fac-action-next:hover { opacity: .85; }
+  .fac-action-close { background: #F5C000; color: #1a2857; }
+  .fac-action-close:hover { opacity: .85; }
+
   .fac-revote {
     font-size: 11px; color: var(--text-muted); font-style: italic; text-align: center; padding-top: 4px;
   }
