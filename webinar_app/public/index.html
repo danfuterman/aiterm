@@ -626,10 +626,10 @@
   /* ── Familiarity check — facilitator result grid ── */
   .fam-result-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
   .fam-result-row  { display: grid; grid-template-columns: 180px 1fr; gap: 8px 12px; align-items: center; }
-  .fam-result-term { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+  .fam-result-term { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; }
   .fam-result-bar  {
     height: 22px; border-radius: 4px; overflow: hidden;
-    display: flex; background: var(--border-color);
+    display: flex; background: var(--border);
   }
   .fam-seg { height: 100%; transition: width .3s; }
   .fam-result-legend {
@@ -640,16 +640,16 @@
 
   /* ── Familiarity check — participant voting grid ── */
   .fam-vote-grid { display: flex; flex-direction: column; gap: 8px; margin-top: .75rem; }
-  .fam-vote-row  { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-radius: 8px; background: var(--bg-card); }
+  .fam-vote-row  { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-radius: 8px; background: var(--bg); }
   .fam-vote-done { opacity: .85; }
-  .fam-vote-term { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .fam-vote-term { font-size: 13px; font-weight: 600; color: var(--text); }
   .fam-vote-btns { display: flex; gap: 6px; flex-wrap: wrap; }
   .fam-btn {
     padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer;
-    border: 1.5px solid var(--border-color); background: transparent; color: var(--text-muted);
+    border: 1.5px solid var(--border); background: transparent; color: var(--text-muted);
     transition: background .15s, color .15s, border-color .15s;
   }
-  .fam-btn:hover:not(.fam-btn-sel) { border-color: var(--text-muted); color: var(--text-primary); }
+  .fam-btn:hover:not(.fam-btn-sel) { border-color: var(--text-muted); color: var(--text); }
   .fam-btn-sel { font-weight: 700; cursor: default; }
 
   /* ── Panel session-flow action row (facilitator only) ── */
@@ -660,7 +660,7 @@
     align-items: center;
     margin-top: 1.25rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border);
     flex-wrap: wrap;
   }
   .fac-action-next, .fac-action-close {
