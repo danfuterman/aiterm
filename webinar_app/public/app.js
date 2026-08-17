@@ -344,7 +344,7 @@ async function renderFacilitatorStage() {
   // ---- Familiarity check (CODA mode) ----
   if (stage === 'coda_familiarity') {
     const fam    = CFG.familiarity || {};
-    const levels = fam.levels || ['New to me', 'Heard of it', 'Can explain it', 'Use it regularly'];
+    const levels = fam.levels || ['New to me', 'Heard of it', 'Can explain it', 'Know it well'];
     const colors = fam.colors || ['#94A3B8', '#7C3AED', '#059669', '#2563EB'];
     const allVotes = await Promise.all(TERM_KEYS.map(k => getVotes('fam_' + k)));
     const totalN   = Math.max(...allVotes.map(v => Object.keys(v).length), 0);
@@ -581,7 +581,7 @@ async function renderParticipantStage() {
   // ---- Familiarity check (CODA mode) ----
   if (stage === 'coda_familiarity') {
     const fam    = CFG.familiarity || {};
-    const levels = fam.levels || ['New to me', 'Heard of it', 'Can explain it', 'Use it regularly'];
+    const levels = fam.levels || ['New to me', 'Heard of it', 'Can explain it', 'Know it well'];
     const colors = fam.colors || ['#94A3B8', '#7C3AED', '#059669', '#2563EB'];
     const allVotes = await Promise.all(TERM_KEYS.map(k => getVotes('fam_' + k)));
     const myVotes  = TERM_KEYS.map((k, i) => allVotes[i][PARTICIPANT_ID]);

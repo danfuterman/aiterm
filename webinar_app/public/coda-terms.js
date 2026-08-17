@@ -394,8 +394,8 @@
     // Familiarity poll config
     familiarity: {
       heading: 'Before we begin',
-      prompt: 'We\'ll work through several of these terms today. For each one — where are you starting from?',
-      levels: ['New to me', 'Heard of it', 'Can explain it', 'Use it regularly'],
+      prompt: 'We\'ll use these terms in their AI sense today — where "hallucinations" means model errors, not clinical symptoms, and "bias" refers to training data, not personal prejudice. For each one — where are you starting from?',
+      levels: ['New to me', 'Heard of it', 'Can explain it', 'Know it well'],
       colors: ['#94A3B8', '#7C3AED', '#059669', '#2563EB']
     },
 
