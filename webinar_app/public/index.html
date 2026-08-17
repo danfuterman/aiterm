@@ -623,6 +623,35 @@
   }
   .fac-landing .fac-cue-label { color: var(--brand-navy); }
   .fac-landing ul { margin: 5px 0 0; padding-left: 1.25rem; font-size: 11.5px; line-height: 1.6; color: var(--text); }
+  /* ── Familiarity check — facilitator result grid ── */
+  .fam-result-grid { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+  .fam-result-row  { display: grid; grid-template-columns: 180px 1fr; gap: 8px 12px; align-items: center; }
+  .fam-result-term { font-size: 13px; font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+  .fam-result-bar  {
+    height: 22px; border-radius: 4px; overflow: hidden;
+    display: flex; background: var(--border-color);
+  }
+  .fam-seg { height: 100%; transition: width .3s; }
+  .fam-result-legend {
+    grid-column: 2; display: flex; gap: 12px; flex-wrap: wrap;
+    font-size: 11px; font-weight: 500;
+  }
+  .fam-leg { white-space: nowrap; }
+
+  /* ── Familiarity check — participant voting grid ── */
+  .fam-vote-grid { display: flex; flex-direction: column; gap: 8px; margin-top: .75rem; }
+  .fam-vote-row  { display: flex; flex-direction: column; gap: 4px; padding: 8px; border-radius: 8px; background: var(--bg-card); }
+  .fam-vote-done { opacity: .85; }
+  .fam-vote-term { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+  .fam-vote-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .fam-btn {
+    padding: 5px 11px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer;
+    border: 1.5px solid var(--border-color); background: transparent; color: var(--text-muted);
+    transition: background .15s, color .15s, border-color .15s;
+  }
+  .fam-btn:hover:not(.fam-btn-sel) { border-color: var(--text-muted); color: var(--text-primary); }
+  .fam-btn-sel { font-weight: 700; cursor: default; }
+
   /* ── Panel session-flow action row (facilitator only) ── */
   .fac-choice-row {
     display: flex;

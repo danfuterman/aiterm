@@ -25,12 +25,12 @@
         ]
       },
       formatA: {
-        prompt: 'Four definitions of Human in the Loop. Vote for the one closest to how YOU use the term in your work.',
+        prompt: 'How do you think about Human in the Loop when it comes to a tool like CODA? Pick the definition closest to yours.',
         options: [
-          { text: 'A risk-mitigation requirement under which a human must be involved in or accountable for an AI-driven decision, including in settings where a specialist who would otherwise make the decision is absent.', source: 'Public health implementer lens' },
-          { text: 'An AI deployment pattern in which a clinician reviews and either accepts, modifies, or rejects each AI recommendation before it affects care or the record.', source: 'Clinical user lens' },
-          { text: 'A workflow design choice in which AI handles routine cases and escalates uncertain or high-risk cases to a human reviewer, optimising for the limited time a human can spend.', source: 'Developer / implementer lens' },
-          { text: 'A system in which a person retains decision authority through oversight, validation, or correction of an AI system\'s outputs at one or more defined points in its operation.', source: 'Regulatory framing' }
+          { text: 'A requirement that a human is involved and accountable for an AI-driven decision — even where the specialist who would ordinarily make the call is absent.', source: 'Public health implementer' },
+          { text: 'A clinical review step: a clinician accepts, modifies, or rejects each AI recommendation before it affects care or the record.', source: 'Clinical' },
+          { text: 'A workflow design where AI handles routine cases and escalates uncertain or high-risk ones to a human reviewer, making best use of limited expert time.', source: 'Developer / implementer' },
+          { text: 'A system design in which a person retains decision authority by overseeing, validating, or correcting AI outputs at defined points.', source: 'Regulatory' }
         ]
       },
       formatB: {
@@ -86,12 +86,12 @@
         ]
       },
       formatA: {
-        prompt: 'Four definitions of Validation for an AI tool in health. Which reflects how YOU would apply the term?',
+        prompt: 'Four takes on Validation for health AI — which matches how you think about it in practice?',
         options: [
-          { text: 'A continuous process rather than a one-time event: ongoing assessment of whether a deployed model continues to perform as intended as populations, data systems, and care-delivery patterns change over time.', source: 'Post-market surveillance lens' },
-          { text: 'Testing a trained model on a dataset not used during development, drawn from a different institution, population, or time period, to assess whether performance holds beyond the original context.', source: 'Regulatory / technical lens' },
-          { text: 'Assessing whether a model validated internally still performs in a specific local context, on the actual populations, facilities, and data infrastructure where it will be used.', source: 'Public health implementer lens' },
-          { text: 'A one-time pre-deployment requirement: evidence that a model performs adequately on an independent test set before it is approved for clinical or programme use.', source: 'Procurement / approval lens' }
+          { text: 'An ongoing process, not a one-time event: continuous assessment of whether a deployed model still performs as populations, data systems, and care delivery change over time.', source: 'Post-market surveillance' },
+          { text: 'Testing a trained model on data from a different institution, population, or time period to assess whether its performance holds beyond the original context.', source: 'Regulatory / technical' },
+          { text: 'Assessing whether a model validated elsewhere actually performs in your specific local context — your populations, facilities, and data infrastructure.', source: 'Public health implementer' },
+          { text: 'A one-time pre-deployment check: evidence that a model performs adequately on an independent test set before it is approved for use.', source: 'Procurement / approval' }
         ]
       },
       formatB: {
@@ -147,12 +147,12 @@
         ]
       },
       formatA: {
-        prompt: 'Four definitions of AI Governance in the context of public health. Which matches what YOU mean by it?',
+        prompt: 'Four ways to frame AI Governance — which best captures what you mean when you raise it in practice?',
         options: [
-          { text: 'The internal processes by which an organisation managing or developing an AI system documents its decisions, manages its risks, and ensures accountability for the system\'s behaviour.', source: 'AI/ML governance lens' },
-          { text: 'The laws, regulations, and oversight bodies that authorise, constrain, and audit the deployment of AI in health, including data protection, model approval, and post-market surveillance.', source: 'Regulatory lens' },
-          { text: 'The policies, ethical principles, transparency requirements, and consent mechanisms that ensure AI in health respects rights, prevents harm, and operates within publicly accountable boundaries.', source: 'Ethics / human rights lens' },
-          { text: 'Government ownership and public stewardship of the foundational digital architecture — identifiers, registries, data pipelines, hosting, procurement terms — that determines what AI can be built on, who controls it, and who benefits over time.', source: 'Data sovereignty lens' }
+          { text: 'Internal processes for documenting AI decisions, managing risk, and maintaining accountability for system behaviour within an organisation.', source: 'AI/ML governance' },
+          { text: 'Laws, regulations, and oversight bodies that authorise, constrain, and audit health AI — including data protection, model approval, and post-market surveillance.', source: 'Regulatory' },
+          { text: 'Policies, ethics principles, transparency requirements, and consent mechanisms ensuring AI in health respects rights, prevents harm, and remains publicly accountable.', source: 'Ethics / human rights' },
+          { text: 'Government ownership and stewardship of the digital infrastructure — identifiers, registries, data pipelines, procurement terms — that determines who can build AI on it and who benefits.', source: 'Data sovereignty' }
         ]
       },
       formatB: {
@@ -208,12 +208,12 @@
         ]
       },
       formatA: {
-        prompt: 'Four ways to think about Performance for an AI tool in public health. Which reflects how YOU evaluate it?',
+        prompt: 'Four ways to measure Performance — which do you reach for when evaluating a health AI tool?',
         options: [
-          { text: 'Clinical performance: how well the tool supports correct clinical decisions in real practice, including agreement with expert reviewers.', source: 'Clinical evaluation lens' },
-          { text: 'Model accuracy on a test dataset, typically precision, recall, F1, and confusion-matrix outputs.', source: 'ML / developer lens' },
-          { text: 'Procurement and sustainability measures: uptime, integration cost, frontline adoption, total cost per case, operational reliability.', source: 'Health system / Ministry decision-maker lens' },
-          { text: 'Population-level impact: change in detection or registration rates, equity across subpopulations, time-to-result, and downstream outcomes attributable to the tool.', source: 'Programme evaluation lens' }
+          { text: 'Clinical performance: how well the tool supports correct decisions in real practice, including agreement with expert reviewers.', source: 'Clinical evaluation' },
+          { text: 'Model accuracy on a test dataset — precision, recall, F1, and confusion-matrix outputs.', source: 'ML / developer' },
+          { text: 'Procurement and sustainability metrics: uptime, integration cost, frontline adoption, cost per case, operational reliability.', source: 'Health system / Ministry' },
+          { text: 'Population-level impact: changes in detection or registration rates, equity across subgroups, and outcomes attributable to the tool.', source: 'Programme evaluation' }
         ]
       },
       formatB: {
@@ -269,12 +269,12 @@
         ]
       },
       formatA: {
-        prompt: 'Four ways to define a hallucination. Which is closest to how YOU use the term?',
+        prompt: 'Four takes on Hallucinations in AI — which best matches how you\'d define it to a colleague in this space?',
         options: [
-          { text: 'A safety event in which a generative AI tool, in a clinical or health-information context, gives an output that is plausibly worded but medically wrong, with potential to cause harm.', source: 'Clinical safety lens' },
-          { text: 'A model-context failure: an output that may be accurate against the model\'s training data but is wrong in the specific context where it is read — wrong population, wrong guideline version, wrong setting.', source: 'Deployment / context lens' },
-          { text: 'A trust failure: any output a user reasonably acts on but which is not traceable to a verifiable source, regardless of whether the underlying fact happens to be correct.', source: 'Public health implementer lens' },
-          { text: 'An output that is factually incorrect, fabricated, or unsupported by the training data, produced with a tone of confidence indistinguishable from a correct answer.', source: 'ML / technical lens' }
+          { text: 'A safety event: a generative AI output that is plausibly worded but medically wrong, with potential to cause harm in a health context.', source: 'Clinical safety' },
+          { text: 'A context mismatch: an output that may be accurate against training data but wrong for the specific setting — different population, guideline version, or care context.', source: 'Deployment / context' },
+          { text: 'A trust failure: any output a user reasonably acts on that is not traceable to a verifiable source, regardless of whether the underlying fact happens to be correct.', source: 'Public health implementer' },
+          { text: 'An output that is factually incorrect, fabricated, or unsupported by training data, produced with the same confident tone as a correct answer.', source: 'ML / technical' }
         ]
       },
       formatB: {
@@ -331,12 +331,12 @@
         ]
       },
       formatA: {
-        prompt: 'Four framings of Bias / Fairness in AI for health. Which is closest to how YOU understand it?',
+        prompt: 'Four framings of Bias in health AI — which is closest to how you think about it in your work?',
         options: [
-          { text: 'A statistical property of a model: systematic deviation between predictions and ground truth, typically measured by performance differences across subgroups.', source: 'ML / technical lens' },
-          { text: 'A training-data problem: when the data used to build a model under-represents certain populations, its performance on those populations will be poorer.', source: 'Data science lens' },
-          { text: 'A system-level problem of who is in the data at all: the populations least visible to digital health systems are the ones most at risk of being further excluded by AI built on those systems.', source: 'Equity / public health lens' },
-          { text: 'A clinical safety issue: when a tool produces systematically different recommendations for people with similar needs but different profiles, leading to inequitable outcomes.', source: 'Clinical / patient-safety lens' }
+          { text: 'A statistical property: systematic deviation between predictions and ground truth, measured by performance differences across subgroups.', source: 'ML / technical' },
+          { text: 'A data problem: when training data under-represents certain populations, the model performs worse for those populations.', source: 'Data science' },
+          { text: 'A systems problem: the populations least visible to digital health systems are most at risk of being further excluded by AI built on those systems.', source: 'Equity / public health' },
+          { text: 'A clinical safety issue: when a tool produces systematically different outputs for people with similar needs but different demographic profiles, leading to inequitable care.', source: 'Clinical / patient-safety' }
         ]
       },
       formatB: {
@@ -389,7 +389,15 @@
     closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. For each term: what does it certify, who is responsible for what it claims, and what decision does it inform? Every scenario today is a real question CODA is working through right now.',
 
     // Opening slides injected before Human in the Loop
-    introStages: ['coda_primer', 'coda_glossary'],
+    introStages: ['coda_primer', 'coda_glossary', 'coda_familiarity'],
+
+    // Familiarity poll config
+    familiarity: {
+      heading: 'Before we begin',
+      prompt: 'We\'ll work through several of these terms today. For each one — where are you starting from?',
+      levels: ['New to me', 'Heard of it', 'Can explain it', 'Use it regularly'],
+      colors: ['#94A3B8', '#7C3AED', '#059669', '#2563EB']
+    },
 
     primer: {
       heading: 'CODA in ninety seconds',
@@ -407,11 +415,12 @@
 
     flow: [
       { step: 1, label: 'Welcome, CODA primer, quick glossary' },
-      { step: 2, label: 'Human in the Loop (fixed anchor term)' },
-      { step: 3, label: 'Audience votes: which two terms next?' },
-      { step: 4, label: 'Term 2 (top-voted)' },
-      { step: 5, label: 'Term 3 (second-voted)' },
-      { step: 6, label: 'Close' }
+      { step: 2, label: 'Familiarity check — where is the room starting from?' },
+      { step: 3, label: 'Human in the Loop (fixed anchor term)' },
+      { step: 4, label: 'Audience votes: which two terms next?' },
+      { step: 5, label: 'Term 2 (top-voted)' },
+      { step: 6, label: 'Term 3 (second-voted)' },
+      { step: 7, label: 'Close' }
     ],
 
     glossary: {

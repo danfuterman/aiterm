@@ -76,6 +76,7 @@ async function resetSession() {
     for (const f of ['A', 'B', 'C']) {
       await STORAGE.setKey('votes:' + ROOM + ':' + k + '_' + f, {});
     }
+    await STORAGE.setKey('votes:' + ROOM + ':fam_' + k, {});
   }
   stage = 'welcome';
   render();
@@ -340,6 +341,42 @@ async function renderFacilitatorStage() {
     </div>`;
   }
 
+  // ---- Familiarity check (CODA mode) ----
+  if (stage === 'coda_familiarity') {
+    const fam    = CFG.familiarity || {};
+    const levels = fam.levels || ['New to me', 'Heard of it', 'Can explain it', 'Use it regularly'];
+    const colors = fam.colors || ['#94A3B8', '#7C3AED', '#059669', '#2563EB'];
+    const allVotes = await Promise.all(TERM_KEYS.map(k => getVotes('fam_' + k)));
+    const totalN   = Math.max(...allVotes.map(v => Object.keys(v).length), 0);
+
+    const rows = TERM_KEYS.map((k, ti) => {
+      const votes  = allVotes[ti];
+      const counts = tally(votes, levels.length);
+      const n      = Object.keys(votes).length;
+      const segs   = levels.map((lbl, li) => {
+        const pct = n ? Math.round(counts[li] / n * 100) : 0;
+        return `<div class="fam-seg" style="width:${pct}%;background:${colors[li]}" title="${e(lbl)}: ${pct}%"></div>`;
+      }).join('');
+      const legend = levels.map((lbl, li) => {
+        const pct = n ? Math.round(counts[li] / n * 100) : 0;
+        return `<span class="fam-leg" style="color:${colors[li]}">${e(lbl)} ${pct}%</span>`;
+      }).join('');
+      return `<div class="fam-result-row">
+        <div class="fam-result-term">${e(TERMS[k].name)}</div>
+        <div class="fam-result-bar">${n ? segs : '<span style="color:var(--text-muted);font-size:12px">No responses yet</span>'}</div>
+        <div class="fam-result-legend">${legend}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="slide" style="justify-content:flex-start;padding-top:clamp(1.5rem,3vw,2.5rem)">
+      <div class="slide-eyebrow">Familiarity check</div>
+      <h1 class="slide-title" style="font-size:clamp(22px,3vw,32px);margin-bottom:.5rem">${e(fam.heading || 'Before we begin')}</h1>
+      <p style="color:var(--text-muted);font-size:13px;margin:0 0 1.5rem">${e(fam.prompt || '')}</p>
+      <div class="fam-result-grid">${rows}</div>
+      ${totalN ? `<p class="res-total" style="margin-top:1rem">${totalN} response${totalN !== 1 ? 's' : ''}</p>` : ''}
+    </div>`;
+  }
+
   // ---- Shortlist ----
   if (stage === 'shortlist') {
     const votes  = await getMultiVotes('shortlist');
@@ -541,6 +578,39 @@ async function renderParticipantStage() {
   }
 
   // ---- Shortlist ----
+  // ---- Familiarity check (CODA mode) ----
+  if (stage === 'coda_familiarity') {
+    const fam    = CFG.familiarity || {};
+    const levels = fam.levels || ['New to me', 'Heard of it', 'Can explain it', 'Use it regularly'];
+    const colors = fam.colors || ['#94A3B8', '#7C3AED', '#059669', '#2563EB'];
+    const allVotes = await Promise.all(TERM_KEYS.map(k => getVotes('fam_' + k)));
+    const myVotes  = TERM_KEYS.map((k, i) => allVotes[i][PARTICIPANT_ID]);
+    const answered = myVotes.filter(v => v !== undefined).length;
+
+    const rows = TERM_KEYS.map((k, ti) => {
+      const myVote   = myVotes[ti];
+      const hasVoted = myVote !== undefined;
+      const btns = levels.map((lbl, li) => {
+        const isSelected = hasVoted && myVote === li;
+        return `<button class="fam-btn${isSelected ? ' fam-btn-sel' : ''}"
+          style="${isSelected ? `background:${colors[li]};color:#fff;border-color:${colors[li]}` : ''}"
+          onclick="${hasVoted ? '' : `castFamiliarityVote('${k}',${li})`}">${e(lbl)}</button>`;
+      }).join('');
+      return `<div class="fam-vote-row${hasVoted ? ' fam-vote-done' : ''}">
+        <div class="fam-vote-term">${e(TERMS[k].name)}</div>
+        <div class="fam-vote-btns">${btns}</div>
+      </div>`;
+    }).join('');
+
+    return `<div class="panel">
+      <span class="stage-pill">Familiarity check</span>
+      <h2 style="margin-top:.75rem">${e(fam.heading || 'Before we begin')}</h2>
+      <p>${e(fam.prompt || 'For each term — where are you starting from?')}</p>
+      <div class="fam-vote-grid">${rows}</div>
+      <p class="muted" style="margin-top:.75rem">${answered} / ${TERM_KEYS.length} answered</p>
+    </div>`;
+  }
+
   if (stage === 'shortlist') {
     const allVotes = await getMultiVotes('shortlist');
     const myVotes  = allVotes[PARTICIPANT_ID] || [];
@@ -743,8 +813,9 @@ function setRole(r) {
 // ── Floating facilitator control bar ─────────────────────────────────────────
 function stageLabel(s) {
   if (s === 'welcome')         return 'Welcome';
-  if (s === 'coda_primer')     return 'CODA Primer';
-  if (s === 'coda_glossary')   return 'Glossary';
+  if (s === 'coda_primer')       return 'CODA Primer';
+  if (s === 'coda_glossary')     return 'Glossary';
+  if (s === 'coda_familiarity')  return 'Familiarity check';
   if (s === 'shortlist')       return 'Shortlist vote';
   if (s === 'close')           return 'Close';
   const [tk, fmt] = s.split('_');
@@ -849,10 +920,17 @@ async function render() {
 
 // ── Event handlers ─────────────────────────────────────────────────────────────
 window.castVote = async function(pollId, idx) {
-  // Prevent changing a vote once cast
   const current = (await getVotes(pollId))[PARTICIPANT_ID];
   if (current !== undefined) return;
   await recordVote(pollId, idx);
+  render();
+};
+
+window.castFamiliarityVote = async function(termKey, level) {
+  const pollId  = 'fam_' + termKey;
+  const current = (await getVotes(pollId))[PARTICIPANT_ID];
+  if (current !== undefined) return;
+  await recordVote(pollId, level);
   render();
 };
 
