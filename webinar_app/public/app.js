@@ -594,7 +594,7 @@ async function renderParticipantStage() {
         const isSelected = hasVoted && myVote === li;
         return `<button class="fam-btn${isSelected ? ' fam-btn-sel' : ''}"
           style="${isSelected ? `background:${colors[li]};color:#fff;border-color:${colors[li]}` : ''}"
-          onclick="${hasVoted ? '' : `castFamiliarityVote('${k}',${li})`}">${e(lbl)}</button>`;
+          onclick="castFamiliarityVote('${k}',${li})">${e(lbl)}</button>`;
       }).join('');
       return `<div class="fam-vote-row${hasVoted ? ' fam-vote-done' : ''}">
         <div class="fam-vote-term">${e(TERMS[k].name)}</div>
@@ -927,10 +927,7 @@ window.castVote = async function(pollId, idx) {
 };
 
 window.castFamiliarityVote = async function(termKey, level) {
-  const pollId  = 'fam_' + termKey;
-  const current = (await getVotes(pollId))[PARTICIPANT_ID];
-  if (current !== undefined) return;
-  await recordVote(pollId, level);
+  await recordVote('fam_' + termKey, level);
   render();
 };
 
