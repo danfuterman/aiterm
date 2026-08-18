@@ -440,19 +440,10 @@ async function renderFacilitatorStage() {
     </div>`;
   }
 
-  // Panel — facilitator shared screen: results summary + facilitation cues + session navigation
+  // Panel — facilitator shared screen: results summary + facilitation cues
   if (fmt === 'panel') {
     const summary = await renderPanelSummary(tk, term);
     const cues = term.interaction || null;
-    const seq = await getFullSequence();
-    const nextStage = seq[seq.indexOf(stage) + 1];
-    let continueHtml = '';
-    if (nextStage && nextStage !== 'close') {
-      const label = nextStage === 'shortlist'
-        ? 'Shortlist vote'
-        : (TERMS[nextStage.split('_')[0]]?.name || nextStage);
-      continueHtml = `<button class="fac-action-next" onclick="goToStage('${nextStage}')">→ Continue: ${e(label)}</button>`;
-    }
     return `<div class="slide panel-summary-slide">
       ${eyebrow(term.name, 'Discussion & Reflections')}
       ${summary}
@@ -477,10 +468,6 @@ async function renderFacilitatorStage() {
         </div>` : ''}
         ${cues.optionalReVote ? `<div class="fac-revote"><span class="fac-cue-label">Optional re-vote — </span>${e(cues.optionalReVote)}</div>` : ''}
       </div>` : ''}
-      <div class="fac-choice-row">
-        ${continueHtml}
-        <button class="fac-action-close" onclick="goToStage('close')">✓ Close session</button>
-      </div>
     </div>`;
   }
 

@@ -340,6 +340,13 @@
     font-size: 12px !important; padding: 6px 12px !important;
   }
   #ctrl-reset:hover:not(:disabled) { background: rgba(220,38,38,.25) !important; }
+  #ctrl-close {
+    background: transparent !important;
+    border: 1px solid rgba(245,192,0,.35) !important;
+    color: rgba(245,192,0,.8) !important;
+    font-size: 12px !important; padding: 6px 10px !important;
+  }
+  #ctrl-close:hover:not(:disabled) { background: rgba(245,192,0,.18) !important; }
 
   /* ── Panel summary — ranked bars + binary split ── */
   /* Panel summary slide — tightly packed to fit in one viewport */
@@ -761,6 +768,7 @@
     <span id="ctrl-label"></span>
     <button id="ctrl-next" onclick="navigate(1)">Next →</button>
     <button id="ctrl-reset" onclick="resetSession()" title="Reset all votes">↻</button>
+    <button id="ctrl-close" onclick="goToStage('close')" title="Jump to closing slide">⏭</button>
   </div>
   <button id="ctrl-toggle" onclick="toggleCtrl()">▼ hide</button>
 </div>
