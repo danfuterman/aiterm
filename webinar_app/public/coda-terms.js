@@ -60,8 +60,8 @@
         toChat: 'Where else in your work does a "human in the loop" sit at a point where they can\'t really check the machine? Drop an example in chat.',
         toCodaTeam: 'CODA team: in the community use case as it stands today, where does the clinician sign-off actually happen, and on what information?',
         facilitatorLanding: [
-          'The nurse-and-X-ray problem exists in CODA: the person operating the tool often can\'t overrule it, and the person who can never met the deceased.',
           'The term is doing two jobs at once — catching errors and carrying accountability — and those need different things to be true.',
+          'The nurse-and-X-ray problem exists in CODA: the person operating the tool often can\'t overrule it, and the person who can never met the deceased.',
           'Sign-off is a real guardrail only if the reviewer has something to check against. For CODA that is a live design question, not a slogan.'
         ],
         optionalReVote: 'Re-run the lightning vote — safety or accountability. Did anyone move?'
@@ -182,8 +182,8 @@
         toChat: 'Data protection versus data sovereignty: in one line, what\'s the difference in your view?',
         toCodaTeam: 'CODA team: what has to be written into the agreements now for "Southern-led" to be real later rather than aspirational?',
         facilitatorLanding: [
-          'CODA already has a Governing Board, a Scientific Advisory Committee, and Technical Working Groups. That is project governance; AI governance also has to reach the data and the model.',
           'You can\'t govern what you don\'t control. If the model and hosting sit outside the country, governing the outputs alone doesn\'t bite.',
+          'CODA already has a Governing Board, a Scientific Advisory Committee, and Technical Working Groups. That is project governance; AI governance also has to reach the data and the model.',
           'The COE ownership model is genuinely unresolved. Naming it here is the point, not smoothing it over.'
         ],
         optionalReVote: 'Lightning re-vote: govern the model, or the data and infrastructure.'
@@ -366,8 +366,8 @@
         toChat: 'Model problem or data-system problem? Say which and why in one line.',
         toCodaTeam: 'CODA team: which gap worries you most first — adults, rare causes, or languages — and who closes it?',
         facilitatorLanding: [
-          'CODA exists because most deaths here have no usable cause. Building on the little data that exists risks hard-coding those same blind spots.',
           'Where you locate the bias decides who you ask to fix it: retrain the model, or invest in the data systems.',
+          'CODA exists because most deaths here have no usable cause. Building on the little data that exists risks hard-coding those same blind spots.',
           '"Out of scope" is an honest limit today. It becomes an equity problem if CODA scales on it without closing the gap.'
         ],
         optionalReVote: 'Lightning re-vote: in the model, or in the data system.'

@@ -444,29 +444,22 @@ async function renderFacilitatorStage() {
   if (fmt === 'panel') {
     const summary = await renderPanelSummary(tk, term);
     const cues = term.interaction || null;
+    const synthesis = cues?.facilitatorLanding?.[0] || '';
     return `<div class="slide panel-summary-slide">
       ${eyebrow(term.name, 'Discussion & Reflections')}
       ${summary}
       ${cues ? `<div class="fac-cues">
-        <div class="fac-cues-row">
+        <div class="fac-landing">
+          ${synthesis ? `<p style="font-size:13px;margin:0 0 10px;color:var(--text);line-height:1.55">${e(synthesis)}</p>` : ''}
+          ${cues.toCodaTeam ? `<div class="fac-cue fac-cue-team" style="margin-bottom:6px">
+            <div class="fac-cue-label">→ CODA team</div>
+            <p>${e(cues.toCodaTeam)}</p>
+          </div>` : ''}
           ${cues.openFloor ? `<div class="fac-cue fac-cue-open">
             <div class="fac-cue-label">${cues.openFloor.type === 'word cloud' ? '☁ Word cloud' : '✎ Open response'}</div>
             <p>${e(cues.openFloor.prompt)}</p>
           </div>` : ''}
-          ${cues.toChat ? `<div class="fac-cue fac-cue-chat">
-            <div class="fac-cue-label">💬 Chat prompt</div>
-            <p>${e(cues.toChat)}</p>
-          </div>` : ''}
-          ${cues.toCodaTeam ? `<div class="fac-cue fac-cue-team">
-            <div class="fac-cue-label">→ CODA team</div>
-            <p>${e(cues.toCodaTeam)}</p>
-          </div>` : ''}
         </div>
-        ${cues.facilitatorLanding ? `<div class="fac-landing">
-          <div class="fac-cue-label">Synthesis</div>
-          <ul>${cues.facilitatorLanding.map(pt => `<li>${e(pt)}</li>`).join('')}</ul>
-        </div>` : ''}
-        ${cues.optionalReVote ? `<div class="fac-revote"><span class="fac-cue-label">Optional re-vote — </span>${e(cues.optionalReVote)}</div>` : ''}
       </div>` : ''}
     </div>`;
   }
@@ -668,13 +661,6 @@ async function renderParticipantStage() {
       <span class="stage-pill">Discussion &amp; Reflections</span>
       <h2 style="margin-top:.75rem">${e(term.name)}</h2>
       ${summary}
-      <div class="panel-engage">
-        <p><strong>Want to contribute?</strong></p>
-        <ul>
-          <li>Type a question or comment in the <strong>webinar chat</strong></li>
-          <li><strong>Raise your hand</strong> in the webinar platform if you'd like to speak</li>
-        </ul>
-      </div>
     </div>`;
   }
 
