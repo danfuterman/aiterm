@@ -17,7 +17,7 @@
         question: 'Is any human presence enough to call it "human in the loop", or does the human need the expertise, and the context, to meaningfully overrule the AI?'
       },
       conceptPrimer: {
-        heading: 'Before you vote — quick concepts',
+        heading: 'Quick Concepts',
         items: [
           { term: 'Verbal autopsy', plain: 'Where no clinician saw the death, a structured interview with a relative is used to work out the probable cause. The standard method for deaths at home.' },
           { term: 'Community health worker', plain: 'A trained non-clinician who visits households. In CODA\'s community setting, this is who runs the interview.' },
@@ -78,7 +78,7 @@
         question: 'If a tool was validated somewhere else, on someone else, how do you know it works here?'
       },
       conceptPrimer: {
-        heading: 'Before you vote — quick concepts',
+        heading: 'Quick Concepts',
         items: [
           { term: 'CHAMPS', plain: 'A network that investigates under-five deaths using post-mortem sampling and expert review. CODA\'s training data comes from here.' },
           { term: 'Gold standard / DeCoDe panel', plain: 'The most rigorous available cause of death, set by an expert panel using all evidence including post-mortem tests. CODA is scored against it.' },
@@ -139,7 +139,7 @@
         question: 'Can you meaningfully govern an AI tool without governing the data and infrastructure it is built on and runs on?'
       },
       conceptPrimer: {
-        heading: 'Before you vote — quick concepts',
+        heading: 'Quick Concepts',
         items: [
           { term: 'CRVS', plain: 'The government system that registers deaths and produces vital statistics. Cause of death is part of it.' },
           { term: 'Data sovereignty', plain: 'A country\'s claim to control over data generated about its people, and over what gets built from it.' },
@@ -200,7 +200,7 @@
         question: 'Performance according to whom, measured how, and sufficient for what decision?'
       },
       conceptPrimer: {
-        heading: 'Before you vote — quick concepts',
+        heading: 'Quick Concepts',
         items: [
           { term: 'Go/no-go gate', plain: 'The August 2026 decision point on whether CODA proceeds to the next phase.' },
           { term: 'Concordance / agreement', plain: 'How often two methods reach the same cause. Used to score accuracy against the gold standard.' },
@@ -261,7 +261,7 @@
         question: 'What is the right comparison: ideal performance, an average certifier, or no usable cause of death at all?'
       },
       conceptPrimer: {
-        heading: 'Before you vote — quick concepts',
+        heading: 'Quick Concepts',
         items: [
           { term: 'Causal chain', plain: 'The ordered sequence of conditions leading to death, not just a single label. CODA drafts this for the certifier.' },
           { term: 'Confidence score', plain: 'A number the tool attaches to its own answer. If not calibrated, a confident number can be more misleading than no number.' },
@@ -323,7 +323,7 @@
         question: 'Is this a model problem or a data-system problem, and does the answer change what we do about it?'
       },
       conceptPrimer: {
-        heading: 'Before you vote — quick concepts',
+        heading: 'Quick Concepts',
         items: [
           { term: 'Training data', plain: 'What the model learned from. CODA learned from CHAMPS under-five deaths, so gaps in that data become gaps in CODA.' },
           { term: 'Cause list', plain: 'The set of causes CODA can assign, bounded by what is in the training data.' },
@@ -400,7 +400,7 @@
     },
 
     primer: {
-      heading: 'Overview of CODA',
+      heading: 'CODA — A Primer',
       points: [
         'The challenge: Cause-of-death data is missing where the burden of death is highest. Only about 1 in 5 deaths worldwide has meaningful cause-of-death information.',
         'The Vision: Close critical gaps in cause-of-death data by enabling health workers to ascertain causes of death accurately and rapidly across a variety of settings.',

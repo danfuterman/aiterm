@@ -317,15 +317,46 @@ async function renderFacilitatorStage() {
   // ---- CODA Primer ----
   if (stage === 'coda_primer') {
     const primer = CFG.primer || {};
-    const flow   = CFG.flow   || [];
+    const pts = primer.points || [];
+    const CARD_COLORS = [
+      { bg:'#FFF7ED', bd:'#C2410C', lbl:'#C2410C' },
+      { bg:'#F0FDF4', bd:'#059669', lbl:'#059669' },
+      { bg:'#EFF6FF', bd:'#2563EB', lbl:'#2563EB' },
+    ];
+    function splitLabel(p) {
+      const i = p.indexOf(':');
+      return i === -1 ? { label:'', body:p } : { label:p.slice(0,i).trim(), body:p.slice(i+1).trim() };
+    }
+    const topCards = pts.slice(0,3).map((p,i) => {
+      const { label, body } = splitLabel(p);
+      const c = CARD_COLORS[i];
+      return `<div class="primer-card" style="background:${c.bg};border-color:${c.bd}">
+        <div class="primer-card-label" style="color:${c.lbl}">${e(label)}</div>
+        <div class="primer-card-body">${e(body)}</div>
+      </div>`;
+    }).join('');
+    let bottomCard = '';
+    if (pts[3]) {
+      const { label, body } = splitLabel(pts[3]);
+      const paras = body.split('\n\n').map(s => s.trim()).filter(Boolean);
+      const cols = paras.map(para => {
+        const d = para.indexOf(' — ');
+        const h = d !== -1 ? para.slice(0, d).trim() : '';
+        const b = d !== -1 ? para.slice(d + 3).trim() : para;
+        return `<div class="primer-setting-col">
+          ${h ? `<div class="primer-setting-col-label">${e(h)}</div>` : ''}
+          <div class="primer-setting-col-body">${e(b)}</div>
+        </div>`;
+      }).join('');
+      bottomCard = `<div class="primer-card primer-card-wide" style="background:#EEF1FA;border-color:var(--brand-navy)">
+        <div class="primer-card-label" style="color:var(--brand-navy)">${e(label)}</div>
+        <div class="primer-setting-cols">${cols}</div>
+      </div>`;
+    }
     return `<div class="slide slide-intro" style="justify-content:flex-start;padding-top:clamp(1.5rem,3vw,2.5rem)">
-      <h1 class="intro-term" style="margin-bottom:1.25rem">${e(primer.heading || 'CODA in ninety seconds')}</h1>
-      <div class="primer-bullets">
-        ${(primer.points || []).map(p => `<div class="primer-bullet"><span class="primer-dot">▸</span><span>${e(p).replace(/\n/g, '<br>')}</span></div>`).join('')}
-      </div>
-      ${primer.framingNote ? `<div class="primer-framing">${e(primer.framingNote)}</div>` : ''}
-      ${flow.length ? `<div class="primer-flow">${flow.map(s => `<div class="flow-step"><span class="flow-num">${s.step}</span><span class="flow-label">${e(s.label)}</span></div>`).join('')}</div>` : ''}
-      ${CFG.runGuidance ? `<div class="primer-run-note">${e(CFG.runGuidance)}</div>` : ''}
+      <h1 class="intro-term" style="margin-bottom:1rem">${e(primer.heading || 'CODA — A Primer')}</h1>
+      <div class="primer-cards-row">${topCards}</div>
+      ${bottomCard}
     </div>`;
   }
 
@@ -657,10 +688,6 @@ async function renderParticipantStage() {
         </div>
       </div>
       <p class="help" style="margin-top:1rem;font-style:italic">"${e(intro.question || '')}"</p>
-      ${term.conceptPrimer ? `<div class="concept-primer-p">
-        <div class="concept-primer-label-p">${e(term.conceptPrimer.heading)}</div>
-        ${term.conceptPrimer.items.map(item => `<div class="concept-chip-p"><strong>${e(item.term)}</strong> — ${e(item.plain)}</div>`).join('')}
-      </div>` : ''}
     </div>`;
   }
 
