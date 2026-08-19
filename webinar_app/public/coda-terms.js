@@ -131,37 +131,37 @@
 
     gov: {
       name: 'AI Governance',
-      short: 'CODA\'s algorithm is trained on pooled data from multiple countries. Who owns the trained model, and who decides its future use?',
+      short: 'CODA\'s algorithm is currently trained on pooled data from multiple countries. Who owns the trained model, and who decides its future use?',
       intro: {
         icon: '🏛️',
         concept: 'The frameworks, processes, regulations, and accountability structures that guide how AI systems are built, deployed, monitored, and controlled.',
-        ambiguity: 'CODA trains on pooled CHAMPS data from sites across several countries. The trained model will have value beyond the project. CODA\'s stated aim is a progressive transition to Southern-led governance through its Centres of Excellence.',
+        ambiguity: 'CODA is currently trained on data from sites across several countries. The trained model will have value beyond the project.',
         question: 'Can you meaningfully govern an AI tool without governing the data and infrastructure it is built on and runs on?'
       },
       conceptPrimer: {
         heading: 'Quick Concepts',
         items: [
-          { term: 'CRVS', plain: 'The government system that registers deaths and produces vital statistics. Cause of death is part of it.' },
+          { term: 'CHAMPS', plain: 'A surveillance network that investigates under-five deaths across several countries using post-mortem sampling and expert review.' },
           { term: 'Data sovereignty', plain: 'A country\'s claim to control over data generated about its people, and over what gets built from it.' },
-          { term: 'The model as an asset', plain: 'Once trained, the model itself has value and can be reused or licensed — separately from the raw data.' }
+          { term: 'Model as an asset', plain: 'Once trained, an AI model has value separately from the raw training data.' }
         ]
       },
       formatA: {
-        prompt: 'Four ways to frame AI Governance — which best captures what you mean when you raise it in practice?',
+        prompt: 'Four ways to frame AI Governance - which one resonates with you?
         options: [
           { text: 'Internal processes for documenting AI decisions, managing risk, and maintaining accountability for system behaviour within an organisation.', source: 'AI/ML governance' },
-          { text: 'Laws, regulations, and oversight bodies that authorise, constrain, and audit health AI — including data protection, model approval, and post-market surveillance.', source: 'Regulatory' },
-          { text: 'Policies, ethics principles, transparency requirements, and consent mechanisms ensuring AI in health respects rights, prevents harm, and remains publicly accountable.', source: 'Ethics / human rights' },
-          { text: 'Government ownership and stewardship of the digital infrastructure — identifiers, registries, data pipelines, procurement terms — that determines who can build AI on it and who benefits.', source: 'Data sovereignty' }
+          { text: 'Laws, regulations, and oversight bodies that authorise, constrain, and audit AI — including data protection, model approval, and post-market surveillance.', source: 'Regulatory' },
+          { text: 'Policies, ethics principles, transparency requirements, and consent mechanisms ensuring AI respects rights, prevents harm, and remains publicly accountable.', source: 'Ethics / human rights' },
+          { text: 'Government ownership and stewardship of the digital infrastructure — identifiers, registries, data pipelines, procurement terms - that determines who can build AI on it and who benefits.', source: 'Data sovereignty' }
         ]
       },
       formatB: {
-        scenario: 'CODA\'s cause-of-death algorithm is trained on pooled CHAMPS mortality data from surveillance sites across several countries. As CODA matures, the trained model has clear value: it could be offered to national CRVS systems or licensed onward. The consortium is currently led from global-North institutions, with Centres of Excellence at Wits VIDA and icddr,b positioned to take on progressive leadership. Data-use agreements permit using the data to develop CODA, but do not clearly address who owns the resulting model or who decides its future use.',
+        scenario: 'CODA\'s cause-of-death algorithm is currently trained on CHAMPS mortality data from surveillance sites across several countries. A decision is made to license CODA commercially to health systems in other countries. Data-use agreements permit using CHAMPS data to develop CODA, but made no distinction between model development and commercial application.',
         prompt: 'Is this an AI governance gap?',
         options: [
           { text: 'Yes. The agreements should have defined ownership and future-use rights of the trained model, not just permission to use the data.' },
-          { text: 'Yes, but upstream. The deeper gap is the absence of a framework treating pooled national mortality data — and models built on it — as a sovereign asset.' },
-          { text: 'No. The consortium\'s Southern-led-governance intent and the Centre-of-Excellence structure are the safeguard. This is a design in progress, not a failure.' }
+          { text: 'Yes. But the failure was upstream, in the absence of national frameworks that could have classified training data as a sovereign asset.' },
+          { text: 'No. The data sharing agreement was signed and complied with. This is a contracting failure, not a governance one.' }
         ],
         discussion: [
           'CODA already has a Governing Board, a Scientific Advisory Committee, and Technical Working Groups. That is project governance; AI governance also has to reach the data and the model.',
