@@ -147,7 +147,7 @@
         ]
       },
       formatA: {
-        prompt: 'Four ways to frame AI Governance - which one resonates with you?
+        prompt: 'Four ways to frame AI Governance - which one resonates with you?',
         options: [
           { text: 'Internal processes for documenting AI decisions, managing risk, and maintaining accountability for system behaviour within an organisation.', source: 'AI/ML governance' },
           { text: 'Laws, regulations, and oversight bodies that authorise, constrain, and audit AI — including data protection, model approval, and post-market surveillance.', source: 'Regulatory' },
