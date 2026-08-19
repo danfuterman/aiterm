@@ -70,23 +70,22 @@
 
     val: {
       name: 'Validation',
-      short: 'CODA is validated on CHAMPS under-five deaths. Does that hold when a ministry asks to use it for routine adult mortality?',
+      short: 'CODA is currently trained and validated on CHAMPS under-five mortality. Does that hold when a service asks to use it for routine adult mortality?',
       intro: {
         icon: '✅',
         concept: 'The process of testing an AI model to confirm it performs as intended, typically by evaluating it on data it has not previously seen.',
-        ambiguity: 'CODA is trained and evaluated on CHAMPS data: under-five deaths, from specific surveillance sites, against expert panels. It is meant to be used far beyond that. Validated on under-five surveillance deaths — validated for whom?',
-        question: 'If a tool was validated somewhere else, on someone else, how do you know it works here?'
+        ambiguity: 'CODA is currently trained and evaluated on CHAMPS data: under-five mortality from specific surveillance sites, reviewed by expert panels. It is meant to be used far beyond that.',
+        question: 'If a tool was validated somewhere else, how do you know it works here?'
       },
       conceptPrimer: {
         heading: 'Quick Concepts',
         items: [
-          { term: 'CHAMPS', plain: 'A network that investigates under-five deaths using post-mortem sampling and expert review. CODA\'s training data comes from here.' },
-          { term: 'Gold standard / DeCoDe panel', plain: 'The most rigorous available cause of death, set by an expert panel using all evidence including post-mortem tests. CODA is scored against it.' },
-          { term: 'Under-five focus', plain: 'Current evidence is for deaths of children under five. Adults are not yet in scope.' }
+          { term: 'CHAMPS', plain: 'A surveillance network that investigates under-five deaths across several countries using post-mortem sampling and expert review.' },
+          { term: 'DeCoDe panel', plain: 'A multidisciplinary group of local medical and laboratory experts who review comprehensive data to assign cause of death for surveillance cases' },
         ]
       },
       formatA: {
-        prompt: 'Four takes on Validation for health AI — which matches how you think about it in practice?',
+        prompt: 'Four takes on validation for AI — which matches how you think about it in practice?',
         options: [
           { text: 'An ongoing process, not a one-time event: continuous assessment of whether a deployed model still performs as populations, data systems, and care delivery change over time.', source: 'Post-market surveillance' },
           { text: 'Testing a trained model on data from a different institution, population, or time period to assess whether its performance holds beyond the original context.', source: 'Regulatory / technical' },
@@ -95,11 +94,11 @@
         ]
       },
       formatB: {
-        scenario: 'CODA\'s algorithm is trained and initially evaluated on CHAMPS data: deaths of children under five, ascertained against DeCoDe expert panels using post-mortem tissue sampling. Its go/no-go evaluation shows CODA improving on existing verbal-autopsy tools for the under-five underlying cause of death. A ministry partner asks whether CODA can be used for routine adult mortality in its district facilities.',
+        scenario: 'CODA\'s algorithm is trained and initially evaluated on CHAMPS data: under five mortality, ascertained against DeCoDe expert panels using post-mortem tissue sampling. A health service asks whether CODA can be used for routine adult mortality in its district facilities.',
         prompt: 'Is CODA "validated" for that use?',
         options: [
           { text: 'Yes. CODA met its evaluation benchmark against a rigorous gold standard. Validation was done.' },
-          { text: 'No. It was validated on under-five deaths against a surveillance-grade reference standard. Adult deaths, different causes, and routine non-surveillance settings each need their own validation.' },
+          { text: 'No. It was validated on under-five mortality against a surveillance-grade reference standard. Adult mortality, different causes, and routine non-surveillance settings each need their own validation.' },
           { text: 'The word is carrying two meanings — "passed its evaluation" and "fit for this deployment" — and both parties are right within their own frame.' }
         ],
         discussion: [
@@ -111,17 +110,17 @@
       formatC: {
         prompt: 'When CODA is described as "validated", responsibility for confirming it holds in a new country or population sits with:',
         options: [
-          { text: 'The consortium / algorithm developers, to show the validation transfers' },
-          { text: 'The deploying Centre of Excellence or ministry, to run local validation first' }
+          { text: 'The CODA team, to show the validation transfers' },
+          { text: 'The service deploying CODA, to run local validation first' }
         ],
         punchline: 'Where you locate that responsibility is a governance choice, not a technical one, and it shapes whether "Southern-led" means owning the validation or inheriting someone else\'s.'
       },
       interaction: {
-        openFloor: { type: 'open response', prompt: 'Finish the sentence: "Validated elsewhere isn\'t validated here because ______."' },
+        openFloor: { type: 'open response', prompt: 'Complete the sentence: "Validated elsewhere isn\'t validated here because ______."' },
         toChat: 'Have you inherited a tool that was "validated" somewhere else and didn\'t hold locally? What broke? Chat it.',
-        toCodaTeam: 'CODA team: what would a realistic first local validation look like at a site with no post-mortem sampling and no expert panel?',
+        toCodaTeam: 'CODA team: What would local validation look like at a site with no post-mortem testing and no DeCoDe panel?',
         facilitatorLanding: [
-          '"Validated" is carrying two meanings — passed its evaluation and fit for this deployment. Both can be true and still leave a gap.',
+          '"Validated" is carrying two meanings — passed its evaluation and fit for a deployment. Both can be true and still leave a gap.',
           'The gold standard barely exists outside CHAMPS sites, which is exactly where CODA is most needed, so "just validate locally" is not free.',
           'Where we place the burden of local validation is a Southern-led governance question as much as a technical one.'
         ],
