@@ -216,16 +216,14 @@ async function renderPanelSummary(tk, term) {
         <div class="panel-col-heading">How did you define it?</div>
         ${rankedBars(term.formatA.options, countsA, votersA)}
       </div>
-      <div class="panel-right-stack">
-        <div class="panel-summary-col">
-          <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
-          ${rankedBars(term.formatB.options, countsB, votersB)}
-        </div>
-        <div class="panel-summary-col">
-          <div class="panel-col-heading">Lightning vote — ${e(term.formatC.prompt)}</div>
-          ${binarySplit(term.formatC.options, countsC, votersC)}
-        </div>
+      <div class="panel-summary-col">
+        <div class="panel-col-heading">Scenario — ${e(term.formatB.prompt)}</div>
+        ${rankedBars(term.formatB.options, countsB, votersB)}
       </div>
+    </div>
+    <div class="panel-summary-col panel-lightning-row">
+      <div class="panel-col-heading">Lightning vote — ${e(term.formatC.prompt)}</div>
+      ${binarySplit(term.formatC.options, countsC, votersC)}
     </div>
     ${mobileSummary()}`;
 }
