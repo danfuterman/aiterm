@@ -146,23 +146,30 @@ async function renderPanelSummary(tk, term) {
     }).join('') + `<p class="res-total">${total} response${total!==1?'s':''}</p>`;
   }
 
-  // Binary split — winner gets coloured background, loser gets muted styling
+  // Binary split — compact bar + labels for panel summary
   function binarySplit(options, counts, total) {
     const denom = (counts[0] + counts[1]) || 1;
-    return `<div class="binary-split">
-      ${options.map((opt, i) => {
-        const pct   = total ? Math.round(counts[i] / denom * 100) : 0;
-        const col   = OPT_COLORS[i];
-        const isTop = counts[i] > counts[1 - i];
-        return `<div class="binary-card${isTop ? ' binary-top' : ' binary-low'}" style="--col:${col}">
-          <div class="binary-letter" style="color:${isTop ? col : 'var(--text-muted)'}">${String.fromCharCode(65+i)}</div>
-          <div class="binary-pct" style="color:${isTop ? col : 'var(--text-muted)'}">${pct}%</div>
-          <div class="binary-text">${e(opt.text)}</div>
-          <div class="binary-count">${counts[i]} vote${counts[i]!==1?'s':''}</div>
-        </div>`;
-      }).join('')}
-    </div>
-    ${total ? `<p class="res-total">${total} response${total!==1?'s':''}</p>` : ''}`;
+    const pcts  = options.map((_, i) => total ? Math.round(counts[i] / denom * 100) : 0);
+    return `<div class="binary-compact">
+      <div class="binary-compact-bar">
+        ${options.map((_, i) => {
+          const w = total ? pcts[i] : 50;
+          const r = i === 0 ? '3px 0 0 3px' : '0 3px 3px 0';
+          return `<div style="flex:${w};background:${OPT_COLORS[i]};border-radius:${r};min-width:${w?'4px':'0'}"></div>`;
+        }).join('')}
+      </div>
+      <div class="binary-compact-labels">
+        ${options.map((opt, i) => {
+          const col   = OPT_COLORS[i];
+          const isTop = counts[i] >= counts[1 - i];
+          return `<div class="binary-compact-label">
+            <span class="binary-compact-pct" style="color:${col}">${String.fromCharCode(65+i)} ${pcts[i]}%</span>
+            <span class="binary-compact-text${isTop ? '' : ' binary-compact-dim'}">${e(opt.text)}</span>
+          </div>`;
+        }).join('')}
+      </div>
+      ${total ? `<p class="res-total">${total} response${total!==1?'s':''}</p>` : ''}
+    </div>`;
   }
 
   // Layout: definition takes left column (4 options = more text);
