@@ -165,7 +165,7 @@
         ],
         discussion: [
           'CODA already has a Governing Board, a Scientific Advisory Committee, and Technical Working Groups. That is project governance; AI governance also has to reach the data and the model.',
-          'You can\'t govern what you don\'t control. If the model and hosting sit outside the country, governing the outputs alone doesn\'t bite.',
+          'You can\'t govern what you don\'t control.',
           'The COE ownership model is genuinely unresolved. Naming it here is the point, not smoothing it over.'
         ]
       },
@@ -175,14 +175,14 @@
           { text: 'The model and its outputs' },
           { text: 'The data and digital infrastructure the model is built on and runs on' }
         ],
-        punchline: 'You can\'t govern what you don\'t control. If the model, weights, and hosting sit outside the country, governing the outputs alone doesn\'t bite.'
+        punchline: 'You can\'t govern what you don\'t control.'
       },
       interaction: {
-        openFloor: { type: 'word cloud', prompt: 'Who should own the CODA model once it is trained on many countries\' data? One word.' },
+        openFloor: { type: 'word cloud', prompt: 'Data protection versus data sovereignty: what\'s the difference in your view?' },
         toChat: 'Data protection versus data sovereignty: in one line, what\'s the difference in your view?',
-        toCodaTeam: 'CODA team: what has to be written into the agreements now for "Southern-led" to be real later rather than aspirational?',
+        toCodaTeam: 'CODA team: What should be in place to ensure responsible use of training data and equitable access to the CODA tool?',
         facilitatorLanding: [
-          'You can\'t govern what you don\'t control. If the model and hosting sit outside the country, governing the outputs alone doesn\'t bite.',
+          'You can\'t govern what you don\'t control.',
           'CODA already has a Governing Board, a Scientific Advisory Committee, and Technical Working Groups. That is project governance; AI governance also has to reach the data and the model.',
           'The COE ownership model is genuinely unresolved. Naming it here is the point, not smoothing it over.'
         ],
@@ -257,34 +257,34 @@
       intro: {
         icon: '⚠️',
         concept: 'Outputs from a generative AI model that are factually incorrect, fabricated, or context-inappropriate, presented with the same confidence as correct answers.',
-        ambiguity: 'CODA uses language-model components for the interview and the explanation, and a separate algorithm to assign cause. A confabulated but plausible cause is especially dangerous in cause-of-death work: it reads as correct, and CODA\'s confidence score is currently uncalibrated.',
+        ambiguity: 'CODA uses self-hosted large language models (LLM) for its interviews and cause-of-death algorithms, with chanin-of-thought descriptions and confidence scores to support determination of cause of death.',
         question: 'What is the right comparison: ideal performance, an average certifier, or no usable cause of death at all?'
       },
       conceptPrimer: {
         heading: 'Quick Concepts',
         items: [
-          { term: 'Causal chain', plain: 'The ordered sequence of conditions leading to death, not just a single label. CODA drafts this for the certifier.' },
-          { term: 'Confidence score', plain: 'A number the tool attaches to its own answer. If not calibrated, a confident number can be more misleading than no number.' },
-          { term: 'Chain-of-thought explanation', plain: 'CODA\'s written account of why it reached a given cause — the reasoning the certifier reviews.' }
+          { term: 'Causal chain', plain: 'The ordered sequence of conditions leading to death, not just a single label.' },
+          { term: 'Confidence score', plain: 'A percentage value the tool attaches to its own answer. If not calibrated, a confident number can be more misleading than no number.' },
+          { term: 'Chain-of-thought explanation', plain: 'CODA\'s written account of why it reached a given cause.' }
         ]
       },
       formatA: {
-        prompt: 'Four takes on Hallucinations in AI — which best matches how you\'d define it to a colleague in this space?',
+        prompt: 'Four takes on hallucinations in AI. Which best matches how you\'d define it to a colleague?',
         options: [
-          { text: 'A safety event: a generative AI output that is plausibly worded but medically wrong, with potential to cause harm in a health context.', source: 'Clinical safety' },
-          { text: 'A context mismatch: an output that may be accurate against training data but wrong for the specific setting — different population, guideline version, or care context.', source: 'Deployment / context' },
+          { text: 'A safety event: a generative AI output that is plausibly worded but clinically incorrect, with potential to cause harm in a health context.', source: 'Clinical safety' },
+          { text: 'A context mismatch: an output that may be accurate against training data but wrong for the specific setting.', source: 'Deployment / context' },
           { text: 'A trust failure: any output a user reasonably acts on that is not traceable to a verifiable source, regardless of whether the underlying fact happens to be correct.', source: 'Public health implementer' },
           { text: 'An output that is factually incorrect, fabricated, or unsupported by training data, produced with the same confident tone as a correct answer.', source: 'ML / technical' }
         ]
       },
       formatB: {
-        scenario: 'CODA presents a clinician with an underlying cause of death, an ICD-11 code, and a chain-of-thought explanation, together with a confidence score. In testing, the confidence score is found to be uncalibrated: CODA sometimes presents a wrong cause with the same high confidence and the same fluent, clinically coherent explanation as a correct one. Because the explanation reads well, reviewers are inclined to accept it. The team must decide how to handle this before the Experimentation phase.',
-        prompt: 'How should the team respond?',
+        scenario: 'CODA presents a clinician with an underlying cause of death, a chain-of-thought explanation, and a confidence score. In testing, the confidence score is found to be uncalibrated: CODA sometimes presents an incorrect cause with the same high confidence and the same clinically coherent explanation as a correct one. Because the explanation reads well, reviewers are inclined to accept it.',
+        prompt: 'How should the CODA team respond?',
         options: [
-          { text: 'Continue. A clinician signs off every case, so a plausible wrong answer will be caught.' },
-          { text: 'Pause the confidence feature until scores are calibrated. An uncalibrated confidence number is worse than none.' },
-          { text: 'Continue, but ground every output: show the specific interview statements and records each part of the causal chain rests on, so the reviewer can check the reasoning, not just the answer.' },
-          { text: 'Reframe CODA\'s output as a structured summary for the certifier to reason from, not a cause-of-death "answer" to accept or reject.' }
+          { text: 'Continue as-is. A clinician signs off every case, so a plausible wrong answer will be caught.' },
+          { text: 'Pause the confidence score feature until scores are calibrated. An uncalibrated confidence number is worse than none.' },
+          { text: 'Continue, but ground every output: show the specific interview statements and records used to determine the cause of death, so the reviewer can check the reasoning, not just the answer.' },
+          { text: 'Reframe CODA\'s output as a structured summary for a user to reason from, not a cause-of-death "answer" to accept or reject.' }
         ],
         discussion: [
           'A plausible wrong cause is more dangerous than an obviously wrong one, because it invites the reviewer to nod along.',
@@ -295,17 +295,17 @@
       formatC: {
         prompt: 'For CODA, the most useful protection against confident-but-wrong outputs is:',
         options: [
-          { text: 'A better model (fewer errors at the model level)' },
-          { text: 'Better grounding (every conclusion traceable to a source the reviewer can check)' }
+          { text: 'A more accurate model with fewer errors at the model level)' },
+          { text: 'Better grounding of the model\'s responses to verified, external source material' }
         ],
         punchline: 'Grounding is what lets a certifier catch the error and gives the system an audit trail. It\'s also what makes the human-in-the-loop guardrail real rather than nominal.'
       },
       interaction: {
-        openFloor: { type: 'word cloud', prompt: 'What would make you trust — or distrust — a confident CODA answer? One word.' },
+        openFloor: { type: 'word cloud', prompt: 'What would make you trust or distrust a confident CODA answer?' },
         toChat: 'Where have you seen a fluent, confident, wrong answer slip past review? Chat an example.',
-        toCodaTeam: 'CODA team: given the language model is a query engine and the algorithm assigns the cause, where does the confabulation risk actually live?',
+        toCodaTeam: 'CODA team: Within the CODA workflow, what are some of the steps where hallucinations are a risk?',
         facilitatorLanding: [
-          'A plausible wrong cause is more dangerous than an obviously wrong one, because it invites the reviewer to nod along.',
+          'A plausible wrong cause of death is more dangerous than an obviously wrong one.',
           'Grounding — showing the exact evidence each part of the chain rests on — is what makes sign-off real rather than a rubber stamp.',
           'An uncalibrated confidence number can be worse than none. That is a live design decision for CODA right now.'
         ],
