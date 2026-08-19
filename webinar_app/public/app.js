@@ -445,18 +445,22 @@ async function renderFacilitatorStage() {
     const summary = await renderPanelSummary(tk, term);
     const cues = term.interaction || null;
     const synthesis = cues?.facilitatorLanding?.[0] || '';
+    const codaQ = cues?.toCodaTeam?.replace(/^CODA\s+team[:\s]+/i, '') || '';
     return `<div class="slide panel-summary-slide">
       ${eyebrow(term.name, 'Discussion & Reflections')}
       ${summary}
       ${cues ? `<div class="fac-cues">
-        <div class="fac-landing">
-          ${synthesis ? `<p style="font-size:13px;margin:0 0 10px;color:var(--text);line-height:1.55">${e(synthesis)}</p>` : ''}
-          ${cues.toCodaTeam ? `<div class="fac-cue fac-cue-team" style="margin-bottom:6px">
-            <div class="fac-cue-label">→ CODA team</div>
-            <p>${e(cues.toCodaTeam)}</p>
+        <div class="fac-discussion-block">
+          ${synthesis ? `<div class="fac-disc-item fac-disc-synthesis">
+            <div class="fac-disc-label">Synthesis</div>
+            <p>${e(synthesis)}</p>
           </div>` : ''}
-          ${cues.openFloor ? `<div class="fac-cue fac-cue-open">
-            <div class="fac-cue-label">${cues.openFloor.type === 'word cloud' ? '☁ Word cloud' : '✎ Open response'}</div>
+          ${codaQ ? `<div class="fac-disc-item fac-disc-team">
+            <div class="fac-disc-label">CODA team</div>
+            <p>${e(codaQ)}</p>
+          </div>` : ''}
+          ${cues.openFloor ? `<div class="fac-disc-item fac-disc-open">
+            <div class="fac-disc-label">Open question</div>
             <p>${e(cues.openFloor.prompt)}</p>
           </div>` : ''}
         </div>
