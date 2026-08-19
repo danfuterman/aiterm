@@ -457,16 +457,16 @@ async function renderFacilitatorStage() {
       ${cues ? `<div class="fac-cues">
         <div class="fac-discussion-block">
           ${synthesis ? `<div class="fac-disc-item fac-disc-synthesis">
-            <div class="fac-disc-label">Synthesis</div>
-            <p>${e(synthesis)}</p>
+            <span class="fac-disc-label">Synthesis</span>
+            <span class="fac-disc-text">${e(synthesis)}</span>
           </div>` : ''}
           ${codaQ ? `<div class="fac-disc-item fac-disc-team">
-            <div class="fac-disc-label">CODA team</div>
-            <p>${e(codaQ)}</p>
+            <span class="fac-disc-label">CODA team</span>
+            <span class="fac-disc-text">${e(codaQ)}</span>
           </div>` : ''}
           ${cues.openFloor ? `<div class="fac-disc-item fac-disc-open">
-            <div class="fac-disc-label">Open question</div>
-            <p>${e(cues.openFloor.prompt)}</p>
+            <span class="fac-disc-label">Open question</span>
+            <span class="fac-disc-text">${e(cues.openFloor.prompt)}</span>
           </div>` : ''}
         </div>
       </div>` : ''}

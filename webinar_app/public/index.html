@@ -625,13 +625,15 @@
     border-radius: 10px; padding: 8px;
   }
   .fac-disc-item {
-    border-radius: 6px; padding: 7px 11px;
-    border-left: 3px solid; font-size: 14px; line-height: 1.45;
+    border-radius: 6px; padding: 5px 10px;
+    border-left: 3px solid; font-size: 13px; line-height: 1.4;
+    display: flex; align-items: baseline; gap: 8px;
   }
-  .fac-disc-item p { margin: 3px 0 0; color: var(--text); }
   .fac-disc-label {
-    font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+    flex-shrink: 0;
   }
+  .fac-disc-text { color: var(--text); }
   .fac-disc-synthesis { background: #EEF1FA; border-color: var(--brand-navy); }
   .fac-disc-synthesis .fac-disc-label { color: var(--brand-navy); }
   .fac-disc-team { background: var(--brand-yellow-light); border-color: var(--brand-yellow); }
