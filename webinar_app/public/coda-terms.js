@@ -13,32 +13,32 @@
       intro: {
         icon: '👤',
         concept: 'A system in which a human provides oversight, validation, or correction of an AI system\'s outputs at defined points, retaining decision authority.',
-        ambiguity: 'CODA\'s central claim is that a human always signs off. But in the community use case, the person operating CODA is a community health worker — not a clinician — and the clinician who signs off was never present at the death.',
-        question: 'Is any human presence enough to call it "human in the loop", or does the human need the expertise, and the context, to meaningfully overrule the AI?'
+        ambiguity: 'CODA requires that a human always signs off on a final cause of death determination. In the community use case, the person operating CODA may be a community health worker and not a clinician.',
+        question: 'Is any human presence enough to call it "human in the loop", or does the human need the expertise, and the context, to meaningfully override the AI?'
       },
       conceptPrimer: {
         heading: 'Quick Concepts',
         items: [
-          { term: 'Verbal autopsy', plain: 'Where no clinician saw the death, a structured interview with a relative is used to work out the probable cause. The standard method for deaths at home.' },
-          { term: 'Community health worker', plain: 'A trained non-clinician who visits households. In CODA\'s community setting, this is who runs the interview.' },
-          { term: 'Sign-off / certification', plain: 'Putting a named, qualified person\'s authority behind the recorded cause of death.' }
+          { term: 'Verbal autopsy', plain: 'A standard approach for community deaths, where a structured interview with a relative is used to work out the probable cause of death.' },
+          { term: 'Community health worker', plain: 'In CODA\'s community setting, this is who runs the verbal autopsy interview.' },
+          { term: 'Sign-off / certification', plain: 'Putting a named, qualified person\'s authority behind a recorded cause of death.' }
         ]
       },
       formatA: {
-        prompt: 'How do you think about Human in the Loop when it comes to a tool like CODA? Pick the definition closest to yours.',
+        prompt: 'How do you think about Human in the Loop when it comes to a tool like CODA? Pick the definition that most cloesly aligns with this.',
         options: [
-          { text: 'A requirement that a human is involved and accountable for an AI-driven decision — even where the specialist who would ordinarily make the call is absent.', source: 'Public health implementer' },
-          { text: 'A clinical review step: a clinician accepts, modifies, or rejects each AI recommendation before it affects care or the record.', source: 'Clinical' },
           { text: 'A workflow design where AI handles routine cases and escalates uncertain or high-risk ones to a human reviewer, making best use of limited expert time.', source: 'Developer / implementer' },
+          { text: 'A requirement that a human is involved and accountable for an AI-driven decision, even where the specialist who would ordinarily make the call is absent.', source: 'Public health implementer' },
+          { text: 'A clinical review step: a clinician accepts, modifies, or rejects each AI recommendation before a record is finalized.', source: 'Clinical' },
           { text: 'A system design in which a person retains decision authority by overseeing, validating, or correcting AI outputs at defined points.', source: 'Regulatory' }
         ]
       },
       formatB: {
-        scenario: 'In CODA\'s community use case, a community health worker — not a clinician — conducts a verbal-autopsy interview with a bereaved relative six months after a death. CODA transcribes the conversation, assigns an underlying cause of death, and produces an ICD-coded preliminary certificate with a chain-of-thought explanation. The community health worker has no clinical training to judge whether the cause is right. In the current design, a clinician reviews and signs off downstream, working only from CODA\'s transcript and output. They never met the family and never saw the deceased.',
+        scenario: 'In CODA\'s community use case, a community health worker conducts a verbal autopsy interview with the decedent\'s relative. CODA transcribes the conversation, produces a chain-of-thought explanation and assigns an underlying cause of death. A clinician reviews and signs off downstream, working from CODA\'s transcript and output.',
         prompt: 'Is this "Human in the Loop"?',
         options: [
-          { text: 'Yes. A qualified clinician reviews and signs off before the cause is certified.' },
-          { text: 'No. The reviewing clinician only sees CODA\'s transcript and output, with no independent way to verify the interview or examine the deceased. Sign-off risks becoming a rubber stamp.' },
+          { text: 'Yes. A qualified clinician reviews and signs off before the cause of death is finalized.' },
+          { text: 'No. The clinician only sees CODA\'s transcript and output, with no independent way to verify the interview or examine the deceased.' },
           { text: 'It depends on what the sign-off is being used to certify: a public-health statistic, or a legal cause of death on an individual\'s record.' }
         ],
         discussion: [
@@ -50,8 +50,8 @@
       formatC: {
         prompt: 'In CODA, is "Human in the Loop" primarily:',
         options: [
-          { text: 'A safety mechanism (to catch wrong causes before they enter the record)' },
-          { text: 'An accountability mechanism (so a named person is answerable for the certified cause)' }
+          { text: 'A safety mechanism (to catch incorrectly assigned causes of death)' },
+          { text: 'An accountability mechanism (so a named person is responsbile for the assigned cause of death)' }
         ],
         punchline: 'CODA asks the human to do both at once: catch errors and own the result. Those are different jobs needing different competencies, which is why "who signs off" is contested.'
       },
@@ -60,7 +60,7 @@
         toChat: 'Where else in your work does a "human in the loop" sit at a point where they can\'t really check the machine? Drop an example in chat.',
         toCodaTeam: 'CODA team: in the community use case as it stands today, where does the clinician sign-off actually happen, and on what information?',
         facilitatorLanding: [
-          'The term is doing two jobs at once — catching errors and carrying accountability — and those need different things to be true.',
+          'The term is doing two jobs at once - catching errors and carrying accountability - and those need different things to be true.',
           'The nurse-and-X-ray problem exists in CODA: the person operating the tool often can\'t overrule it, and the person who can never met the deceased.',
           'Sign-off is a real guardrail only if the reviewer has something to check against. For CODA that is a live design question, not a slogan.'
         ],
