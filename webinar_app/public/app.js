@@ -321,7 +321,7 @@ async function renderFacilitatorStage() {
     return `<div class="slide slide-intro" style="justify-content:flex-start;padding-top:clamp(1.5rem,3vw,2.5rem)">
       <h1 class="intro-term" style="margin-bottom:1.25rem">${e(primer.heading || 'CODA in ninety seconds')}</h1>
       <div class="primer-bullets">
-        ${(primer.points || []).map(p => `<div class="primer-bullet"><span class="primer-dot">▸</span><span>${e(p)}</span></div>`).join('')}
+        ${(primer.points || []).map(p => `<div class="primer-bullet"><span class="primer-dot">▸</span><span>${e(p).replace(/\n/g, '<br>')}</span></div>`).join('')}
       </div>
       ${primer.framingNote ? `<div class="primer-framing">${e(primer.framingNote)}</div>` : ''}
       ${flow.length ? `<div class="primer-flow">${flow.map(s => `<div class="flow-step"><span class="flow-num">${s.step}</span><span class="flow-label">${e(s.label)}</span></div>`).join('')}</div>` : ''}
@@ -545,7 +545,7 @@ async function renderParticipantStage() {
       <span class="stage-pill">Introduction</span>
       <h2 style="margin-top:.75rem">${e(primer.heading || 'CODA in ninety seconds')}</h2>
       <div style="margin-top:.75rem;display:flex;flex-direction:column;gap:10px">
-        ${(primer.points || []).map(p => `<p style="margin:0;font-size:14px;line-height:1.6">${e(p)}</p>`).join('')}
+        ${(primer.points || []).map(p => `<p style="margin:0;font-size:14px;line-height:1.6">${e(p).replace(/\n/g, '<br>')}</p>`).join('')}
       </div>
     </div>`;
   }

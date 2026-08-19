@@ -13,14 +13,14 @@
       intro: {
         icon: '👤',
         concept: 'A system in which a human provides oversight, validation, or correction of an AI system\'s outputs at defined points, retaining decision authority.',
-        ambiguity: 'CODA\'s central claim is that a human always signs off. But in the community use case, the person operating CODA is a surveillance agent — not a clinician — and the clinician who signs off was never present at the death.',
+        ambiguity: 'CODA\'s central claim is that a human always signs off. But in the community use case, the person operating CODA is a community health worker — not a clinician — and the clinician who signs off was never present at the death.',
         question: 'Is any human presence enough to call it "human in the loop", or does the human need the expertise, and the context, to meaningfully overrule the AI?'
       },
       conceptPrimer: {
         heading: 'Before you vote — quick concepts',
         items: [
           { term: 'Verbal autopsy', plain: 'Where no clinician saw the death, a structured interview with a relative is used to work out the probable cause. The standard method for deaths at home.' },
-          { term: 'Community surveillance agent', plain: 'A trained non-clinician who visits households. In CODA\'s community setting, this is who runs the interview.' },
+          { term: 'Community health worker', plain: 'A trained non-clinician who visits households. In CODA\'s community setting, this is who runs the interview.' },
           { term: 'Sign-off / certification', plain: 'Putting a named, qualified person\'s authority behind the recorded cause of death.' }
         ]
       },
@@ -34,7 +34,7 @@
         ]
       },
       formatB: {
-        scenario: 'In CODA\'s community use case, a community surveillance agent — not a clinician — conducts a verbal-autopsy interview with a bereaved relative six months after a death. CODA transcribes the conversation, assigns an underlying cause of death, and produces an ICD-coded preliminary certificate with a chain-of-thought explanation. The surveillance agent has no clinical training to judge whether the cause is right. In the current design, a clinician reviews and signs off downstream, working only from CODA\'s transcript and output. They never met the family and never saw the deceased.',
+        scenario: 'In CODA\'s community use case, a community health worker — not a clinician — conducts a verbal-autopsy interview with a bereaved relative six months after a death. CODA transcribes the conversation, assigns an underlying cause of death, and produces an ICD-coded preliminary certificate with a chain-of-thought explanation. The community health worker has no clinical training to judge whether the cause is right. In the current design, a clinician reviews and signs off downstream, working only from CODA\'s transcript and output. They never met the family and never saw the deceased.',
         prompt: 'Is this "Human in the Loop"?',
         options: [
           { text: 'Yes. A qualified clinician reviews and signs off before the cause is certified.' },
@@ -381,15 +381,15 @@
   window.WEBINAR_CONFIG = {
     mode: 'coda',
     title: 'AI Terminology for Public Health',
-    subtitle: 'The same AI terms, different meanings — read through CODA',
-    hook: 'Does "human in the loop" mean the same thing to an algorithm developer, an M&E specialist, and a community surveillance agent standing in a bereaved family\'s home?',
+    subtitle: 'The same AI terms, different meanings',
+    hook: '* Content Warning: This webinar discusses the topic of child loss *',
     shortlistHeading: 'Which CODA terms next?',
     shortlistPrompt: 'Which terms should we put through CODA next? Choose two.',
     ambiguityLabel: 'In CODA',
     closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. For each term: what does it certify, who is responsible for what it claims, and what decision does it inform? Every scenario today is a real question CODA is working through right now.',
 
     // Opening slides injected before Human in the Loop
-    introStages: ['coda_primer', 'coda_glossary', 'coda_familiarity'],
+    introStages: ['coda_primer', 'coda_familiarity'],
 
     // Familiarity poll config
     familiarity: {
@@ -400,28 +400,14 @@
     },
 
     primer: {
-      heading: 'CODA in ninety seconds',
+      heading: 'Overview of CODA',
       points: [
-        'Only about 1 in 5 deaths worldwide has meaningful cause-of-death information. 54% of WHO Member States have low-quality, very-low-quality, or no cause-of-death data — and the gap is worst where the burden of death is highest.',
-        'CODA is an AI-powered decision-support tool for cause-of-death determination. It brings together clinical records, family interviews, diagnostic results, and local surveillance, and returns a draft determination with an explanation. It is decision support, not automation: a qualified person reviews, edits, and signs every determination.',
-        'Two settings. In a facility, a clinician must certify the death; CODA reads the record and drafts the causal chain for review. In the community, where most deaths in many lower-income settings happen with no clinician, CODA runs an adaptive voice interview and stops once it can determine a cause with sufficient confidence.',
-        'Currently: prototyping through an August 2026 go/no-go gate. Trained on CHAMPS under-five deaths; adults and injuries are out of current scope. Experimentation phase begins November 2026 at Centres of Excellence in Africa, South Asia, and Brazil.'
-      ],
-      framingNote: 'Language to hold throughout: CODA augments and guides rather than replaces; a qualified human reviews and signs; current evidence is under-five only.',
-      statsSource: 'WHO World Health Statistics 2026 (Chapter 3)'
+        'The challenge: Cause-of-death data is missing where the burden of death is highest. Only about 1 in 5 deaths worldwide has meaningful cause-of-death information.',
+        'The Vision: Close critical gaps in cause-of-death data by enabling health workers to ascertain causes of death accurately and rapidly across a variety of settings.',
+        'The Approach: CODA is an AI-enabled tool that aims to make cause-of-death assessments more accurate, more efficient and more affordable.',
+        'Where deaths occur, and who has to explain them:\n\nIn a health facility — a clinician must certify the cause of death and complete a death certificate, using a mix of paper or digital records, notes, and post-mortem testing to determine cause of death.\n\nIn a community setting — no clinician is present, there are no notes or tests. Here, Verbal Autopsy provides a standardized questionnaire administered by a community health worker to a family member to determine cause of death.'
+      ]
     },
-
-    runGuidance: 'Sixty minutes, solo. Per-term budget ~14 minutes: concept primer + definition vote (4 min), scenario vote (4 min), open discussion + landing (6 min). Keep ~5 minutes to close on the three throughline questions. A fourth term only fits as a lightning-only round if you are ahead.',
-
-    flow: [
-      { step: 1, label: 'Welcome, CODA primer, quick glossary' },
-      { step: 2, label: 'Familiarity check — where is the room starting from?' },
-      { step: 3, label: 'Human in the Loop (fixed anchor term)' },
-      { step: 4, label: 'Audience votes: which two terms next?' },
-      { step: 5, label: 'Term 2 (top-voted)' },
-      { step: 6, label: 'Term 3 (second-voted)' },
-      { step: 7, label: 'Close' }
-    ],
 
     glossary: {
       heading: 'Quick glossary',
