@@ -94,12 +94,12 @@
         ]
       },
       formatB: {
-        scenario: 'CODA\'s algorithm is trained and initially evaluated on CHAMPS data: under five mortality, ascertained against DeCoDe expert panels using post-mortem tissue sampling. A health service asks whether CODA can be used for routine adult mortality in its district facilities.',
+        scenario: 'CODA\'s algorithm is trained and evaluated on CHAMPS data: under five mortality, ascertained against DeCoDe expert panels using post-mortem tissue sampling. An initial validation shows that CODA\'s algorithm meets outperforms accuracy targets. A health service asks whether CODA can be used for routine adult mortality in its district facilities.',
         prompt: 'Is CODA "validated" for that use?',
         options: [
           { text: 'Yes. CODA met its evaluation benchmark against a rigorous gold standard. Validation was done.' },
           { text: 'No. It was validated on under-five mortality against a surveillance-grade reference standard. Adult mortality, different causes, and routine non-surveillance settings each need their own validation.' },
-          { text: 'The word is carrying two meanings — "passed its evaluation" and "fit for this deployment" — and both parties are right within their own frame.' }
+          { text: 'The word is carrying two meanings — "passed its evaluation" and "fit for this deployment" — only one of those criteria has been met.' }
         ],
         discussion: [
           '"Validated" is carrying two meanings: passed its evaluation, and fit for this deployment. Both can be true and still leave a gap.',
@@ -191,23 +191,20 @@
 
     perf: {
       name: 'Performance',
-      short: 'CODA\'s August gate measures improvement over existing tools. Clearing it doesn\'t mean CODA is ready for routine deployment.',
+      short: 'CODA\'s initial performance measures show improvement over existing cause of death tools. Clearing these measures doesn\'t mean CODA is ready for routine deployment.',
       intro: {
         icon: '📊',
         concept: 'Measures of how well an AI tool performs on a task, typically derived from model evaluation on a test dataset.',
-        ambiguity: 'CODA faces an August go/no-go gate. The bar is: beat the existing verbal-autopsy tool on under-five cases. That is not the same as "market-ready", which the target product profile puts years out.',
+        ambiguity: 'CODA\'s initial performance measures show improvement over existing cause of death tools. Clearing these measures doesn\'t mean CODA is ready for routine deployment.',
         question: 'Performance according to whom, measured how, and sufficient for what decision?'
       },
       conceptPrimer: {
-        heading: 'Quick Concepts',
+        heading: '',
         items: [
-          { term: 'Go/no-go gate', plain: 'The August 2026 decision point on whether CODA proceeds to the next phase.' },
-          { term: 'Concordance / agreement', plain: 'How often two methods reach the same cause. Used to score accuracy against the gold standard.' },
-          { term: 'Human certification is imperfect too', plain: 'Medical certification agrees with expert review only about 40–80% of the time.' }
         ]
       },
       formatA: {
-        prompt: 'Four ways to measure Performance — which do you reach for when evaluating a health AI tool?',
+        prompt: 'Four ways to measure performance — which do you reach for when evaluating a health AI tool?',
         options: [
           { text: 'Clinical performance: how well the tool supports correct decisions in real practice, including agreement with expert reviewers.', source: 'Clinical evaluation' },
           { text: 'Model accuracy on a test dataset — precision, recall, F1, and confusion-matrix outputs.', source: 'ML / developer' },
@@ -216,12 +213,12 @@
         ]
       },
       formatB: {
-        scenario: 'At the August go/no-go gate, CODA\'s evaluation on CHAMPS under-five cases shows roughly a 15% accuracy improvement over existing verbal-autopsy tools when using the full range of data sources, and about a 20% reduction in interview time, judged against DeCoDe expert-panel causes. The Governing Board must decide whether CODA is performing well enough to proceed to the Experimentation phase.',
+        scenario: 'An initial evaluation of CODA shows a 15% accuracy improvement over existing tools when using a full range of data sources to determine cause of death, and a 20% reduction in interview time. The CODA team must decide whether CODA is performing well enough to proceed to a pilot phase.',
         prompt: 'Are these the right performance measures for that decision?',
         options: [
-          { text: 'Yes. Improvement over the existing tool against a rigorous gold standard is exactly the right bar for a go/no-go.' },
-          { text: 'No. Accuracy versus a research gold standard doesn\'t tell the Board whether CODA will work in real CRVS workflows, for adults, or at scale.' },
-          { text: 'Partly. Necessary for the gate, but not sufficient for any claim that CODA is "ready".' }
+          { text: 'Yes. Improvement over existing tools is exactly the right bar for a go/no-go.' },
+          { text: 'No. Accuracy isn\'t enought to tell whether CODA will work in real-world workflows.' },
+          { text: 'Partly. Necessary in making a decision, but not sufficient for any claim that CODA is "ready".' }
         ],
         discussion: [
           'The go/no-go bar and "market-ready" are different bars, potentially years apart. Minimum is not the gate.',
@@ -230,7 +227,7 @@
         ]
       },
       formatC: {
-        prompt: 'When you hear "CODA reached X% accuracy", the first follow-up should be:',
+        prompt: 'When you hear "CODA reached 85% accuracy", the first follow-up should be:',
         options: [
           { text: 'On which cases, and against which reference standard?' },
           { text: 'Does it change what actually gets recorded as the cause of death?' }
@@ -238,11 +235,11 @@
         punchline: 'Option A reads performance as a model property; option B reads it as a system property. Both are valid; the gap between them is where "building a tool" and "building adoption" separate.'
       },
       interaction: {
-        openFloor: { type: 'open response', prompt: 'One metric you would insist on before saying CODA is "ready"?' },
+        openFloor: { type: 'open response', prompt: 'What is one metric you would insist on before saying CODA is ready to deploy?' },
         toChat: 'When a vendor says "X% accuracy", what is the first question you ask? Chat it.',
-        toCodaTeam: 'CODA team: what performance claim can we honestly make in external communications today, and what can\'t we?',
+        toCodaTeam: 'CODA team: What performance claims can we about CODA in external communications today, and what can\'t we?',
         facilitatorLanding: [
-          'The go/no-go bar and "market-ready" are different bars, potentially years apart. Minimum is not the gate.',
+          'Accuracy doesn\'t tell us whether a cause of death actually gets recorded differently in practice.',
           'Accuracy against a research gold standard doesn\'t tell you whether the cause actually gets recorded differently in practice.',
           'If we compare CODA to human certification, we have to say which humans. Certification itself is 40–80% concordant with expert review.'
         ],
