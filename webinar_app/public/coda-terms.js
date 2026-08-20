@@ -378,11 +378,11 @@
     mode: 'coda',
     title: 'AI Terminology for Public Health',
     subtitle: 'The same AI terms, different meanings',
-    hook: '* Content Warning: This webinar discusses the topic of child loss *',
-    shortlistHeading: 'Which CODA terms next?',
+    hook: '* Content Warning: This webinar discusses the topic of child loss and mortality *',
+    shortlistHeading: 'Which terms next?',
     shortlistPrompt: 'Which terms should we put through CODA next? Choose two.',
     ambiguityLabel: 'In CODA',
-    closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. For each term: what does it certify, who is responsible for what it claims, and what decision does it inform? Every scenario today is a real question CODA is working through right now.',
+    closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. \nIn defining these terms, it\'s important to ask: what does this term certify, who is responsible for what it claims, and what decisions does it inform? \nThese terms shift meaning depending on who\'s using them, and why. Reading them through a public health lens changes what questions we ask and what risks we see.',
 
     // Opening slides injected before Human in the Loop
     introStages: ['coda_primer', 'coda_familiarity'],
@@ -390,8 +390,8 @@
     // Familiarity poll config
     familiarity: {
       heading: 'Before we begin',
-      prompt: 'We\'ll use these terms in their AI sense today — where "hallucinations" means model errors, not clinical symptoms, and "bias" refers to training data, not personal prejudice. For each one — where are you starting from?',
-      levels: ['New to me', 'Heard of it', 'Can explain it', 'Know it well'],
+      prompt: 'We\'ll consider these terms as they relate to AI. For each term, where are you starting from?',
+      levels: ['New to me', 'Heard of it', 'Understand it', 'Can explain it'],
       colors: ['#94A3B8', '#7C3AED', '#059669', '#2563EB']
     },
 
