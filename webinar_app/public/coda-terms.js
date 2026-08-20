@@ -382,7 +382,7 @@
     shortlistHeading: 'Which terms next?',
     shortlistPrompt: 'Which terms should we put through CODA next? Choose two.',
     ambiguityLabel: 'In CODA',
-    closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. \n\nIn defining these terms, it\'s important to ask: what does this term certify, who is responsible for what it claims, and what decisions does it inform? \n\nThese terms shift meaning depending on who\'s using them, and why. Reading them through a public health lens changes what questions we ask and what risks we see.',
+    closeText: 'AI terminology shapes how we design, govern, and implement public health solutions.\nIn defining these terms, it\'s important to ask: what does this term certify, who is responsible for what it claims, and what decisions does it inform?\nThese terms shift meaning depending on who\'s using them, and why.\nReading them through a public health lens changes what questions we ask and what risks we see.',
 
     // Opening slides injected before Human in the Loop
     introStages: ['coda_primer', 'coda_familiarity'],

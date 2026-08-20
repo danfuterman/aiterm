@@ -309,7 +309,7 @@ async function renderFacilitatorStage() {
       <div class="slide-eyebrow">Thank you</div>
       <h1 class="slide-title">Closing</h1>
       <p class="slide-body" style="max-width:560px;margin:1.5rem auto 0;text-align:center;color:var(--text-muted);font-size:16px">
-        ${e(CFG.closeText || 'The terms we explored reflect real tensions in the implementation of AI for public health, and how terminology around this shapes how we design, govern, and implement public health solutions.')}
+        ${e(CFG.closeText || 'The terms we explored reflect real tensions in the implementation of AI for public health, and how terminology around this shapes how we design, govern, and implement public health solutions.').replace(/\n/g, '<br><br>')}
       </p>
     </div>`;
   }
