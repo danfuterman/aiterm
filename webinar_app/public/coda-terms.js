@@ -25,7 +25,7 @@
         ]
       },
       formatA: {
-        prompt: 'How do you think about Human in the Loop when it comes to a tool like CODA? Pick the definition that most cloesly aligns with this.',
+        prompt: 'How do you think about Human in the Loop when it comes to a tool like CODA? Pick the definition that most closely aligns with this.',
         options: [
           { text: 'A workflow design where AI handles routine cases and escalates uncertain or high-risk ones to a human reviewer, making best use of limited expert time.', source: 'Developer / implementer' },
           { text: 'A requirement that a human is involved and accountable for an AI-driven decision, even where the specialist who would ordinarily make the call is absent.', source: 'Public health implementer' },
@@ -34,7 +34,7 @@
         ]
       },
       formatB: {
-        scenario: 'In CODA\'s community use case, a community health worker conducts a verbal autopsy interview with the decedent\'s relative. CODA transcribes the conversation, produces a chain-of-thought explanation and assigns an underlying cause of death. A clinician reviews and signs off downstream, working from CODA\'s transcript and output.',
+        scenario: 'In CODA\'s community use case, a community health worker conducts a verbal autopsy interview with a relative/caregiver of the deceased. CODA transcribes the conversation, produces a chain-of-thought explanation and assigns an underlying cause of death. A clinician reviews and signs off downstream, working from CODA\'s transcript and output.',
         prompt: 'Is this "Human in the Loop"?',
         options: [
           { text: 'Yes. A qualified clinician reviews and signs off before the cause of death is finalized.' },
@@ -51,14 +51,14 @@
         prompt: 'In CODA, is "Human in the Loop" primarily:',
         options: [
           { text: 'A safety mechanism (to catch incorrectly assigned causes of death)' },
-          { text: 'An accountability mechanism (so a named person is responsbile for the assigned cause of death)' }
+          { text: 'An accountability mechanism (ensuring that a named person is responsbile for the assigned cause of death)' }
         ],
         punchline: 'CODA asks the human to do both at once: catch errors and own the result. Those are different jobs needing different competencies, which is why "who signs off" is contested.'
       },
       interaction: {
         openFloor: { type: 'word cloud', prompt: 'In one word: what does the clinician\'s sign-off actually guarantee here?' },
         toChat: 'Where else in your work does a "human in the loop" sit at a point where they can\'t really check the machine? Drop an example in chat.',
-        toCodaTeam: 'CODA team: in the community use case as it stands today, where does the clinician sign-off actually happen, and on what information?',
+        toCodaTeam: 'CODA team: In the community use case as it stands today, where does the clinician sign-off actually happen, and on what information?',
         facilitatorLanding: [
           'The term is doing two jobs at once - catching errors and carrying accountability - and those need different things to be true.',
           'The nurse-and-X-ray problem exists in CODA: the person operating the tool often can\'t overrule it, and the person who can never met the deceased.',
@@ -94,12 +94,12 @@
         ]
       },
       formatB: {
-        scenario: 'CODA\'s algorithm is trained and evaluated on CHAMPS data: under five mortality, ascertained against DeCoDe expert panels using post-mortem tissue sampling. An initial validation shows that CODA\'s algorithm meets outperforms accuracy targets. A health service asks whether CODA can be used for routine adult mortality in its district facilities.',
+        scenario: 'CODA\'s algorithm is trained and evaluated on CHAMPS data: under five mortality, ascertained against DeCoDe expert panels using post-mortem tissue sampling. An initial validation shows that CODA\'s algorithm outperforms on its accuracy targets. A health service asks whether CODA is ready for routine use in its district facilities.',
         prompt: 'Is CODA "validated" for that use?',
         options: [
           { text: 'Yes. CODA met its evaluation benchmark against a rigorous gold standard. Validation was done.' },
           { text: 'No. It was validated on under-five mortality against a surveillance-grade reference standard. Adult mortality, different causes, and routine non-surveillance settings each need their own validation.' },
-          { text: 'The word is carrying two meanings — "passed its evaluation" and "fit for this deployment" — only one of those criteria has been met.' }
+          { text: 'No. The word is carrying two meanings, "passed its evaluation" and "fit for this deployment". Only one of those criteria has been met.' }
         ],
         discussion: [
           '"Validated" is carrying two meanings: passed its evaluation, and fit for this deployment. Both can be true and still leave a gap.',
@@ -110,7 +110,7 @@
       formatC: {
         prompt: 'When CODA is described as "validated", responsibility for confirming it holds in a new country or population sits with:',
         options: [
-          { text: 'The CODA team, to show the validation transfers' },
+          { text: 'The CODA team, to show that validation transfers to a new implementation' },
           { text: 'The service deploying CODA, to run local validation first' }
         ],
         punchline: 'Where you locate that responsibility is a governance choice, not a technical one, and it shapes whether "Southern-led" means owning the validation or inheriting someone else\'s.'
@@ -207,7 +207,7 @@
         prompt: 'Four ways to measure performance — which do you reach for when evaluating a health AI tool?',
         options: [
           { text: 'Clinical performance: how well the tool supports correct decisions in real practice, including agreement with expert reviewers.', source: 'Clinical evaluation' },
-          { text: 'Model accuracy on a test dataset — precision, recall, F1, and confusion-matrix outputs.', source: 'ML / developer' },
+          { text: 'Model accuracy on a test dataset: precision, recall, F1, and confusion-matrix outputs.', source: 'ML / developer' },
           { text: 'Procurement and sustainability metrics: uptime, integration cost, frontline adoption, cost per case, operational reliability.', source: 'Health system / Ministry' },
           { text: 'Population-level impact: changes in detection or registration rates, equity across subgroups, and outcomes attributable to the tool.', source: 'Programme evaluation' }
         ]
@@ -216,9 +216,9 @@
         scenario: 'An initial evaluation of CODA shows a 15% accuracy improvement over existing tools when using a full range of data sources to determine cause of death, and a 20% reduction in interview time. The CODA team must decide whether CODA is performing well enough to proceed to a pilot phase.',
         prompt: 'Are these the right performance measures for that decision?',
         options: [
-          { text: 'Yes. Improvement over existing tools is exactly the right bar for a go/no-go.' },
-          { text: 'No. Accuracy isn\'t enought to tell whether CODA will work in real-world workflows.' },
-          { text: 'Partly. Necessary in making a decision, but not sufficient for any claim that CODA is "ready".' }
+          { text: 'Yes. Improvement over existing tools is the right bar for this decision.' },
+          { text: 'No. Accuracy isn\'t enought to tell whether CODA will work in real-world settings.' },
+          { text: 'Partly. It\'s necessary in making a decision, but not sufficient for any claim that CODA is "ready".' }
         ],
         discussion: [
           'The go/no-go bar and "market-ready" are different bars, potentially years apart. Minimum is not the gate.',
@@ -237,7 +237,7 @@
       interaction: {
         openFloor: { type: 'open response', prompt: 'What is one metric you would insist on before saying CODA is ready to deploy?' },
         toChat: 'When a vendor says "X% accuracy", what is the first question you ask? Chat it.',
-        toCodaTeam: 'CODA team: What performance claims can we about CODA in external communications today, and what can\'t we?',
+        toCodaTeam: 'CODA team: What performance claims can we make about CODA in external communications today, and what can\'t we?',
         facilitatorLanding: [
           'Accuracy doesn\'t tell us whether a cause of death actually gets recorded differently in practice.',
           'Accuracy against a research gold standard doesn\'t tell you whether the cause actually gets recorded differently in practice.',
@@ -291,7 +291,7 @@
       formatC: {
         prompt: 'For CODA, the most useful protection against confident-but-wrong outputs is:',
         options: [
-          { text: 'A more accurate model with fewer errors at the model level)' },
+          { text: 'A more accurate model with fewer errors at the model level' },
           { text: 'Better grounding of the model\'s responses to verified, external source material' }
         ],
         punchline: 'Grounding is what lets a certifier catch the error and gives the system an audit trail. It\'s also what makes the human-in-the-loop guardrail real rather than nominal.'
@@ -315,7 +315,7 @@
       intro: {
         icon: '⚖️',
         concept: 'Systematic patterns in AI outputs that affect some populations differently from others, often along lines of geography, language, income, or demographic group.',
-        ambiguity: 'CODA\'s training data is under-five mortality from CHAMPS sites; the prototype supports English only; languages like Bangla and Brazilian Portuguese raise translation issues. Who is in the data, and who isn\'t?',
+        ambiguity: 'CODA\'s training data is under-five mortality from CHAMPS sites; the prototype supports English only. Who is in the data, and who isn\'t?',
         question: 'Is this a model problem or a data-system problem, and does the answer change what we do about it?'
       },
       conceptPrimer: {
@@ -336,11 +336,11 @@
         ]
       },
       formatB: {
-        scenario: 'CODA is trained on CHAMPS under-five deaths and initially supports English-language interviews. When piloted more widely, it performs well for the causes and populations well represented in CHAMPS, but less well for deaths in older adults, for causes rare in the training data, and for interviews conducted in languages it was not built for, such as Bangla or Brazilian Portuguese.',
+        scenario: 'CODA is trained on CHAMPS under-five deaths and initially supports English-language interviews. When piloted more widely, it performs well for the causes and populations well represented in CHAMPS, but less well for deaths in older adults, for causes rare in the training data, and for interviews conducted in languages it was not built for.',
         prompt: 'Is CODA a biased tool?',
         options: [
           { text: 'Yes. It performs unequally across ages, causes, and language groups.' },
-          { text: 'No. It performs as well as its training data allows. The gap is upstream — in what mortality data exists — not in the model.' },
+          { text: 'No. It performs as well as its training data allows. The gap is upstream — in what mortality and language data exists — not in the model.' },
           { text: 'Both. And only naming both leads to the right fix.' }
         ],
         discussion: [
@@ -382,7 +382,7 @@
     shortlistHeading: 'Which terms next?',
     shortlistPrompt: 'Which terms should we put through CODA next? Choose two.',
     ambiguityLabel: 'In CODA',
-    closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. \nIn defining these terms, it\'s important to ask: what does this term certify, who is responsible for what it claims, and what decisions does it inform? \nThese terms shift meaning depending on who\'s using them, and why. Reading them through a public health lens changes what questions we ask and what risks we see.',
+    closeText: 'AI terminology shapes how we design, govern, and implement public health solutions. \n\nIn defining these terms, it\'s important to ask: what does this term certify, who is responsible for what it claims, and what decisions does it inform? \n\nThese terms shift meaning depending on who\'s using them, and why. Reading them through a public health lens changes what questions we ask and what risks we see.',
 
     // Opening slides injected before Human in the Loop
     introStages: ['coda_primer', 'coda_familiarity'],
