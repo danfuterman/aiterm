@@ -9,7 +9,7 @@
 
     hitl: {
       name: 'Human in the Loop',
-      short: 'The person operating CODA may not be able to overrule it. The person who can was never present at the death.',
+      short: 'CODA requires that a human always signs off on a final cause of death determination. Do the users of CODA always have the expertise to do this?',
       intro: {
         icon: '👤',
         concept: 'A system in which a human provides oversight, validation, or correction of an AI system\'s outputs at defined points, retaining decision authority.',
@@ -70,7 +70,7 @@
 
     val: {
       name: 'Validation',
-      short: 'CODA is currently trained and validated on CHAMPS under-five mortality. Does that hold when a service asks to use it for routine adult mortality?',
+      short: 'CODA is currently trained and validated on under-five mortality. Does that hold when a service asks to use it for routine adult mortality?',
       intro: {
         icon: '✅',
         concept: 'The process of testing an AI model to confirm it performs as intended, typically by evaluating it on data it has not previously seen.',
@@ -130,7 +130,7 @@
 
     gov: {
       name: 'AI Governance',
-      short: 'CODA\'s algorithm is currently trained on pooled data from multiple countries. Who owns the trained model, and who decides its future use?',
+      short: 'CODA\'s algorithm is currently trained on data from multiple countries. Who owns the trained model, and who decides its future use?',
       intro: {
         icon: '🏛️',
         concept: 'The frameworks, processes, regulations, and accountability structures that guide how AI systems are built, deployed, monitored, and controlled.',
@@ -191,11 +191,11 @@
 
     perf: {
       name: 'Performance',
-      short: 'CODA\'s initial performance measures show improvement over existing cause of death tools. Clearing these measures doesn\'t mean CODA is ready for routine deployment.',
+      short: 'CODA\'s initial performance measures show improvement over existing cause of death tools. Does that mean CODA is ready for routine deployment?',
       intro: {
         icon: '📊',
         concept: 'Measures of how well an AI tool performs on a task, typically derived from model evaluation on a test dataset.',
-        ambiguity: 'CODA\'s initial performance measures show improvement over existing cause of death tools. Clearing these measures doesn\'t mean CODA is ready for routine deployment.',
+        ambiguity: 'CODA\'s initial performance measures show improvement over existing cause of death tools. Does that mean CODA is ready for routine deployment?',
         question: 'Performance according to whom, measured how, and sufficient for what decision?'
       },
       conceptPrimer: {
@@ -249,11 +249,11 @@
 
     hallu: {
       name: 'Hallucinations',
-      short: 'CODA\'s confidence score is currently uncalibrated: a wrong cause can look as certain as a right one.',
+      short: 'Where are the risks for hallucination in CODA, and what can be done to build confidence in the algorithm\'s outputs?',
       intro: {
         icon: '⚠️',
         concept: 'Outputs from a generative AI model that are factually incorrect, fabricated, or context-inappropriate, presented with the same confidence as correct answers.',
-        ambiguity: 'CODA uses self-hosted large language models (LLM) for its interviews and cause-of-death algorithms, with chanin-of-thought descriptions and confidence scores to support determination of cause of death.',
+        ambiguity: 'CODA uses self-hosted large language models (LLM) for its interviews and cause-of-death algorithms, with chain-of-thought descriptions and confidence scores to support determination of cause of death.',
         question: 'What is the right comparison: ideal performance, an average certifier, or no usable cause of death at all?'
       },
       conceptPrimer: {
@@ -311,11 +311,11 @@
 
     bias: {
       name: 'Bias',
-      short: 'Trained on CHAMPS under-five deaths, English only. Adults, rare causes, and other languages are out of scope.',
+      short: 'CODA is trained on under-five mortality data from multiple sites. What are the the model\'s limitations and data gaps?',
       intro: {
         icon: '⚖️',
         concept: 'Systematic patterns in AI outputs that affect some populations differently from others, often along lines of geography, language, income, or demographic group.',
-        ambiguity: 'CODA\'s training data is under-five deaths from particular CHAMPS sites; the prototype supports English only; adults and injuries are out of scope; languages like Bangla and Brazilian Portuguese raise translation issues. Who is in the data, and who isn\'t?',
+        ambiguity: 'CODA\'s training data is under-five mortality from CHAMPS sites; the prototype supports English only; languages like Bangla and Brazilian Portuguese raise translation issues. Who is in the data, and who isn\'t?',
         question: 'Is this a model problem or a data-system problem, and does the answer change what we do about it?'
       },
       conceptPrimer: {
