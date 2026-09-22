@@ -595,6 +595,15 @@ body {
 </div>
 
 <script>
+const FAM_TERMS = [
+  { name:'Human in the Loop', nw:8,  hd:38, un:37, ex:17 },
+  { name:'Validation',         nw:5,  hd:28, un:45, ex:22 },
+  { name:'AI Governance',      nw:12, hd:44, un:32, ex:12 },
+  { name:'Performance',        nw:4,  hd:22, un:48, ex:26 },
+  { name:'Hallucinations',     nw:6,  hd:35, un:40, ex:19 },
+  { name:'Bias',               nw:3,  hd:18, un:42, ex:37 },
+];
+
 const DEF = [
   { ltr:'A', text:'A workflow design where AI handles routine cases and escalates uncertain ones to a human reviewer, optimising for limited expert time.' },
   { ltr:'B', text:'A requirement that a human is accountable for each AI-driven decision, even where the specialist who would ordinarily make that call is absent.' },
@@ -649,12 +658,69 @@ function miniBars(rows) {
 
 const stages = [
   {
-    name:'Term introduced', sub:'Step 1 of 8',
+    name:'Familiarity check', sub:'Step 1 of 10',
+    fac:()=>`
+      <div class="chip">Before we begin</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--navy);line-height:1.2">Before we begin</div>
+      <p style="font-size:13px;color:var(--muted);margin:0">We'll consider these terms as they relate to AI. For each term, where are you starting from?</p>
+      <div style="display:flex;flex-direction:column;gap:9px;margin-top:2px">
+        ${FAM_TERMS.map(t=>`
+          <div style="display:grid;grid-template-columns:148px 1fr;gap:12px;align-items:center">
+            <div style="font-size:12.5px;font-weight:600;color:var(--text)">${t.name}</div>
+            <div>
+              <div style="height:7px;border-radius:4px;overflow:hidden;display:flex;margin-bottom:3px">
+                <div style="width:${t.nw}%;background:#CBD5E1"></div>
+                <div style="width:${t.hd}%;background:#93C5FD"></div>
+                <div style="width:${t.un}%;background:#3060D8"></div>
+                <div style="width:${t.ex}%;background:#0B9B6B"></div>
+              </div>
+              <div style="display:flex;gap:10px;font-size:9px;flex-wrap:wrap">
+                <span style="color:#94A3B8">New to me ${t.nw}%</span>
+                <span style="color:#3B82F6">Heard of it ${t.hd}%</span>
+                <span style="color:#3060D8">Understand it ${t.un}%</span>
+                <span style="color:#0B9B6B">Can explain it ${t.ex}%</span>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+      <div class="live-badge" style="margin-top:2px"><span class="live-dot"></span>47 / 47 responded</div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Before we begin</div></div>
+          <div class="pscr-body">
+            <div class="p-prompt" style="margin-bottom:2px">For each term, where are you starting from?</div>
+            ${FAM_TERMS.slice(0,4).map(t=>`
+              <div style="margin-bottom:5px">
+                <div style="font-size:9px;font-weight:600;color:var(--text);margin-bottom:3px">${t.name}</div>
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:2px">
+                  <div style="padding:4px 2px;border:1px solid var(--border);border-radius:4px;text-align:center;font-size:7.5px;color:var(--muted);line-height:1.3">New<br>to me</div>
+                  <div style="padding:4px 2px;border:1px solid var(--border);border-radius:4px;text-align:center;font-size:7.5px;color:var(--muted);line-height:1.3">Heard<br>of it</div>
+                  <div style="padding:4px 2px;border:1.5px solid var(--blue);border-radius:4px;text-align:center;font-size:7.5px;color:var(--blue);background:var(--blue-pale);line-height:1.3;font-weight:600">Under-<br>stand</div>
+                  <div style="padding:4px 2px;border:1px solid var(--border);border-radius:4px;text-align:center;font-size:7.5px;color:var(--muted);line-height:1.3">Can<br>explain</div>
+                </div>
+              </div>`).join('')}
+            <div style="font-size:8.5px;color:var(--muted);font-style:italic;margin-top:2px">+ 2 more terms…</div>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Term introduced', sub:'Step 2 of 10',
     fac:()=>`
       <div class="chip">Introduction</div>
       <div class="term-name">Human in the Loop</div>
       <p class="concept-text">A system in which a human provides oversight, validation, or correction of an AI system's outputs at defined points, retaining decision authority.</p>
       <p class="key-q">Is any human presence enough to call it "human in the loop" — or does the human need the expertise, and the context, to meaningfully override the AI?</p>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-right:4px">Each term:</div>
+        <div style="padding:4px 10px;border-radius:20px;background:var(--blue-pale);color:var(--blue);font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700">① Definition vote</div>
+        <div style="color:var(--border);font-size:12px">→</div>
+        <div style="padding:4px 10px;border-radius:20px;background:var(--blue-pale);color:var(--blue);font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700">② Scenario vote</div>
+        <div style="color:var(--border);font-size:12px">→</div>
+        <div style="padding:4px 10px;border-radius:20px;background:var(--blue-pale);color:var(--blue);font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700">③ Lightning vote</div>
+      </div>
       <div style="display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;align-self:flex-start;margin-top:4px">
         <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
           <rect width="64" height="64" fill="var(--surface)"/>
@@ -702,7 +768,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Definition vote — open', sub:'Step 2 of 8',
+    name:'Definition vote — open', sub:'Step 3 of 10',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 1 — Definition</div>
@@ -725,7 +791,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Definition results', sub:'Step 3 of 8',
+    name:'Definition results', sub:'Step 4 of 10',
     fac:()=>`
       <div class="chip">Results revealed</div>
       <p class="vote-prompt">How did participants define it?</p>
@@ -763,7 +829,7 @@ const stages = [
     },
   },
   {
-    name:'Scenario vote', sub:'Step 4 of 8',
+    name:'Scenario vote', sub:'Step 5 of 10',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 2 — Scenario</div>
@@ -787,7 +853,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Scenario results', sub:'Step 5 of 8',
+    name:'Scenario results', sub:'Step 6 of 10',
     fac:()=>`
       <div class="chip">Results revealed</div>
       <p class="vote-prompt">Is the clinician scenario "Human in the Loop"?</p>
@@ -825,7 +891,7 @@ const stages = [
     },
   },
   {
-    name:'Lightning vote', sub:'Step 6 of 8',
+    name:'Lightning vote', sub:'Step 7 of 10',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 3 — Lightning</div>
@@ -859,7 +925,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Lightning results', sub:'Step 7 of 8',
+    name:'Lightning results', sub:'Step 8 of 10',
     fac:()=>`
       <div class="chip">Results revealed</div>
       <p class="vote-prompt" style="font-size:14px">In high-stakes AI systems, "Human in the Loop" is primarily:</p>
@@ -893,7 +959,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Discussion & landing', sub:'Step 8 of 8 — end of term',
+    name:'Discussion & landing', sub:'Step 9 of 10',
     fac:()=>`
       <div class="chip">Open discussion</div>
       <div class="summary-grid">
@@ -935,6 +1001,73 @@ const stages = [
               <div style="width:38%;background:#3060D8;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;color:white;font-family:'Space Grotesk',sans-serif">A 38%</div>
               <div style="width:62%;background:#0B9B6B;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;color:white;font-family:'Space Grotesk',sans-serif">B 62%</div>
             </div>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Optional next steps', sub:'Step 10 of 10 — extended session',
+    fac:()=>`
+      <div class="chip" style="background:var(--surface-2);color:var(--muted)">Extended session — optional</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--navy);line-height:1.2">If time allows</div>
+      <p style="font-size:13px;color:var(--text);margin:0">In a 10-minute session, one term is covered. With more time, participants can vote to select which terms to explore next — and the same three exercises repeat for each.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Step 1 — Term selection vote</div>
+          <div style="font-size:12px;color:var(--text);margin-bottom:8px">Participants vote for the terms they most want to explore.</div>
+          ${[
+            {name:'Validation', pct:68},
+            {name:'Hallucinations', pct:57},
+            {name:'Bias', pct:49},
+            {name:'AI Governance', pct:38},
+            {name:'Performance', pct:26},
+          ].map(t=>`
+            <div style="margin-bottom:5px">
+              <div style="display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px">
+                <span style="color:var(--text)">${t.name}</span>
+                <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--navy)">${t.pct}%</span>
+              </div>
+              <div style="height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                <div style="height:100%;width:${t.pct}%;background:var(--blue);border-radius:2px"></div>
+              </div>
+            </div>`).join('')}
+        </div>
+        <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:12px 14px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Step 2 — Repeat for each selected term</div>
+          <div style="font-size:12px;color:var(--text);margin-bottom:10px">The top two terms each run the same three exercises.</div>
+          ${['Definition vote','Scenario vote','Lightning vote','Discussion'].map((s,i)=>`
+            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+              <div style="width:20px;height:20px;border-radius:50%;background:${i===3?'var(--surface-2)':'var(--blue)'};border:1.5px solid ${i===3?'var(--border)':'var(--blue)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;color:${i===3?'var(--muted)':'white'}">${i===3?'…':i+1}</span>
+              </div>
+              <span style="font-size:11.5px;color:${i===3?'var(--muted)':'var(--text)'}${i===3?';font-style:italic':''}">${s}</span>
+            </div>`).join('')}
+        </div>
+      </div>
+      <div class="fac-note">
+        <div class="fac-note-lbl">Note for facilitators</div>
+        <div class="fac-note-item">This demo covers only the Human in the Loop term — the steps above are not included in the 10-minute session.</div>
+        <div class="fac-note-item">A full session covering 3 terms typically runs 45–60 minutes.</div>
+      </div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Vote — next term</div></div>
+          <div class="pscr-body">
+            <div class="p-prompt">Which term would you like to explore next?</div>
+            ${[
+              {name:'Validation', sel:true},
+              {name:'Hallucinations', sel:false},
+              {name:'Bias', sel:false},
+              {name:'AI Governance', sel:false},
+              {name:'Performance', sel:false},
+            ].map((t,i)=>`
+              <div class="p-opt${t.sel?' sel':''}">
+                <span class="p-ltr${t.sel?' sel':''}" style="${t.sel?'background:var(--blue);color:white':''}"> </span>
+                <span style="font-size:9.5px">${t.name}</span>
+              </div>`).join('')}
+            <button class="p-btn">Submit vote</button>
           </div>
         </div>
       </div></div>`,
