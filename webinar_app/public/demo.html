@@ -568,7 +568,7 @@ body {
 
 <div class="hdr">
   <span class="hdr-eyebrow">Tool demo</span>
-  <span class="hdr-term">Human in the Loop</span>
+  <span class="hdr-term">AI Terminology</span>
   <div class="pips" id="pips"></div>
 </div>
 
@@ -681,7 +681,79 @@ function miniBars(rows) {
 
 const stages = [
   {
-    name:'Familiarity check', sub:'Step 1 of 10',
+    name:'Overview', sub:'Step 1 of 11',
+    fac:()=>`
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--navy);line-height:1.15">AI Terminology</div>
+      <p style="font-size:13.5px;color:var(--text);max-width:52ch;margin:0">An interactive workshop tool for exploring how AI terminology is understood across different disciplines and roles.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:11px 13px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:5px">Configurable</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.5">Terms, definitions, scenarios and lightning votes are tailored to your audience and context.</div>
+        </div>
+        <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:11px 13px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:5px">Multi-device</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.5">Participants join on any phone or laptop using a link or QR code. No app or account needed.</div>
+        </div>
+        <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:11px 13px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:5px">Live &amp; interactive</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.5">Votes appear in real time on the facilitator screen and drive open discussion with the group.</div>
+        </div>
+        <div style="background:var(--surface);border:1.5px solid var(--border);border-radius:8px;padding:11px 13px">
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);margin-bottom:5px">Structured</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.5">Each term runs three exercises — definition vote, scenario vote, and lightning vote — plus facilitated discussion.</div>
+        </div>
+      </div>
+      <div style="background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:11px 14px">
+        <div style="font-family:'Space Grotesk',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:7px">Session flow</div>
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;font-size:11px;color:var(--text)">
+          <span style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px">Familiarity check</span>
+          <span style="color:var(--muted)">→</span>
+          <span style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px">Term intro</span>
+          <span style="color:var(--muted)">→</span>
+          <span style="padding:3px 8px;background:var(--blue-pale);border:1px solid var(--blue);border-radius:4px;color:var(--blue);font-weight:600">① Definition</span>
+          <span style="color:var(--muted)">→</span>
+          <span style="padding:3px 8px;background:var(--blue-pale);border:1px solid var(--blue);border-radius:4px;color:var(--blue);font-weight:600">② Scenario</span>
+          <span style="color:var(--muted)">→</span>
+          <span style="padding:3px 8px;background:var(--blue-pale);border:1px solid var(--blue);border-radius:4px;color:var(--blue);font-weight:600">③ Lightning</span>
+          <span style="color:var(--muted)">→</span>
+          <span style="padding:3px 8px;background:var(--surface);border:1px solid var(--border);border-radius:4px">Discussion</span>
+        </div>
+      </div>
+      <p style="font-size:11.5px;color:var(--muted);font-style:italic;margin:0">Press Next to step through a demo of the tool using "Human in the Loop" as an example term. Note: the actual tool interface looks slightly different from this walkthrough.</p>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top">
+            <div class="pscr-ttl">AI Terminology Workshop</div>
+          </div>
+          <div class="pscr-body" style="align-items:center;justify-content:center;text-align:center;gap:10px">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:700;color:var(--navy)">Join the session</div>
+            <svg width="80" height="80" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+              <rect width="64" height="64" fill="var(--surface)"/>
+              <rect x="3" y="3" width="18" height="18" rx="2" fill="var(--navy)"/><rect x="6" y="6" width="12" height="12" rx="1" fill="var(--surface)"/><rect x="9" y="9" width="6" height="6" fill="var(--navy)"/>
+              <rect x="43" y="3" width="18" height="18" rx="2" fill="var(--navy)"/><rect x="46" y="6" width="12" height="12" rx="1" fill="var(--surface)"/><rect x="49" y="9" width="6" height="6" fill="var(--navy)"/>
+              <rect x="3" y="43" width="18" height="18" rx="2" fill="var(--navy)"/><rect x="6" y="46" width="12" height="12" rx="1" fill="var(--surface)"/><rect x="9" y="49" width="6" height="6" fill="var(--navy)"/>
+              <rect x="25" y="3" width="3" height="3" fill="var(--navy)"/><rect x="31" y="3" width="3" height="3" fill="var(--navy)"/><rect x="37" y="3" width="3" height="3" fill="var(--navy)"/>
+              <rect x="25" y="9" width="3" height="3" fill="var(--navy)"/><rect x="34" y="9" width="3" height="3" fill="var(--navy)"/>
+              <rect x="28" y="15" width="3" height="3" fill="var(--navy)"/><rect x="37" y="15" width="3" height="3" fill="var(--navy)"/>
+              <rect x="3" y="25" width="3" height="3" fill="var(--navy)"/><rect x="9" y="25" width="3" height="3" fill="var(--navy)"/><rect x="15" y="25" width="3" height="3" fill="var(--navy)"/>
+              <rect x="25" y="25" width="3" height="3" fill="var(--navy)"/><rect x="31" y="25" width="3" height="3" fill="var(--navy)"/><rect x="37" y="25" width="3" height="3" fill="var(--navy)"/><rect x="43" y="25" width="3" height="3" fill="var(--navy)"/><rect x="52" y="25" width="3" height="3" fill="var(--navy)"/>
+              <rect x="3" y="31" width="3" height="3" fill="var(--navy)"/><rect x="12" y="31" width="3" height="3" fill="var(--navy)"/><rect x="28" y="31" width="3" height="3" fill="var(--navy)"/><rect x="40" y="31" width="3" height="3" fill="var(--navy)"/><rect x="49" y="31" width="3" height="3" fill="var(--navy)"/>
+              <rect x="6" y="37" width="3" height="3" fill="var(--navy)"/><rect x="15" y="37" width="3" height="3" fill="var(--navy)"/><rect x="25" y="37" width="3" height="3" fill="var(--navy)"/><rect x="34" y="37" width="3" height="3" fill="var(--navy)"/><rect x="43" y="37" width="3" height="3" fill="var(--navy)"/><rect x="55" y="37" width="3" height="3" fill="var(--navy)"/>
+              <rect x="25" y="43" width="3" height="3" fill="var(--navy)"/><rect x="34" y="43" width="3" height="3" fill="var(--navy)"/><rect x="46" y="43" width="3" height="3" fill="var(--navy)"/><rect x="55" y="43" width="3" height="3" fill="var(--navy)"/>
+              <rect x="28" y="49" width="3" height="3" fill="var(--navy)"/><rect x="37" y="49" width="3" height="3" fill="var(--navy)"/><rect x="52" y="49" width="3" height="3" fill="var(--navy)"/>
+              <rect x="25" y="55" width="3" height="3" fill="var(--navy)"/><rect x="31" y="55" width="3" height="3" fill="var(--navy)"/><rect x="43" y="55" width="3" height="3" fill="var(--navy)"/><rect x="49" y="55" width="3" height="3" fill="var(--navy)"/>
+            </svg>
+            <div style="font-size:10px;color:var(--muted)">or visit</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:600;color:var(--navy);background:var(--surface-2);padding:5px 10px;border-radius:5px;border:1px solid var(--border)">danfuterman.github.io/aiterm</div>
+            <div style="font-size:9px;color:var(--muted);font-style:italic;margin-top:4px">Works on any phone or laptop</div>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Familiarity check', sub:'Step 2 of 11',
     fac:()=>`
       <div class="chip">Before we begin</div>
       <div style="font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;color:var(--navy);line-height:1.2">Before we begin</div>
@@ -730,7 +802,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Term introduced', sub:'Step 2 of 10',
+    name:'Term introduced', sub:'Step 3 of 11',
     fac:()=>`
       <div class="chip">Introduction</div>
       <div class="term-name">Human in the Loop</div>
@@ -759,7 +831,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Definition vote — open', sub:'Step 3 of 10',
+    name:'Definition vote — open', sub:'Step 4 of 11',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 1 — Definition</div>
@@ -782,7 +854,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Definition results', sub:'Step 4 of 10',
+    name:'Definition results', sub:'Step 5 of 11',
     fac:()=>`
       <div class="chip">Results revealed</div>
       <p class="vote-prompt">How did participants define it?</p>
@@ -820,7 +892,7 @@ const stages = [
     },
   },
   {
-    name:'Scenario vote', sub:'Step 5 of 10',
+    name:'Scenario vote', sub:'Step 6 of 11',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 2 — Scenario</div>
@@ -844,7 +916,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Scenario results', sub:'Step 6 of 10',
+    name:'Scenario results', sub:'Step 7 of 11',
     fac:()=>`
       <div class="chip">Results revealed</div>
       <p class="vote-prompt">Is the clinician scenario "Human in the Loop"?</p>
@@ -882,7 +954,7 @@ const stages = [
     },
   },
   {
-    name:'Lightning vote', sub:'Step 7 of 10',
+    name:'Lightning vote', sub:'Step 8 of 11',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 3 — Lightning</div>
@@ -916,7 +988,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Lightning results', sub:'Step 8 of 10',
+    name:'Lightning results', sub:'Step 9 of 11',
     fac:()=>`
       <div class="chip">Results revealed</div>
       <p class="vote-prompt" style="font-size:14px">In high-stakes AI systems, "Human in the Loop" is primarily:</p>
@@ -950,7 +1022,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Discussion & landing', sub:'Step 9 of 10',
+    name:'Discussion & landing', sub:'Step 10 of 11',
     fac:()=>`
       <div class="chip">Open discussion</div>
       <div class="summary-grid">
@@ -997,7 +1069,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Optional next steps', sub:'Step 10 of 10 — extended session',
+    name:'Optional next steps', sub:'Step 11 of 11 — extended session',
     fac:()=>`
       <div class="chip" style="background:var(--surface-2);color:var(--muted)">Extended session — optional</div>
       <div style="font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:var(--navy);line-height:1.2">If time allows</div>
