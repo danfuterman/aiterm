@@ -1,0 +1,864 @@
+<title>Human in the Loop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #F4F4F5;
+  --surface: #FFFFFF;
+  --surface-2: #EBEBED;
+  --navy: #18306A;
+  --blue: #3060D8;
+  --blue-pale: #E7EDFB;
+  --green: #0B9B6B;
+  --amber: #B45309;
+  --amber-pale: #FFF8ED;
+  --text: #1B2C4E;
+  --muted: #64789E;
+  --border: #E2E2E6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111113;
+    --surface: #1C1C1F;
+    --surface-2: #252528;
+    --text: #E8E8EC;
+    --muted: #8E8E9A;
+    --border: #2E2E34;
+    --blue-pale: #1A2540;
+    --amber-pale: #231A0A;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111113;
+  --surface: #1C1C1F;
+  --surface-2: #252528;
+  --text: #E8E8EC;
+  --muted: #8E8E9A;
+  --border: #2E2E34;
+  --blue-pale: #1A2540;
+  --amber-pale: #231A0A;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Header ── */
+.hdr {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.hdr-eyebrow {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.hdr-term {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--navy);
+  padding: 2px 9px;
+  background: var(--blue-pale);
+  border-radius: 4px;
+}
+.pips {
+  display: flex;
+  gap: 5px;
+  margin-left: auto;
+  align-items: center;
+}
+.pip {
+  width: 24px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  transition: background 0.3s;
+}
+.pip.done { background: var(--green); }
+.pip.active { background: var(--blue); }
+
+/* ── Main ── */
+.main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 55fr 45fr;
+  min-height: 0;
+  overflow: hidden;
+}
+.pane {
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pane-fac { border-right: 1px solid var(--border); }
+.pane-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+.pane-label i {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  font-style: normal;
+}
+.pane-fac .pane-label i { background: var(--amber); }
+.pane-par .pane-label i { background: var(--blue); }
+.pane-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  animation: stagein 0.22s ease;
+}
+@keyframes stagein {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Chips ── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--blue-pale);
+  color: var(--blue);
+  padding: 3px 8px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: pulse 1.4s infinite ease-in-out;
+  flex-shrink: 0;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; }
+  50% { opacity:0.35; }
+}
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--green);
+  letter-spacing: 0.04em;
+}
+
+/* ── Term intro ── */
+.term-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.concept-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--text);
+  max-width: 54ch;
+}
+.key-q {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--blue);
+  font-style: italic;
+  padding: 10px 14px;
+  border-left: 3px solid var(--blue);
+  background: var(--blue-pale);
+  border-radius: 0 6px 6px 0;
+  max-width: 52ch;
+}
+
+/* ── Vote options ── */
+.vote-prompt {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.5;
+  text-wrap: balance;
+}
+.vote-opts { display: flex; flex-direction: column; gap: 7px; }
+.opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.opt-ltr {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  font-family: 'Space Grotesk', sans-serif;
+}
+.closed-note {
+  font-size: 11.5px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ── Results ── */
+.results { display: flex; flex-direction: column; gap: 10px; }
+.result-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 3px;
+}
+.result-text {
+  font-size: 12.5px;
+  color: var(--text);
+  line-height: 1.4;
+}
+.result-pct {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+  padding-left: 10px;
+}
+.result-bar-track {
+  height: 5px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+  grid-column: 1;
+}
+.result-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  width: 0;
+  transition: width 0.75s cubic-bezier(0.16,1,0.3,1);
+}
+.result-lens {
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-variant: small-caps;
+  font-family: 'Space Grotesk', sans-serif;
+  grid-column: 1;
+}
+
+/* ── Scenario ── */
+.scenario-box {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 13px 16px;
+  font-size: 13.5px;
+  line-height: 1.7;
+  color: var(--text);
+}
+
+/* ── Lightning ── */
+.binary-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.binary-card {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+  background: var(--surface);
+}
+.binary-ltr {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--blue);
+  display: block;
+  margin-bottom: 6px;
+}
+.binary-desc { font-size: 11.5px; line-height: 1.5; color: var(--muted); }
+.binary-bar {
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  border: 1.5px solid var(--border);
+}
+.bseg {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: white;
+}
+
+/* ── Facilitator amber callout ── */
+.fac-note {
+  background: var(--amber-pale);
+  border: 1px solid #FDE68A;
+  border-radius: 8px;
+  padding: 11px 14px;
+}
+.fac-note-lbl {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.fac-note-item {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.55;
+  padding-left: 10px;
+  border-left: 2px solid #FCD34D;
+  margin-top: 7px;
+}
+.fac-note-item:first-of-type { margin-top: 0; }
+
+/* ── Summary grid ── */
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.summary-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.summary-card-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.summary-row-text { font-size: 11px; color: var(--text); line-height: 1.35; flex: 1; }
+.summary-row-pct {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--navy);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+/* ── Phone frame ── */
+.phone-wrap { display: flex; justify-content: center; }
+.phone {
+  width: 210px;
+  background: #1A1A1C;
+  border-radius: 30px;
+  padding: 18px 10px 22px;
+  box-shadow: 0 24px 56px rgba(0,0,0,0.28), inset 0 0 0 1px rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+.phone-notch {
+  width: 56px;
+  height: 5px;
+  background: #2C2C2F;
+  border-radius: 3px;
+  margin: 0 auto 14px;
+}
+.phone-screen {
+  background: var(--surface);
+  border-radius: 18px;
+  overflow: hidden;
+}
+.pscr-top {
+  background: var(--navy);
+  padding: 9px 12px 7px;
+}
+.pscr-ttl {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  letter-spacing: 0.05em;
+}
+.pscr-body {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.p-concept { font-size: 9.5px; line-height: 1.6; color: var(--text); }
+.p-keyq {
+  font-size: 9px;
+  color: var(--blue);
+  font-style: italic;
+  padding: 5px 7px;
+  border-left: 2px solid var(--blue);
+  background: var(--blue-pale);
+  border-radius: 0 4px 4px 0;
+  line-height: 1.5;
+}
+.p-prompt {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.45;
+}
+.p-opt {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 6px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 9.5px;
+  line-height: 1.4;
+  color: var(--text);
+}
+.p-opt.sel { border-color: var(--blue); background: var(--blue-pale); }
+.p-ltr {
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  font-size: 8.5px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+.p-opt.sel .p-ltr { background: var(--blue); color: white; }
+.p-btn {
+  background: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 9px;
+  width: 100%;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: default;
+  margin-top: 2px;
+}
+
+/* ── Footer nav ── */
+.nav {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.nav-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+.nav-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.nav-btns { display: flex; gap: 8px; }
+.btn {
+  padding: 7px 16px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); }
+.btn:disabled { opacity: 0.35; cursor: default; }
+.btn.primary { background: var(--blue); border-color: var(--blue); color: white; }
+.btn.primary:hover:not(:disabled) { opacity: 0.88; color: white; }
+
+@media (max-width: 680px) {
+  .main { grid-template-columns: 1fr; }
+  .pane-fac { border-right: none; border-bottom: 1px solid var(--border); }
+  .summary-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pane-content { animation: none; }
+  .result-bar-fill { transition: none; }
+}
+</style>
+
+<div class="hdr">
+  <span class="hdr-eyebrow">Tool demo</span>
+  <span class="hdr-term">Human in the Loop</span>
+  <div class="pips" id="pips"></div>
+</div>
+
+<div class="main">
+  <div class="pane pane-fac">
+    <div class="pane-label"><i></i>Facilitator view — presentation screen</div>
+    <div class="pane-content" id="fac"></div>
+  </div>
+  <div class="pane pane-par">
+    <div class="pane-label"><i></i>Participant view — their device</div>
+    <div class="pane-content" id="par"></div>
+  </div>
+</div>
+
+<div class="nav">
+  <div>
+    <div class="nav-name" id="nav-name"></div>
+    <div class="nav-sub" id="nav-sub"></div>
+  </div>
+  <div class="nav-btns">
+    <button class="btn" id="btn-prev" onclick="go(-1)">← Back</button>
+    <button class="btn primary" id="btn-next" onclick="go(1)">Next →</button>
+  </div>
+</div>
+
+<script>
+const DEF = [
+  { ltr:'A', text:'A workflow design where AI handles routine cases and escalates uncertain ones to a human reviewer, optimising for limited expert time.' },
+  { ltr:'B', text:'A requirement that a human is accountable for each AI-driven decision, even where the specialist who would ordinarily make that call is absent.' },
+  { ltr:'C', text:'A clinical or expert review step: a specialist accepts, modifies, or rejects each AI recommendation before it affects a record or decision.' },
+  { ltr:'D', text:'A system in which a person retains decision authority through oversight, validation, or correction of AI outputs at defined points.' },
+];
+
+const DEF_R = [
+  { pct:19, text:'Workflow / escalation design',         lens:'Developer / implementer',        col:'#3060D8' },
+  { pct:34, text:'Accountability requirement',           lens:'Public health / governance',      col:'#0B9B6B' },
+  { pct:22, text:'Expert review before record changes',  lens:'Clinical / specialist',           col:'#7C3AED' },
+  { pct:25, text:'Decision authority retained by person',lens:'Regulatory',                     col:'#D97706' },
+];
+
+const SCN = [
+  { ltr:'A', text:'Yes. A qualified clinician reviewed and signed off before the decision was finalised.' },
+  { ltr:'B', text:'No. The clinician didn\'t examine the evidence the AI used. Sign-off risks becoming a rubber stamp.' },
+  { ltr:'C', text:'It depends on what level of review this system was designed to provide.' },
+];
+
+const SCN_R = [
+  { pct:22, text:'Yes — qualified sign-off was provided',   col:'#3060D8' },
+  { pct:51, text:'No — the evidence wasn\'t examined',      col:'#0B9B6B' },
+  { pct:27, text:'Depends on the system\'s design intent',  col:'#7C3AED' },
+];
+
+function opts(arr) {
+  return arr.map(o=>`<div class="opt"><span class="opt-ltr">${o.ltr}</span>${o.text}</div>`).join('');
+}
+
+function pOpts(arr, selIdx) {
+  return arr.map((o,i)=>`<div class="p-opt${i===selIdx?' sel':''}"><span class="p-ltr">${o.ltr}</span>${o.text.slice(0,58)}…</div>`).join('');
+}
+
+function bars(rows) {
+  return rows.map(r=>`
+    <div class="result-row">
+      <div class="result-text">${r.text}</div>
+      <div class="result-pct">${r.pct}%</div>
+      <div class="result-bar-track"><div class="result-bar-fill" style="background:${r.col}" data-w="${r.pct}"></div></div>
+      <div class="result-lens">${r.lens}</div>
+    </div>`).join('');
+}
+
+function miniBars(rows) {
+  return rows.map(r=>`
+    <div class="summary-row">
+      <span class="summary-row-text">${r.text}</span>
+      <span class="summary-row-pct">${r.pct}%</span>
+    </div>`).join('');
+}
+
+const stages = [
+  {
+    name:'Term introduced', sub:'Step 1 of 6',
+    fac:()=>`
+      <div class="chip">Introduction</div>
+      <div class="term-name">Human in the Loop</div>
+      <p class="concept-text">A system in which a human provides oversight, validation, or correction of an AI system's outputs at defined points, retaining decision authority.</p>
+      <p class="key-q">Is any human presence enough to call it "human in the loop" — or does the human need the expertise, and the context, to meaningfully override the AI?</p>
+      <div class="live-badge" style="margin-top:4px"><span class="live-dot"></span>47 participants connected</div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">AI Terminology Workshop</div></div>
+          <div class="pscr-body">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--navy)">Human in the Loop</div>
+            <p class="p-concept">A system in which a human provides oversight, validation, or correction of AI outputs at defined points, retaining decision authority.</p>
+            <p class="p-keyq">Is any human presence enough — or does the human need the expertise to meaningfully override the AI?</p>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Definition vote — open', sub:'Step 2 of 6',
+    fac:()=>`
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="chip">Exercise 1 — Definition</div>
+        <div class="live-badge"><span class="live-dot"></span>34 / 47 voted</div>
+      </div>
+      <p class="vote-prompt">How do you think about Human in the Loop when evaluating an AI system? Pick the closest match.</p>
+      <div class="vote-opts">${opts(DEF)}</div>
+      <p class="closed-note">Sources revealed after the vote closes.</p>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Exercise 1 · Definition vote</div></div>
+          <div class="pscr-body">
+            <div class="p-prompt">Which definition is closest to how YOU use this term?</div>
+            ${pOpts(DEF, 3)}
+            <button class="p-btn">Submit vote</button>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Definition results', sub:'Step 3 of 6',
+    fac:()=>`
+      <div class="chip">Results revealed</div>
+      <p class="vote-prompt">How did participants define it?</p>
+      <div class="results" id="def-bars">${bars(DEF_R)}</div>
+      <div class="fac-note">
+        <div class="fac-note-lbl">Discussion prompt</div>
+        <div class="fac-note-item">Notice which lens you were operating from — the same term, four different jobs.</div>
+        <div class="fac-note-item">B and D together (59%) lean toward accountability over workflow efficiency.</div>
+      </div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Results · 47 votes</div></div>
+          <div class="pscr-body">
+            ${DEF_R.map(r=>`
+              <div style="margin-bottom:5px">
+                <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px">
+                  <span style="color:var(--text);font-weight:500;line-height:1.3">${r.text}</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--navy);flex-shrink:0;padding-left:4px">${r.pct}%</span>
+                </div>
+                <div style="height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden">
+                  <div style="height:100%;width:${r.pct}%;background:${r.col};border-radius:2px"></div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div></div>`,
+    onEnter:()=>{
+      requestAnimationFrame(()=>{
+        document.querySelectorAll('#def-bars .result-bar-fill').forEach(el=>{
+          el.style.width = el.dataset.w + '%';
+        });
+      });
+    },
+  },
+  {
+    name:'Scenario vote', sub:'Step 4 of 6',
+    fac:()=>`
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="chip">Exercise 2 — Scenario</div>
+        <div class="live-badge"><span class="live-dot"></span>41 / 47 voted</div>
+      </div>
+      <div class="scenario-box">An AI system flags a patient file for urgent review with 94% confidence. A clinician receives the alert during a meeting, reads the AI's summary and confidence score on their phone, and approves the recommendation — without opening the underlying record.</div>
+      <p class="vote-prompt">Is this "Human in the Loop"?</p>
+      <div class="vote-opts">${opts(SCN)}</div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Exercise 2 · Scenario</div></div>
+          <div class="pscr-body">
+            <p class="p-concept" style="border-left:2px solid var(--border);padding-left:6px;font-style:italic">An AI flags a file at 94% confidence. A clinician approves on their phone during a meeting — without opening the underlying record.</p>
+            <div class="p-prompt">Is this "Human in the Loop"?</div>
+            ${pOpts(SCN, 1)}
+            <button class="p-btn">Submit vote</button>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Lightning vote', sub:'Step 5 of 6',
+    fac:()=>`
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="chip">Exercise 3 — Lightning</div>
+        <div class="live-badge"><span class="live-dot"></span>45 / 47 voted</div>
+      </div>
+      <p class="vote-prompt" style="font-size:14px">In high-stakes AI systems, "Human in the Loop" is primarily:</p>
+      <div class="binary-pair">
+        <div class="binary-card"><span class="binary-ltr">A</span><div class="binary-desc">A safety mechanism — to catch errors before they cause harm</div></div>
+        <div class="binary-card"><span class="binary-ltr">B</span><div class="binary-desc">An accountability mechanism — so a named person is answerable for the outcome</div></div>
+      </div>
+      <div class="binary-bar">
+        <div class="bseg" style="width:38%;background:#3060D8">A — 38%</div>
+        <div class="bseg" style="width:62%;background:#0B9B6B">B — 62%</div>
+      </div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Exercise 3 · Lightning vote</div></div>
+          <div class="pscr-body">
+            <div class="p-prompt">"Human in the Loop" is primarily:</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px">
+              <div style="border:2px solid var(--border);border-radius:7px;padding:10px 7px;text-align:center">
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--blue);display:block;margin-bottom:4px">A</span>
+                <span style="font-size:9px;color:var(--muted);line-height:1.4;display:block">Safety mechanism</span>
+              </div>
+              <div style="border:2px solid var(--blue);border-radius:7px;padding:10px 7px;text-align:center;background:var(--blue-pale)">
+                <span style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--blue);display:block;margin-bottom:4px">B</span>
+                <span style="font-size:9px;color:var(--text);line-height:1.4;display:block;font-weight:500">Accountability mechanism</span>
+              </div>
+            </div>
+            <button class="p-btn" style="margin-top:4px">Submit vote</button>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Discussion & landing', sub:'Step 6 of 6 — end of term',
+    fac:()=>`
+      <div class="chip">Open discussion</div>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-card-label">Definition</div>
+          ${miniBars(DEF_R)}
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-label">Scenario</div>
+          ${miniBars(SCN_R)}
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-label">Lightning</div>
+          <div class="binary-bar" style="height:36px;margin-bottom:6px">
+            <div class="bseg" style="width:38%;background:#3060D8;font-size:11px">A 38%</div>
+            <div class="bseg" style="width:62%;background:#0B9B6B;font-size:11px">B 62%</div>
+          </div>
+          <div style="font-size:10px;color:var(--muted);line-height:1.45">62% read it as accountability, not a safety mechanism.</div>
+        </div>
+      </div>
+      <div class="fac-note">
+        <div class="fac-note-lbl">Facilitator landing</div>
+        <div class="fac-note-item">The term is doing two jobs at once — catching errors and carrying accountability — and those need different things to be true.</div>
+        <div class="fac-note-item">Sign-off is a real guardrail only if the reviewer has something to check against.</div>
+        <div class="fac-note-item">Who's in the loop matters as much as whether anyone is.</div>
+      </div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Results summary</div></div>
+          <div class="pscr-body">
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Definition</div>
+            <div style="font-size:9.5px;color:var(--text);margin-bottom:7px;line-height:1.4">34% — Accountability requirement</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Scenario</div>
+            <div style="font-size:9.5px;color:var(--text);margin-bottom:7px;line-height:1.4">51% — The evidence wasn't examined</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted)">Lightning</div>
+            <div style="height:26px;border-radius:6px;overflow:hidden;display:flex;margin-top:4px">
+              <div style="width:38%;background:#3060D8;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;color:white;font-family:'Space Grotesk',sans-serif">A 38%</div>
+              <div style="width:62%;background:#0B9B6B;display:flex;align-items:center;justify-content:center;font-size:8.5px;font-weight:700;color:white;font-family:'Space Grotesk',sans-serif">B 62%</div>
+            </div>
+          </div>
+        </div>
+      </div></div>`,
+  },
+];
+
+let cur = 0;
+
+function render() {
+  const s = stages[cur];
+  document.getElementById('pips').innerHTML = stages.map((_,i)=>
+    `<div class="pip ${i<cur?'done':i===cur?'active':''}"></div>`).join('');
+  document.getElementById('fac').innerHTML = s.fac();
+  document.getElementById('par').innerHTML = s.par();
+  document.getElementById('nav-name').textContent = s.name;
+  document.getElementById('nav-sub').textContent = s.sub;
+  document.getElementById('btn-prev').disabled = cur === 0;
+  const nxt = document.getElementById('btn-next');
+  nxt.disabled = cur === stages.length - 1;
+  nxt.textContent = cur === stages.length - 1 ? 'Done' : 'Next →';
+  if (s.onEnter) s.onEnter();
+}
+
+function go(d) {
+  const n = cur + d;
+  if (n < 0 || n >= stages.length) return;
+  cur = n;
+  render();
+}
+
+render();
+</script>
