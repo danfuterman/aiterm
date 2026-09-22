@@ -595,6 +595,29 @@ body {
 </div>
 
 <script>
+const QR_BLOCK = `<div style="display:flex;align-items:center;gap:12px;padding:9px 13px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;align-self:flex-start;margin-top:auto">
+  <svg width="52" height="52" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+    <rect width="64" height="64" fill="var(--surface)"/>
+    <rect x="3" y="3" width="18" height="18" rx="2" fill="var(--navy)"/><rect x="6" y="6" width="12" height="12" rx="1" fill="var(--surface)"/><rect x="9" y="9" width="6" height="6" fill="var(--navy)"/>
+    <rect x="43" y="3" width="18" height="18" rx="2" fill="var(--navy)"/><rect x="46" y="6" width="12" height="12" rx="1" fill="var(--surface)"/><rect x="49" y="9" width="6" height="6" fill="var(--navy)"/>
+    <rect x="3" y="43" width="18" height="18" rx="2" fill="var(--navy)"/><rect x="6" y="46" width="12" height="12" rx="1" fill="var(--surface)"/><rect x="9" y="49" width="6" height="6" fill="var(--navy)"/>
+    <rect x="25" y="3" width="3" height="3" fill="var(--navy)"/><rect x="31" y="3" width="3" height="3" fill="var(--navy)"/><rect x="37" y="3" width="3" height="3" fill="var(--navy)"/>
+    <rect x="25" y="9" width="3" height="3" fill="var(--navy)"/><rect x="34" y="9" width="3" height="3" fill="var(--navy)"/>
+    <rect x="28" y="15" width="3" height="3" fill="var(--navy)"/><rect x="37" y="15" width="3" height="3" fill="var(--navy)"/>
+    <rect x="3" y="25" width="3" height="3" fill="var(--navy)"/><rect x="9" y="25" width="3" height="3" fill="var(--navy)"/><rect x="15" y="25" width="3" height="3" fill="var(--navy)"/>
+    <rect x="25" y="25" width="3" height="3" fill="var(--navy)"/><rect x="31" y="25" width="3" height="3" fill="var(--navy)"/><rect x="37" y="25" width="3" height="3" fill="var(--navy)"/><rect x="43" y="25" width="3" height="3" fill="var(--navy)"/><rect x="52" y="25" width="3" height="3" fill="var(--navy)"/>
+    <rect x="3" y="31" width="3" height="3" fill="var(--navy)"/><rect x="12" y="31" width="3" height="3" fill="var(--navy)"/><rect x="28" y="31" width="3" height="3" fill="var(--navy)"/><rect x="40" y="31" width="3" height="3" fill="var(--navy)"/><rect x="49" y="31" width="3" height="3" fill="var(--navy)"/>
+    <rect x="6" y="37" width="3" height="3" fill="var(--navy)"/><rect x="15" y="37" width="3" height="3" fill="var(--navy)"/><rect x="25" y="37" width="3" height="3" fill="var(--navy)"/><rect x="34" y="37" width="3" height="3" fill="var(--navy)"/><rect x="43" y="37" width="3" height="3" fill="var(--navy)"/><rect x="55" y="37" width="3" height="3" fill="var(--navy)"/>
+    <rect x="25" y="43" width="3" height="3" fill="var(--navy)"/><rect x="34" y="43" width="3" height="3" fill="var(--navy)"/><rect x="46" y="43" width="3" height="3" fill="var(--navy)"/><rect x="55" y="43" width="3" height="3" fill="var(--navy)"/>
+    <rect x="28" y="49" width="3" height="3" fill="var(--navy)"/><rect x="37" y="49" width="3" height="3" fill="var(--navy)"/><rect x="52" y="49" width="3" height="3" fill="var(--navy)"/>
+    <rect x="25" y="55" width="3" height="3" fill="var(--navy)"/><rect x="31" y="55" width="3" height="3" fill="var(--navy)"/><rect x="43" y="55" width="3" height="3" fill="var(--navy)"/><rect x="49" y="55" width="3" height="3" fill="var(--navy)"/>
+  </svg>
+  <div>
+    <div style="font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px">Scan to join</div>
+    <div style="font-size:11.5px;color:var(--text)">danfuterman.github.io/aiterm</div>
+  </div>
+</div>`;
+
 const FAM_TERMS = [
   { name:'Human in the Loop', nw:8,  hd:38, un:37, ex:17 },
   { name:'Validation',         nw:5,  hd:28, un:45, ex:22 },
@@ -721,39 +744,7 @@ const stages = [
         <div style="color:var(--border);font-size:12px">→</div>
         <div style="padding:4px 10px;border-radius:20px;background:var(--blue-pale);color:var(--blue);font-family:'Space Grotesk',sans-serif;font-size:10px;font-weight:700">③ Lightning vote</div>
       </div>
-      <div style="display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;align-self:flex-start;margin-top:4px">
-        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
-          <rect width="64" height="64" fill="var(--surface)"/>
-          <!-- TL finder -->
-          <rect x="3" y="3" width="18" height="18" rx="2" fill="var(--navy)"/>
-          <rect x="6" y="6" width="12" height="12" rx="1" fill="var(--surface)"/>
-          <rect x="9" y="9" width="6" height="6" fill="var(--navy)"/>
-          <!-- TR finder -->
-          <rect x="43" y="3" width="18" height="18" rx="2" fill="var(--navy)"/>
-          <rect x="46" y="6" width="12" height="12" rx="1" fill="var(--surface)"/>
-          <rect x="49" y="9" width="6" height="6" fill="var(--navy)"/>
-          <!-- BL finder -->
-          <rect x="3" y="43" width="18" height="18" rx="2" fill="var(--navy)"/>
-          <rect x="6" y="46" width="12" height="12" rx="1" fill="var(--surface)"/>
-          <rect x="9" y="49" width="6" height="6" fill="var(--navy)"/>
-          <!-- Data dots -->
-          <rect x="25" y="3" width="3" height="3" fill="var(--navy)"/><rect x="31" y="3" width="3" height="3" fill="var(--navy)"/><rect x="37" y="3" width="3" height="3" fill="var(--navy)"/>
-          <rect x="25" y="9" width="3" height="3" fill="var(--navy)"/><rect x="34" y="9" width="3" height="3" fill="var(--navy)"/>
-          <rect x="28" y="15" width="3" height="3" fill="var(--navy)"/><rect x="37" y="15" width="3" height="3" fill="var(--navy)"/>
-          <rect x="3" y="25" width="3" height="3" fill="var(--navy)"/><rect x="9" y="25" width="3" height="3" fill="var(--navy)"/><rect x="15" y="25" width="3" height="3" fill="var(--navy)"/>
-          <rect x="25" y="25" width="3" height="3" fill="var(--navy)"/><rect x="31" y="25" width="3" height="3" fill="var(--navy)"/><rect x="37" y="25" width="3" height="3" fill="var(--navy)"/><rect x="43" y="25" width="3" height="3" fill="var(--navy)"/><rect x="52" y="25" width="3" height="3" fill="var(--navy)"/>
-          <rect x="3" y="31" width="3" height="3" fill="var(--navy)"/><rect x="12" y="31" width="3" height="3" fill="var(--navy)"/><rect x="28" y="31" width="3" height="3" fill="var(--navy)"/><rect x="40" y="31" width="3" height="3" fill="var(--navy)"/><rect x="49" y="31" width="3" height="3" fill="var(--navy)"/>
-          <rect x="6" y="37" width="3" height="3" fill="var(--navy)"/><rect x="15" y="37" width="3" height="3" fill="var(--navy)"/><rect x="25" y="37" width="3" height="3" fill="var(--navy)"/><rect x="34" y="37" width="3" height="3" fill="var(--navy)"/><rect x="43" y="37" width="3" height="3" fill="var(--navy)"/><rect x="55" y="37" width="3" height="3" fill="var(--navy)"/>
-          <rect x="25" y="43" width="3" height="3" fill="var(--navy)"/><rect x="34" y="43" width="3" height="3" fill="var(--navy)"/><rect x="46" y="43" width="3" height="3" fill="var(--navy)"/><rect x="55" y="43" width="3" height="3" fill="var(--navy)"/>
-          <rect x="28" y="49" width="3" height="3" fill="var(--navy)"/><rect x="37" y="49" width="3" height="3" fill="var(--navy)"/><rect x="52" y="49" width="3" height="3" fill="var(--navy)"/>
-          <rect x="25" y="55" width="3" height="3" fill="var(--navy)"/><rect x="31" y="55" width="3" height="3" fill="var(--navy)"/><rect x="43" y="55" width="3" height="3" fill="var(--navy)"/><rect x="49" y="55" width="3" height="3" fill="var(--navy)"/>
-        </svg>
-        <div>
-          <div style="font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px">Scan to join</div>
-          <div style="font-size:12px;color:var(--text);margin-bottom:5px">danfuterman.github.io/aiterm</div>
-          <div class="live-badge"><span class="live-dot"></span>47 participants connected</div>
-        </div>
-      </div>`,
+      <div class="live-badge"><span class="live-dot"></span>47 participants connected</div>`,
     par:()=>`
       <div class="phone-wrap"><div class="phone">
         <div class="phone-notch"></div>
@@ -1080,7 +1071,7 @@ function render() {
   const s = stages[cur];
   document.getElementById('pips').innerHTML = stages.map((_,i)=>
     `<div class="pip ${i<cur?'done':i===cur?'active':''}"></div>`).join('');
-  document.getElementById('fac').innerHTML = s.fac();
+  document.getElementById('fac').innerHTML = s.fac() + QR_BLOCK;
   document.getElementById('par').innerHTML = s.par();
   document.getElementById('nav-name').textContent = s.name;
   document.getElementById('nav-sub').textContent = s.sub;
