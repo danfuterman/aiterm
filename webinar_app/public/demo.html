@@ -681,7 +681,7 @@ function miniBars(rows) {
 
 const stages = [
   {
-    name:'Overview', sub:'Step 1 of 11',
+    name:'Overview', sub:'Step 1 of 11', wide: true,
     fac:()=>`
       <div style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;color:var(--navy);line-height:1.15">AI Terminology</div>
       <p style="font-size:13.5px;color:var(--text);max-width:52ch;margin:0">An interactive workshop tool for exploring how AI terminology is understood across different disciplines and roles.</p>
@@ -1143,8 +1143,10 @@ function render() {
   const s = stages[cur];
   document.getElementById('pips').innerHTML = stages.map((_,i)=>
     `<div class="pip ${i<cur?'done':i===cur?'active':''}"></div>`).join('');
-  document.getElementById('fac').innerHTML = s.fac() + QR_BLOCK;
-  document.getElementById('par').innerHTML = s.par();
+  document.getElementById('fac').innerHTML = s.fac() + (s.wide ? '' : QR_BLOCK);
+  document.getElementById('par').innerHTML = s.wide ? '' : s.par();
+  document.querySelector('.main').style.gridTemplateColumns = s.wide ? '1fr' : '55fr 45fr';
+  document.querySelector('.pane-par').style.display = s.wide ? 'none' : '';
   document.getElementById('nav-name').textContent = s.name;
   document.getElementById('nav-sub').textContent = s.sub;
   document.getElementById('btn-prev').disabled = cur === 0;
