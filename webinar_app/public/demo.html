@@ -436,6 +436,9 @@ body {
   background: var(--surface);
   border-radius: 18px;
   overflow: hidden;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
 }
 .pscr-top {
   background: var(--navy);
@@ -453,6 +456,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  flex: 1;
 }
 .p-concept { font-size: 9.5px; line-height: 1.6; color: var(--text); }
 .p-keyq {
@@ -644,13 +648,45 @@ function miniBars(rows) {
 
 const stages = [
   {
-    name:'Term introduced', sub:'Step 1 of 6',
+    name:'Term introduced', sub:'Step 1 of 8',
     fac:()=>`
       <div class="chip">Introduction</div>
       <div class="term-name">Human in the Loop</div>
       <p class="concept-text">A system in which a human provides oversight, validation, or correction of an AI system's outputs at defined points, retaining decision authority.</p>
       <p class="key-q">Is any human presence enough to call it "human in the loop" — or does the human need the expertise, and the context, to meaningfully override the AI?</p>
-      <div class="live-badge" style="margin-top:4px"><span class="live-dot"></span>47 participants connected</div>`,
+      <div style="display:flex;align-items:center;gap:14px;padding:10px 14px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;align-self:flex-start;margin-top:4px">
+        <svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0">
+          <rect width="64" height="64" fill="var(--surface)"/>
+          <!-- TL finder -->
+          <rect x="3" y="3" width="18" height="18" rx="2" fill="var(--navy)"/>
+          <rect x="6" y="6" width="12" height="12" rx="1" fill="var(--surface)"/>
+          <rect x="9" y="9" width="6" height="6" fill="var(--navy)"/>
+          <!-- TR finder -->
+          <rect x="43" y="3" width="18" height="18" rx="2" fill="var(--navy)"/>
+          <rect x="46" y="6" width="12" height="12" rx="1" fill="var(--surface)"/>
+          <rect x="49" y="9" width="6" height="6" fill="var(--navy)"/>
+          <!-- BL finder -->
+          <rect x="3" y="43" width="18" height="18" rx="2" fill="var(--navy)"/>
+          <rect x="6" y="46" width="12" height="12" rx="1" fill="var(--surface)"/>
+          <rect x="9" y="49" width="6" height="6" fill="var(--navy)"/>
+          <!-- Data dots -->
+          <rect x="25" y="3" width="3" height="3" fill="var(--navy)"/><rect x="31" y="3" width="3" height="3" fill="var(--navy)"/><rect x="37" y="3" width="3" height="3" fill="var(--navy)"/>
+          <rect x="25" y="9" width="3" height="3" fill="var(--navy)"/><rect x="34" y="9" width="3" height="3" fill="var(--navy)"/>
+          <rect x="28" y="15" width="3" height="3" fill="var(--navy)"/><rect x="37" y="15" width="3" height="3" fill="var(--navy)"/>
+          <rect x="3" y="25" width="3" height="3" fill="var(--navy)"/><rect x="9" y="25" width="3" height="3" fill="var(--navy)"/><rect x="15" y="25" width="3" height="3" fill="var(--navy)"/>
+          <rect x="25" y="25" width="3" height="3" fill="var(--navy)"/><rect x="31" y="25" width="3" height="3" fill="var(--navy)"/><rect x="37" y="25" width="3" height="3" fill="var(--navy)"/><rect x="43" y="25" width="3" height="3" fill="var(--navy)"/><rect x="52" y="25" width="3" height="3" fill="var(--navy)"/>
+          <rect x="3" y="31" width="3" height="3" fill="var(--navy)"/><rect x="12" y="31" width="3" height="3" fill="var(--navy)"/><rect x="28" y="31" width="3" height="3" fill="var(--navy)"/><rect x="40" y="31" width="3" height="3" fill="var(--navy)"/><rect x="49" y="31" width="3" height="3" fill="var(--navy)"/>
+          <rect x="6" y="37" width="3" height="3" fill="var(--navy)"/><rect x="15" y="37" width="3" height="3" fill="var(--navy)"/><rect x="25" y="37" width="3" height="3" fill="var(--navy)"/><rect x="34" y="37" width="3" height="3" fill="var(--navy)"/><rect x="43" y="37" width="3" height="3" fill="var(--navy)"/><rect x="55" y="37" width="3" height="3" fill="var(--navy)"/>
+          <rect x="25" y="43" width="3" height="3" fill="var(--navy)"/><rect x="34" y="43" width="3" height="3" fill="var(--navy)"/><rect x="46" y="43" width="3" height="3" fill="var(--navy)"/><rect x="55" y="43" width="3" height="3" fill="var(--navy)"/>
+          <rect x="28" y="49" width="3" height="3" fill="var(--navy)"/><rect x="37" y="49" width="3" height="3" fill="var(--navy)"/><rect x="52" y="49" width="3" height="3" fill="var(--navy)"/>
+          <rect x="25" y="55" width="3" height="3" fill="var(--navy)"/><rect x="31" y="55" width="3" height="3" fill="var(--navy)"/><rect x="43" y="55" width="3" height="3" fill="var(--navy)"/><rect x="49" y="55" width="3" height="3" fill="var(--navy)"/>
+        </svg>
+        <div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:9px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px">Scan to join</div>
+          <div style="font-size:12px;color:var(--text);margin-bottom:5px">danfuterman.github.io/aiterm</div>
+          <div class="live-badge"><span class="live-dot"></span>47 participants connected</div>
+        </div>
+      </div>`,
     par:()=>`
       <div class="phone-wrap"><div class="phone">
         <div class="phone-notch"></div>
@@ -665,7 +701,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Definition vote — open', sub:'Step 2 of 6',
+    name:'Definition vote — open', sub:'Step 2 of 8',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 1 — Definition</div>
@@ -688,7 +724,7 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Definition results', sub:'Step 3 of 6',
+    name:'Definition results', sub:'Step 3 of 8',
     fac:()=>`
       <div class="chip">Results revealed</div>
       <p class="vote-prompt">How did participants define it?</p>
@@ -726,7 +762,7 @@ const stages = [
     },
   },
   {
-    name:'Scenario vote', sub:'Step 4 of 6',
+    name:'Scenario vote', sub:'Step 4 of 8',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 2 — Scenario</div>
@@ -750,7 +786,45 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Lightning vote', sub:'Step 5 of 6',
+    name:'Scenario results', sub:'Step 5 of 8',
+    fac:()=>`
+      <div class="chip">Results revealed</div>
+      <p class="vote-prompt">Is the clinician scenario "Human in the Loop"?</p>
+      <div class="results" id="scn-bars">${bars(SCN_R)}</div>
+      <div class="fac-note">
+        <div class="fac-note-lbl">Discussion prompt</div>
+        <div class="fac-note-item">51% said sign-off without examining the evidence is not meaningful review — this is the scenario that splits the room most.</div>
+        <div class="fac-note-item">The minority who said "yes" are often applying the accountability lens: a named person did authorise the decision.</div>
+      </div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Results · 47 votes</div></div>
+          <div class="pscr-body">
+            ${SCN_R.map(r=>`
+              <div style="margin-bottom:5px">
+                <div style="display:flex;justify-content:space-between;font-size:9px;margin-bottom:2px">
+                  <span style="color:var(--text);font-weight:500;line-height:1.3">${r.text}</span>
+                  <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--navy);flex-shrink:0;padding-left:4px">${r.pct}%</span>
+                </div>
+                <div style="height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden">
+                  <div style="height:100%;width:${r.pct}%;background:${r.col};border-radius:2px"></div>
+                </div>
+              </div>`).join('')}
+          </div>
+        </div>
+      </div></div>`,
+    onEnter:()=>{
+      requestAnimationFrame(()=>{
+        document.querySelectorAll('#scn-bars .result-bar-fill').forEach(el=>{
+          el.style.width = el.dataset.w + '%';
+        });
+      });
+    },
+  },
+  {
+    name:'Lightning vote', sub:'Step 6 of 8',
     fac:()=>`
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="chip">Exercise 3 — Lightning</div>
@@ -760,10 +834,6 @@ const stages = [
       <div class="binary-pair">
         <div class="binary-card"><span class="binary-ltr">A</span><div class="binary-desc">A safety mechanism — to catch errors before they cause harm</div></div>
         <div class="binary-card"><span class="binary-ltr">B</span><div class="binary-desc">An accountability mechanism — so a named person is answerable for the outcome</div></div>
-      </div>
-      <div class="binary-bar">
-        <div class="bseg" style="width:38%;background:#3060D8">A — 38%</div>
-        <div class="bseg" style="width:62%;background:#0B9B6B">B — 62%</div>
       </div>`,
     par:()=>`
       <div class="phone-wrap"><div class="phone">
@@ -788,7 +858,41 @@ const stages = [
       </div></div>`,
   },
   {
-    name:'Discussion & landing', sub:'Step 6 of 6 — end of term',
+    name:'Lightning results', sub:'Step 7 of 8',
+    fac:()=>`
+      <div class="chip">Results revealed</div>
+      <p class="vote-prompt" style="font-size:14px">In high-stakes AI systems, "Human in the Loop" is primarily:</p>
+      <div class="binary-pair">
+        <div class="binary-card"><span class="binary-ltr">A</span><div class="binary-desc">A safety mechanism — to catch errors before they cause harm</div></div>
+        <div class="binary-card"><span class="binary-ltr">B</span><div class="binary-desc">An accountability mechanism — so a named person is answerable for the outcome</div></div>
+      </div>
+      <div class="binary-bar">
+        <div class="bseg" style="width:38%;background:#3060D8">A — 38%</div>
+        <div class="bseg" style="width:62%;background:#0B9B6B">B — 62%</div>
+      </div>
+      <div class="fac-note">
+        <div class="fac-note-lbl">Discussion prompt</div>
+        <div class="fac-note-item">62% read it as accountability — but a safety mechanism and an accountability mechanism need different things to be true.</div>
+        <div class="fac-note-item">A safety mechanism needs the reviewer to be able to catch errors. An accountability mechanism just needs a named person.</div>
+      </div>`,
+    par:()=>`
+      <div class="phone-wrap"><div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="pscr-top"><div class="pscr-ttl">Results · 47 votes</div></div>
+          <div class="pscr-body">
+            <div class="p-prompt" style="margin-bottom:4px">"Human in the Loop" is primarily:</div>
+            <div style="height:44px;border-radius:8px;overflow:hidden;display:flex;border:1.5px solid var(--border)">
+              <div style="width:38%;background:#3060D8;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;font-family:'Space Grotesk',sans-serif">A — 38%</div>
+              <div style="width:62%;background:#0B9B6B;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;font-family:'Space Grotesk',sans-serif">B — 62%</div>
+            </div>
+            <div style="font-size:9px;color:var(--muted);line-height:1.5;margin-top:6px">62% — accountability mechanism</div>
+          </div>
+        </div>
+      </div></div>`,
+  },
+  {
+    name:'Discussion & landing', sub:'Step 8 of 8 — end of term',
     fac:()=>`
       <div class="chip">Open discussion</div>
       <div class="summary-grid">
